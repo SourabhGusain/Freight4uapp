@@ -1,5 +1,5 @@
-import 'package:goindia/helpers/get.dart';
-import 'package:goindia/helpers/values.dart';
+import 'package:Freight4u/helpers/get.dart';
+import 'package:Freight4u/helpers/values.dart';
 import 'package:flutter/material.dart';
 
 Widget textH1(String text,

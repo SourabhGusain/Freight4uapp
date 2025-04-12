@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "goindia" "\0"
+            VALUE "FileDescription", "Freight4u" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "goindia" "\0"
+            VALUE "InternalName", "Freight4u" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "goindia.exe" "\0"
-            VALUE "ProductName", "goindia" "\0"
+            VALUE "OriginalFilename", "Freight4u.exe" "\0"
+            VALUE "ProductName", "Freight4u" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

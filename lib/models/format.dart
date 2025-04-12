@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'package:goindia/helpers/values.dart';
-import 'package:goindia/helpers/api.dart';
-import 'package:goindia/helpers/get.dart';
+import 'package:Freight4u/helpers/values.dart';
+import 'package:Freight4u/helpers/api.dart';
+import 'package:Freight4u/helpers/get.dart';
 
 class FormatModel extends Api {
   int id;

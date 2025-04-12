@@ -1,4 +1,4 @@
-import 'package:goindia/helpers/get.dart';
+import 'package:Freight4u/helpers/get.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:math';
 
@@ -30,34 +30,7 @@ Future<bool> _handleLocationPermission(context) async {
 
 Future<String> googleAutoComplete(context) async {
   String loc = "";
-  try {
-    const kGoogleApiKey = ""; //AIzaSyAWg4GUZAOU-ZOGzBfvvP4ZVluMF8E202k
-
-    // Prediction? p = await PlacesAutocomplete.show(
-    //     context: context,
-    //     apiKey: kGoogleApiKey,
-    //     radius: 100000000,
-    //     mode: Mode.overlay, // Mode.fullscreen
-    //     language: "en",
-    //     strictbounds: false,
-    //     types: [],
-    //     components: [
-    //       Component(Component.country, "IN"),
-    //     ],
-    //     onError: (value) {
-    //       Get.viewMessage(context, value);
-    //     });
-
-    // if (p != null) {
-    //   if (p.description != null) {
-    //     loc = p.description!;
-    //   } else {
-    //     loc = "";
-    //   }
-    // } else {
-    //   loc = "";
-    // }
-  } catch (e) {
+  try {} catch (e) {
     Get.viewMessage(context, e);
   } finally {
     return loc;

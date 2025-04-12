@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:goindia/helpers/get.dart';
-import 'package:goindia/helpers/session.dart';
-import 'package:goindia/pages/format/format.view.dart';
+import 'package:Freight4u/helpers/get.dart';
+import 'package:Freight4u/helpers/session.dart';
+import 'package:Freight4u/pages/format/format.view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +23,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     ResponsiveApp.set(context);
     return MaterialApp(
-      title: 'Go India',
+      title: 'Freight 4 You',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.orange, scaffoldBackgroundColor: Colors.white),

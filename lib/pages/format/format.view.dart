@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:goindia/pages/format/format.controller.dart';
-import 'package:goindia/widgets/ui.dart';
+import 'package:Freight4u/pages/format/format.controller.dart';
+import 'package:Freight4u/widgets/ui.dart';
 import 'package:stacked/stacked.dart';
 
 class FormatPage extends StatefulWidget {

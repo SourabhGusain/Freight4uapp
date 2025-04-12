@@ -1,8 +1,8 @@
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
-import 'package:goindia/helpers/get.dart';
-import 'package:goindia/helpers/values.dart';
-import 'package:goindia/widgets/form.dart';
+import 'package:Freight4u/helpers/get.dart';
+import 'package:Freight4u/helpers/values.dart';
+import 'package:Freight4u/widgets/form.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 

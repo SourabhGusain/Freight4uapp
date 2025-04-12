@@ -1,7 +1,7 @@
 import 'dart:convert';
-import 'package:goindia/helpers/session.dart';
-import 'package:goindia/widgets/form.dart';
-import 'package:goindia/widgets/ui.dart';
+import 'package:Freight4u/helpers/session.dart';
+import 'package:Freight4u/widgets/form.dart';
+import 'package:Freight4u/widgets/ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shimmer/shimmer.dart';

@@ -1,6 +1,6 @@
 import 'dart:async';
 // import 'package:chanakyaapp/helpers/get.dart';
-import 'package:goindia/helpers/session.dart';
+import 'package:Freight4u/helpers/session.dart';
 import 'package:dio/dio.dart';
 
 class Api {
