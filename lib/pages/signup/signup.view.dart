@@ -1,19 +1,21 @@
-import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
+import 'package:Freight4u/widgets/ui.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:Freight4u/helpers/values.dart';
-import 'package:Freight4u/pages/signup/signup.view.dart';
+import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
-import 'package:Freight4u/pages/dailyform/dailyform.view.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+// import 'package:Freight4u/helpers/widgets.dart';
+import 'package:stacked/stacked.dart';
+
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
   @override
   void initState() {
     super.initState();
@@ -39,14 +41,9 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                            height: 300,
-                            width: double.infinity,
-                            child: Image.asset("assets/images/login.png")),
-                        const SizedBox(height: 20),
-                        textH1("Log In", font_size: 30),
+                        textH1("Sign Up", font_size: 30),
                         const SizedBox(height: 10),
-                        subtext("Seamless Access. One Tap Away.",
+                        subtext("One Sign-Up. All Your Forms in One Place.",
                             font_size: 15),
                         const SizedBox(height: 20),
                         SizedBox(
@@ -60,47 +57,40 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                           height: 50,
                           child: textField(
-                            "Password",
+                            "Enter Password",
                             hintText: "e.g. 23**",
                           ),
                         ),
-                        const SizedBox(height: 5),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: linkText(
-                            "Forgot Password?",
-                            font_size: 14,
-                            font_weight: FontWeight.bold,
-                            color: primaryColor,
-                            text_border: TextDecoration.none,
-                            // onTap: () {
-                            //   // Get.toWithNoBack(context, () => const ForgotPasswordPage());
-                            // },
+                        const SizedBox(height: 15),
+                        SizedBox(
+                          height: 50,
+                          child: textField(
+                            "Confirm Password",
+                            hintText: "e.g. 23**",
                           ),
                         ),
                         const SizedBox(height: 70),
                         SizedBox(
                           width: double.infinity,
                           child: darkButton(
-                            buttonText("Log in", color: whiteColor),
+                            buttonText("Sign up", color: whiteColor),
                             primary: primaryColor,
-                            onPressed: () {
-                              Get.toWithNoBack(
-                                  context, () => const DailyformPage());
-                            },
+                            // onTap: () {
+                            //   // Get.toWithNoBack(context, () => const HomePage());
+                            // },
                           ),
                         ),
                         const SizedBox(height: 30),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            subtext("Don't have an account?", font_size: 14),
+                            subtext("Already have an account?", font_size: 14),
                             GestureDetector(
                               onTap: () {
-                                Get.to(context, () => const SignupPage());
+                                Get.to(context, () => const LoginPage());
                               },
                               child: linkText(
-                                " Sign Up",
+                                " Log in",
                                 font_size: 15,
                                 font_weight: FontWeight.bold,
                                 color: primaryColor,

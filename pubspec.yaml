@@ -29,3 +29,13 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+      - assets/images/logo.png
+      - assets/images/login.png
+      # - assets/icons/
+      # - assets/fonts/
+      # - assets/strings/
+      # - assets/animations/
+      # - assets/lottie/
+      # - assets/svgs/
