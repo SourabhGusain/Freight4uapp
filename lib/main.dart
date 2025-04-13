@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/pages/format/format.view.dart';
+import 'package:Freight4u/pages/utils/splash.view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,7 +11,6 @@ void main() async {
   bool isLoggedIn = false;
   if (key != null && key != "") {
     isLoggedIn = true;
-    // FireBaseHelper.saveToken();
   }
   LoggedInUserActivity.set(isLoggedIn);
   runApp(const MainApp());
@@ -27,7 +27,7 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: Colors.orange, scaffoldBackgroundColor: Colors.white),
-      home: const FormatPage(),
+      home: const SplashPage(),
     );
   }
 }

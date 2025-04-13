@@ -1,0 +1,2 @@
+D:/Projects(Official)/A_Application Development/Project6_freight4u/freight4uapp/android/app/.cxx/Debug/4w2j1w37/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/Projects(Official)/A_Application Development/Project6_freight4u/freight4uapp/android/app/.cxx/Debug/4w2j1w37/arm64-v8a/CMakeFiles/rebuild_cache.dir
