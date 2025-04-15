@@ -126,51 +126,51 @@ Widget infoBoxWithIcon(Color color, String heading, String title,
   );
 }
 
-Widget bottomBar(context, indexSelected) {
-  List<TabItem> items = const [
-    TabItem(
-      icon: Icons.home,
-      title: 'Home',
-    ),
-    TabItem(
-      icon: Icons.notifications,
-      title: 'Bookings',
-    ),
-    TabItem(
-      icon: Icons.post_add,
-      title: 'Post Duty',
-    ),
-    TabItem(
-      icon: Icons.wallet,
-      title: 'Wallet',
-    ),
-    TabItem(
-      icon: Icons.account_box,
-      title: 'Profie',
-    ),
-  ];
+// Widget bottomBar(context, indexSelected) {
+//   List<TabItem> items = const [
+//     TabItem(
+//       icon: Icons.home,
+//       title: 'Home',
+//     ),
+//     TabItem(
+//       icon: Icons.notifications,
+//       title: 'Bookings',
+//     ),
+//     TabItem(
+//       icon: Icons.post_add,
+//       title: 'Post Duty',
+//     ),
+//     TabItem(
+//       icon: Icons.wallet,
+//       title: 'Wallet',
+//     ),
+//     TabItem(
+//       icon: Icons.account_box,
+//       title: 'Profie',
+//     ),
+//   ];
 
-  return BottomBarInspiredOutside(
-    items: items,
-    backgroundColor: const Color.fromARGB(255, 221, 74, 1),
-    color: whiteColor,
-    colorSelected: Colors.white,
-    indexSelected: indexSelected,
-    onTap: (int index) {
-      if (index == 0) {
-      } else if (index == 1) {
-      } else if (index == 2) {
-      } else if (index == 3) {
-      } else if (index == 4) {}
-    },
-    top: -28,
-    animated: false,
-    itemStyle: ItemStyle.circle,
-    chipStyle: const ChipStyle(
-        notchSmoothness: NotchSmoothness.smoothEdge,
-        background: Color.fromARGB(255, 221, 74, 1)),
-  );
-}
+//   return BottomBarInspiredOutside(
+//     items: items,
+//     backgroundColor: const Color.fromARGB(255, 221, 74, 1),
+//     color: whiteColor,
+//     colorSelected: Colors.white,
+//     indexSelected: indexSelected,
+//     onTap: (int index) {
+//       if (index == 0) {
+//       } else if (index == 1) {
+//       } else if (index == 2) {
+//       } else if (index == 3) {
+//       } else if (index == 4) {}
+//     },
+//     top: -28,
+//     animated: false,
+//     itemStyle: ItemStyle.circle,
+//     chipStyle: const ChipStyle(
+//         notchSmoothness: NotchSmoothness.smoothEdge,
+//         background: Color.fromARGB(255, 221, 74, 1)),
+//   );
+// }
 
 Widget bulletPoint(String text) {
   return Padding(

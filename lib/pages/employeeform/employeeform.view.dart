@@ -8,15 +8,15 @@ import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
 
-class DailyformPage extends StatefulWidget {
-  const DailyformPage({super.key});
+class EmployeePage extends StatefulWidget {
+  const EmployeePage({super.key});
 
   @override
-  State<DailyformPage> createState() => _DailyformPageState();
+  State<EmployeePage> createState() => _EmployeePageState();
 }
 
-class _DailyformPageState extends State<DailyformPage> {
-  int _currentIndex = 0;
+class _EmployeePageState extends State<EmployeePage> {
+  int _currentIndex = 3;
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _DailyformPageState extends State<DailyformPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    textH1("Daily Report Forms:"),
+                    textH1("Daily Report Forms:2"),
                     const SizedBox(height: 15),
                     customBox(
                         text: "Pre-Start/Fit for Duty Declaration.",
@@ -82,7 +82,6 @@ class _DailyformPageState extends State<DailyformPage> {
               onTap: (index) {
                 setState(() {
                   _currentIndex = index;
-                  print(index);
                 });
               },
             ),

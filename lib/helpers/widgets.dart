@@ -1,7 +1,8 @@
 import 'dart:io';
-
+import 'package:Freight4u/widgets/form.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
+import 'package:Freight4u/pages/notification/notification.view.dart';
 import 'package:flutter/material.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/get.dart';
@@ -50,243 +51,196 @@ import 'package:Freight4u/helpers/get.dart';
 //   }
 // }
 
-// Widget navBar(context, scaffoldKey, String title,
-//     {String subtitle = "Subtitle here",
-//     bool isBack = false,
-//     Function? refresh,
-//     Function? backFunction,
-//     bool is_bell = true,
-//     required sessionUser,
-//     int count = 0}) {
-//   return Container(
-//     height: 65,
-//     decoration: BoxDecoration(
-//       color: primaryColor,
-//       borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
-//     ),
-//     margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-//     padding: const EdgeInsets.only(right: 25),
-//     child: Stack(
-//       alignment: Alignment.centerRight,
-//       children: [
-//         Column(
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Row(
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               mainAxisAlignment: MainAxisAlignment.start,
-//               children: [
-//                 const SizedBox(width: 70),
-//                 SizedBox(
-//                   width: 200,
-//                   child: Column(
-//                     crossAxisAlignment: CrossAxisAlignment.start,
-//                     mainAxisAlignment: MainAxisAlignment.start,
-//                     children: [
-//                       textH2(title, color: whiteColor),
-//                       subtext(subtitle, font_size: 11.5, color: whiteColor),
-//                     ],
-//                   ),
-//                 ),
-//                 const Expanded(child: SizedBox()),
-//                 is_bell
-//                     ? GestureDetector(
-//                         onTap: () {
-//                           Get.logout(context);
-//                           // if (sessionUser != null) {
-//                           //   NoticeBoardModel notic = NoticeBoardModel();
-//                           //   notic.markAsSeenAllSeen(sessionUser.id);
-//                           //   Get.to(context, () => NotificationPage(sessionUser),
-//                           //       then: () {
-//                           //     if (refresh != null) {
-//                           //       refresh();
-//                           //     }
-//                           //   });
-//                           // }
-//                         },
-//                         child: const Icon(
-//                           Icons.logout,
-//                           color: whiteColor,
-//                         ),
-//                       )
-//                     : Container(),
-//               ],
-//             ),
-//           ],
-//         ),
-//         Positioned(
-//           top: 0,
-//           left: 0,
-//           bottom: 0,
-//           child: isBack == true
-//               ? GestureDetector(
-//                   onTap: () {
-//                     if (backFunction != null) {
-//                       backFunction();
-//                     } else {
-//                       if (Get.isBack(context)) {
-//                         Get.back(context);
-//                       } else {
-//                         // Get.toWithNoBack(context, () => HomePage(sessionUser));
-//                       }
-//                     }
-//                   },
-//                   child: const SizedBox(
-//                     width: 70,
-//                     height: 100,
-//                     child: Icon(Icons.arrow_back, color: whiteColor),
-//                   ),
-//                 )
-//               : GestureDetector(
-//                   onTap: () {
-//                     // scaffoldKey.currentState?.openDrawer();
-//                   },
-//                   // child: getImage(sessionUser),
-//                 ),
-//         ),
-//         // is_bell
-//         //     ? Positioned(
-//         //         top: 10,
-//         //         right: 0,
-//         //         child: FutureBuilder(
-//         //           future: getNotificationCount(sessionUser.id),
-//         //           builder: (context, snapshot) {
-//         //             Widget rslt = Container();
-//         //             if (Get.snapshotResult(snapshot)) {
-//         //               List<NoticeBoardModel> all = snapshot.data!['data'];
-//         //               count = all.length;
-//         //               rslt = Container(
-//         //                 padding: const EdgeInsets.symmetric(
-//         //                     horizontal: 3, vertical: 1),
-//         //                 decoration: BoxDecoration(
-//         //                   color: Colors.red,
-//         //                   borderRadius: BorderRadius.circular(50),
-//         //                 ),
-//         //                 child: textH3("$count", color: whiteColor),
-//         //               );
-//         //             }
+Widget primaryNavBar(context, String companyName, String logoPath) {
+  return Container(
+    height: 65,
+    decoration: BoxDecoration(
+      color: primaryColor,
+      borderRadius: BorderRadius.circular(50),
+    ),
+    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    padding: const EdgeInsets.only(right: 25),
+    child: Stack(
+      alignment: Alignment.centerRight,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                const SizedBox(width: 10),
+                Image.asset(
+                  logoPath,
+                  width: 35,
+                  height: 35,
+                ),
+                const SizedBox(width: 10),
+                textH2(companyName, color: whiteColor, font_size: 17),
+              ],
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.notifications,
+                      color: whiteColor, size: 20),
+                  onPressed: () {
+                    Get.to(
+                      context,
+                      () => NotificationPage(),
+                    );
+                  },
+                ),
+                const SizedBox(width: 10),
+                const Icon(Icons.account_circle, color: whiteColor, size: 22),
+              ],
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
 
-//         //             return rslt;
-//         //           },
-//         //         ),
-//         //       )
-//         //     : Container()
-//       ],
-//     ),
-//   );
-// }
+Widget secondaryNavBar(context, String companyName, String pageTitle) {
+  return Container(
+    height: 65,
+    decoration: BoxDecoration(
+      color: primaryColor,
+      borderRadius: BorderRadius.circular(50),
+    ),
+    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    padding: const EdgeInsets.only(right: 25),
+    child: Stack(
+      alignment: Alignment.centerRight,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                const SizedBox(width: 10),
+                // Circular back arrow button
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context); // Go back to the previous page
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: whiteColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.arrow_back,
+                      color: primaryColor,
+                      size: 20,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                // Page title text
+                textH2(pageTitle, color: whiteColor, font_size: 17),
+              ],
+            ),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.notifications,
+                      color: whiteColor, size: 20),
+                  onPressed: () {
+                    Get.to(
+                      context,
+                      () => NotificationPage(),
+                    );
+                  },
+                ),
+                const SizedBox(width: 10),
+                const Icon(Icons.account_circle, color: whiteColor, size: 22),
+              ],
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+}
 
-// Widget facultyNavBar(context, scaffoldKey, String title,
-//     {String subtitle = "Subtitle here",
-//     bool isBack = false,
-//     Function? refresh,
-//     required sessionUser,
-//     int count = 0}) {
-//   return Container(
-//     height: 65,
-//     decoration: BoxDecoration(
-//       color: primaryColor,
-//       borderRadius: BorderRadius.circular(50), // Adjust the radius as needed
-//     ),
-//     margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-//     padding: const EdgeInsets.only(right: 25),
-//     child: Stack(
-//       alignment: Alignment.centerRight,
-//       children: [
-//         Column(
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Row(
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               mainAxisAlignment: MainAxisAlignment.start,
-//               children: [
-//                 const SizedBox(width: 70),
-//                 Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   mainAxisAlignment: MainAxisAlignment.start,
-//                   children: [
-//                     textH2(title, color: whiteColor),
-//                     subtext(subtitle, font_size: 12, color: whiteColor),
-//                   ],
-//                 ),
-//                 const Expanded(child: SizedBox()),
-//                 GestureDetector(
-//                   onTap: () {
-//                     Get.logout(context);
-//                   },
-//                   child: const Icon(
-//                     Icons.logout,
-//                     color: whiteColor,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//         Positioned(
-//           top: 0,
-//           left: 0,
-//           bottom: 0,
-//           child: isBack == true
-//               ? GestureDetector(
-//                   onTap: () {
-//                     if (Get.isBack(context)) {
-//                       Get.back(context);
-//                     } else {
-//                       // Get.toWithNoBack(
-//                       //     context, () => FacultyHomePage(sessionUser));
-//                     }
-//                   },
-//                   child: const SizedBox(
-//                     width: 70,
-//                     height: 100,
-//                     child: Icon(Icons.arrow_back, color: whiteColor),
-//                   ),
-//                 )
-//               : GestureDetector(
-//                   onTap: () {
-//                     // scaffoldKey.currentState?.openDrawer();
-//                   },
-//                   // child: getImage(sessionUser),
-//                 ),
-//         ),
-//       ],
-//     ),
-//   );
-// }
+Widget customBox({
+  required String text,
+  required String subtext,
+  // required VoidCallback onTap,
+}) {
+  return GestureDetector(
+    // onTap: onTap,
+    child: Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: whiteColor,
+        border: Border.all(
+          color: blackColor,
+          width: 0.5,
+        ),
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(14.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            textH2(
+              text,
+              font_size: 16.0,
+              font_weight: FontWeight.bold,
+            ),
+            const SizedBox(height: 3),
+            textH2(
+              subtext,
+              font_size: 12.0,
+              font_weight: FontWeight.w500,
+              color: const Color.fromARGB(255, 88, 88, 88),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
 
-// Widget bottomBar(int selectedIndex, Function? onItemTapped) {
-//   return BottomNavigationBar(
-//     type: BottomNavigationBarType.fixed,
-//     items: const <BottomNavigationBarItem>[
-//       BottomNavigationBarItem(
-//         icon: Icon(Icons.home),
-//         label: 'Home',
-//       ),
-//       BottomNavigationBarItem(
-//         icon: Icon(Icons.shopping_bag),
-//         label: 'Wallet',
-//       ),
-//       BottomNavigationBarItem(
-//         icon: Icon(Icons.shopping_cart),
-//         label: 'Transactions',
-//       ),
-//       BottomNavigationBarItem(
-//         icon: Icon(Icons.person),
-//         label: 'Account',
-//       ),
-//     ],
-//     currentIndex: 4 > selectedIndex ? selectedIndex : 0,
-//     selectedItemColor: primaryColor,
-//     onTap: (index) {
-//       if (onItemTapped != null) {
-//         onItemTapped(index);
-//       }
-//     },
-//   );
-// }
+Widget customBottomNavigationBar({
+  required int currentIndex,
+  required Function(int) onTap,
+}) {
+  return BottomNavigationBar(
+    backgroundColor: Colors.white,
+    selectedItemColor: Colors.blueAccent,
+    unselectedItemColor: Colors.grey,
+    currentIndex: currentIndex,
+    onTap: onTap,
+    type: BottomNavigationBarType.fixed,
+    selectedLabelStyle: TextStyle(fontSize: 12.0),
+    unselectedLabelStyle: TextStyle(fontSize: 10.0),
+    items: const [
+      BottomNavigationBarItem(
+        icon: Icon(Icons.today, size: 20), // Adjusted icon size
+        label: 'Daily',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.dashboard, size: 20),
+        label: 'NDC',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.settings, size: 20),
+        label: 'LINEFOX',
+      ),
+      BottomNavigationBarItem(
+        icon: Icon(Icons.people, size: 20),
+        label: 'Employee',
+      ),
+    ],
+  );
+}
 
 Widget textField(String labelText,
     {TextEditingController? controller,
