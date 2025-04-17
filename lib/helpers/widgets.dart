@@ -1,4 +1,8 @@
 import 'dart:io';
+import 'package:Freight4u/pages/dailyform/dailyform.view.dart';
+import 'package:Freight4u/pages/employeeform/employeeform.view.dart';
+import 'package:Freight4u/pages/ndcform/ndcform.view.dart';
+import 'package:Freight4u/pages/linefoxform/linefoxform.view.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
@@ -84,10 +88,31 @@ Widget primaryNavBar(context, String companyName, String logoPath) {
                 IconButton(
                   icon: const Icon(Icons.notifications,
                       color: whiteColor, size: 20),
-                  onPressed: () {
+                  onPressed: () async {
+                    // Show loading dialog
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(primaryColor),
+                          ),
+                        );
+                      },
+                    );
+
+                    // Simulate delay or replace with real async logic
+                    await Future.delayed(const Duration(seconds: 1));
+
+                    // Close the loading dialog
+                    Navigator.of(context).pop();
+
+                    // Navigate to NotificationPage
                     Get.to(
                       context,
-                      () => NotificationPage(),
+                      () => const NotificationPage(),
                     );
                   },
                 ),
@@ -110,7 +135,7 @@ Widget secondaryNavBar(context, String companyName, String pageTitle) {
       borderRadius: BorderRadius.circular(50),
     ),
     margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    padding: const EdgeInsets.only(right: 25),
+    padding: const EdgeInsets.only(right: 0),
     child: Stack(
       alignment: Alignment.centerRight,
       children: [
@@ -124,10 +149,10 @@ Widget secondaryNavBar(context, String companyName, String pageTitle) {
                 // Circular back arrow button
                 GestureDetector(
                   onTap: () {
-                    Navigator.pop(context); // Go back to the previous page
+                    Navigator.pop(context);
                   },
                   child: Container(
-                    padding: const EdgeInsets.all(6),
+                    padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       color: whiteColor,
                       shape: BoxShape.circle,
@@ -140,24 +165,7 @@ Widget secondaryNavBar(context, String companyName, String pageTitle) {
                   ),
                 ),
                 const SizedBox(width: 10),
-                // Page title text
-                textH2(pageTitle, color: whiteColor, font_size: 17),
-              ],
-            ),
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.notifications,
-                      color: whiteColor, size: 20),
-                  onPressed: () {
-                    Get.to(
-                      context,
-                      () => NotificationPage(),
-                    );
-                  },
-                ),
-                const SizedBox(width: 10),
-                const Icon(Icons.account_circle, color: whiteColor, size: 22),
+                textH2(pageTitle, color: whiteColor, font_size: 15),
               ],
             ),
           ],
@@ -170,10 +178,10 @@ Widget secondaryNavBar(context, String companyName, String pageTitle) {
 Widget customBox({
   required String text,
   required String subtext,
-  // required VoidCallback onTap,
+  required VoidCallback onTap,
 }) {
   return GestureDetector(
-    // onTap: onTap,
+    onTap: onTap,
     child: Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -208,76 +216,42 @@ Widget customBox({
   );
 }
 
-Widget customBottomNavigationBar({
-  required int currentIndex,
-  required Function(int) onTap,
-}) {
-  return BottomNavigationBar(
-    backgroundColor: Colors.white,
-    selectedItemColor: Colors.blueAccent,
-    unselectedItemColor: Colors.grey,
-    currentIndex: currentIndex,
-    onTap: onTap,
-    type: BottomNavigationBarType.fixed,
-    selectedLabelStyle: TextStyle(fontSize: 12.0),
-    unselectedLabelStyle: TextStyle(fontSize: 10.0),
-    items: const [
-      BottomNavigationBarItem(
-        icon: Icon(Icons.today, size: 20), // Adjusted icon size
-        label: 'Daily',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.dashboard, size: 20),
-        label: 'NDC',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.settings, size: 20),
-        label: 'LINEFOX',
-      ),
-      BottomNavigationBarItem(
-        icon: Icon(Icons.people, size: 20),
-        label: 'Employee',
-      ),
-    ],
-  );
-}
-
-Widget textField(String labelText,
-    {TextEditingController? controller,
-    String? hintText,
-    Function? validator,
-    TextInputType keyboardType = TextInputType.text,
-    int? maxLength,
-    String prefixText = "",
-    bool isPassword = false,
-    bool readOnly = false,
-    Function(String)? onChanged,
-    Function()? onTap}) {
-  return TextFormField(
-    validator: (text) {
-      if (validator != null) {
-        return validator(text);
-      }
-      return null;
-    },
-    controller: controller,
-    keyboardType: keyboardType,
-    maxLength: maxLength,
-    obscureText: isPassword,
-    readOnly: readOnly,
-    onChanged: onChanged,
-    onTap: onTap,
-    decoration: InputDecoration(
-        counterText: "",
-        prefixText: prefixText, // Prefix text
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        labelText: labelText,
-        hintText: hintText,
-        hintStyle: const TextStyle(fontWeight: FontWeight.w400)),
-  );
-}
+// Widget textField(String labelText,
+//     {TextEditingController? controller,
+//     String? hintText,
+//     Function? validator,
+//     TextInputType keyboardType = TextInputType.text,
+//     int? maxLength,
+//     String prefixText = "",
+//     bool isPassword = false,
+//     bool readOnly = false,
+//     Function(String)? onChanged,
+//     Function()? onTap}) {
+//   return TextFormField(
+//     validator: (text) {
+//       if (validator != null) {
+//         return validator(text);
+//       }
+//       return null;
+//     },
+//     controller: controller,
+//     keyboardType: keyboardType,
+//     maxLength: maxLength,
+//     obscureText: isPassword,
+//     readOnly: readOnly,
+//     onChanged: onChanged,
+//     onTap: onTap,
+//     decoration: InputDecoration(
+//         counterText: "",
+//         prefixText: prefixText, // Prefix text
+//         border: OutlineInputBorder(
+//           borderRadius: BorderRadius.circular(5),
+//         ),
+//         labelText: labelText,
+//         hintText: hintText,
+//         hintStyle: const TextStyle(fontWeight: FontWeight.w400)),
+//   );
+// }
 
 // Widget darkButton(Widget text,
 //     {Color primary = primaryColor,
@@ -525,6 +499,78 @@ Widget buttonIcon(IconData icon,
 //     ),
 //   );
 // }
+
+Widget customBottomNavigationBar({
+  required BuildContext context,
+  required int selectedIndex,
+}) {
+  List<BottomNavigationBarItem> items = const [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.today, size: 20),
+      label: 'Daily',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.dashboard, size: 20),
+      label: 'NDC',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.settings, size: 20),
+      label: 'LINEFOX',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.people, size: 20),
+      label: 'Employee',
+    ),
+  ];
+
+  Future<void> _navigateWithLoading(
+    BuildContext context,
+    Widget Function() pageBuilder,
+  ) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(
+          color: primaryColor, // 👈 set your desired color here
+        ),
+      ),
+    );
+
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    Navigator.of(context, rootNavigator: true).pop();
+
+    Get.toWithNoBack(context, pageBuilder);
+  }
+
+  return BottomNavigationBar(
+    items: items,
+    backgroundColor: Colors.white,
+    selectedItemColor: Colors.blueAccent,
+    unselectedItemColor: Colors.grey,
+    currentIndex: selectedIndex,
+    onTap: (int index) {
+      switch (index) {
+        case 0:
+          _navigateWithLoading(context, () => DailyformPage());
+          break;
+        case 1:
+          _navigateWithLoading(context, () => NdcformPage());
+          break;
+        case 2:
+          _navigateWithLoading(context, () => LinefoxPage());
+          break;
+        case 3:
+          _navigateWithLoading(context, () => EmployeePage());
+          break;
+      }
+    },
+    type: BottomNavigationBarType.fixed,
+    selectedLabelStyle: const TextStyle(fontSize: 12.0),
+    unselectedLabelStyle: const TextStyle(fontSize: 10.0),
+  );
+}
 
 // Widget bottomBar(context, indexSelected, StudentModel obj) {
 //   List<TabItem> items = const [

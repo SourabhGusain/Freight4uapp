@@ -7,9 +7,12 @@ import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
+import 'package:Freight4u/pages/dailyform/prestartfrom/prestartform.view.dart';
 
 class EmployeePage extends StatefulWidget {
-  const EmployeePage({super.key});
+  const EmployeePage({
+    super.key,
+  });
 
   @override
   State<EmployeePage> createState() => _EmployeePageState();
@@ -48,42 +51,158 @@ class _EmployeePageState extends State<EmployeePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    textH1("Daily Report Forms:2"),
+                    textH1("Employment Package Forms:"),
                     const SizedBox(height: 15),
                     customBox(
-                        text: "Pre-Start/Fit for Duty Declaration.",
-                        subtext:
-                            "Must be filled out before operating the vehicle."),
+                      text: "General Form",
+                      subtext:
+                          "Complete this form daily to record general activity.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
                     const SizedBox(height: 10),
                     customBox(
-                        text: "Runsheet",
-                        subtext:
-                            "To be filled out following the completion of your shift."),
+                      text: "Company Induction Form",
+                      subtext:
+                          "Fill this out after completing your shift induction.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
                     const SizedBox(height: 10),
                     customBox(
-                        text: "Weighbridge & Load Pic",
-                        subtext: "Weekly completion is required."),
+                      text: "A Drivers Fit for Duty Checklist",
+                      subtext: "Ensure you are fit for duty. Complete weekly.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
                     const SizedBox(height: 10),
                     customBox(
-                        text: "Vehicle Condition Report.",
-                        subtext:
-                            "Report all truck defects by completing this form."),
+                      text: "Pitbull and Docking Operation SWP Assessment",
+                      subtext:
+                          "Complete to assess safety during docking operations.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
                     const SizedBox(height: 10),
                     customBox(
-                        text: "Fuel Reciept",
-                        subtext:
-                            "Attach the receipt and fill out the fuel expense form."),
+                      text: "EPJ/MPJ",
+                      subtext:
+                          "Record fuel usage and attach the corresponding receipt.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "FATIGUE RISK MANAGEMENT",
+                      subtext:
+                          "Assess fatigue levels and ensure compliance with rest policies.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "CoR",
+                      subtext:
+                          "Chain of Responsibility assessment to meet legal obligations.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "Road Assessment Buddy Training",
+                      subtext:
+                          "Evaluate driver performance with a training buddy.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "In cab Assessment",
+                      subtext:
+                          "Evaluate safe driving habits and cab operations.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "LINFOX Yellow Book Assessment",
+                      subtext:
+                          "Confirm knowledge of the LINFOX safety procedures.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "Work Health and Safety Questionnaire",
+                      subtext:
+                          "Assess your understanding of workplace safety policies.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text:
+                          "Coupling/Uncoupling: Prime Mover Trailer and B Double",
+                      subtext:
+                          "Demonstrate correct procedures for coupling/uncoupling.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "Safe Work Procedure: Tailgate Unload Operation",
+                      subtext:
+                          "Follow safe unloading practices and report any issues.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "EPJ/MPJ",
+                      subtext:
+                          "Complete manual handling competency requirements.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "Mass & Load Restraint Competency Questionnaire",
+                      subtext:
+                          "Test your understanding of load safety and regulations.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "Dangerous Goods Competency Questionnaire",
+                      subtext:
+                          "Ensure you are qualified to handle hazardous materials.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "COVID-19 Multiple Choice Questionnaire",
+                      subtext:
+                          "Confirm awareness of COVID-19 safety procedures.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
+                    const SizedBox(height: 10),
+                    customBox(
+                      text: "Scissor Lift",
+                      subtext:
+                          "Evaluate your understanding of safe scissor lift operation.",
+                      onTap: () =>
+                          Get.to(context, () => const PrestartformPage()),
+                    ),
                   ],
                 ),
               ),
             ),
             bottomNavigationBar: customBottomNavigationBar(
-              currentIndex: _currentIndex,
-              onTap: (index) {
-                setState(() {
-                  _currentIndex = index;
-                });
-              },
+              context: context,
+              selectedIndex: 3,
             ),
           ),
         );

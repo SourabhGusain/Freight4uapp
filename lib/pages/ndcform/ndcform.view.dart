@@ -9,14 +9,14 @@ import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
 import 'package:Freight4u/pages/dailyform/prestartfrom/prestartform.view.dart';
 
-class DailyformPage extends StatefulWidget {
-  const DailyformPage({super.key});
+class NdcformPage extends StatefulWidget {
+  const NdcformPage({super.key});
 
   @override
-  State<DailyformPage> createState() => _DailyformPageState();
+  State<NdcformPage> createState() => _NdcformPageState();
 }
 
-class _DailyformPageState extends State<DailyformPage> {
+class _NdcformPageState extends State<NdcformPage> {
   int _currentIndex = 0;
 
   @override
@@ -49,53 +49,31 @@ class _DailyformPageState extends State<DailyformPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    textH1("Daily Report Forms:"),
+                    textH1("NDC LineHaul Forms:"),
                     const SizedBox(height: 15),
                     customBox(
-                      text: "Pre-Start/Fit for Duty Declaration.",
+                      text: "Hazard Form",
                       subtext:
-                          "Must be filled out before operating the vehicle.",
+                          "Report any hazards identified before or during vehicle operation.",
                       onTap: () =>
                           Get.to(context, () => const PrestartformPage()),
                     ),
                     const SizedBox(height: 10),
                     customBox(
-                      text: "Runsheet",
+                      text: "Fleet Inspection Form",
                       subtext:
-                          "To be filled out following the completion of your shift.",
+                          "Inspect and report vehicle condition at the start and end of your shift.",
                       onTap: () =>
                           Get.to(context, () => const PrestartformPage()),
                     ),
                     const SizedBox(height: 10),
-                    customBox(
-                      text: "Weighbridge & Load Pic",
-                      subtext: "Weekly completion is required.",
-                      onTap: () =>
-                          Get.to(context, () => const PrestartformPage()),
-                    ),
-                    const SizedBox(height: 10),
-                    customBox(
-                      text: "Vehicle Condition Report.",
-                      subtext:
-                          "Report all truck defects by completing this form.",
-                      onTap: () =>
-                          Get.to(context, () => const PrestartformPage()),
-                    ),
-                    const SizedBox(height: 10),
-                    customBox(
-                      text: "Fuel Reciept",
-                      subtext:
-                          "Attach the receipt and fill out the fuel expense form.",
-                      onTap: () =>
-                          Get.to(context, () => const PrestartformPage()),
-                    ),
                   ],
                 ),
               ),
             ),
             bottomNavigationBar: customBottomNavigationBar(
               context: context,
-              selectedIndex: 0,
+              selectedIndex: 1,
             ),
           ),
         );

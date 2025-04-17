@@ -19,72 +19,72 @@ Widget basicPadding(Widget widget,
       child: widget);
 }
 
-Widget supportNav() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      const Icon(Icons.support_agent, color: blackColor),
-      const SizedBox(width: 5),
-      textH3("+91 9837994101")
-    ],
-  );
-}
+// Widget supportNav() {
+//   return Row(
+//     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//     children: [
+//       const Icon(Icons.support_agent, color: blackColor),
+//       const SizedBox(width: 5),
+//       textH3("+91 9837994101")
+//     ],
+//   );
+// }
 
-Widget homeTopNavBar() {
-  return Container(
-    decoration: const BoxDecoration(color: primaryColor),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Image.asset(
-          'assets/images/cab-dark-logo.png',
-          height: 80.0,
-          width: 100.0,
-          fit: BoxFit.contain,
-        ),
-        supportNav(),
-      ],
-    ),
-  );
-}
+// Widget homeTopNavBar() {
+//   return Container(
+//     decoration: const BoxDecoration(color: primaryColor),
+//     child: Row(
+//       crossAxisAlignment: CrossAxisAlignment.center,
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         Image.asset(
+//           'assets/images/cab-dark-logo.png',
+//           height: 80.0,
+//           width: 100.0,
+//           fit: BoxFit.contain,
+//         ),
+//         supportNav(),
+//       ],
+//     ),
+//   );
+// }
 
-Widget homeSecondTopNavBar(context, String title, String text) {
-  return Container(
-    decoration: const BoxDecoration(color: primaryColor),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        InkWell(
-          child: const Padding(
-            padding: EdgeInsets.only(left: 10),
-            child: Icon(Icons.arrow_back),
-          ),
-          onTap: () {
-            Get.back(context);
-          },
-        ),
-        const SizedBox(width: 10),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            textH3(title),
-            subtext(text),
-          ],
-        ),
-        Expanded(child: Container()),
-        Image.asset(
-          'assets/images/cab-dark-logo.png',
-          height: 80.0,
-          width: 100.0,
-          fit: BoxFit.contain,
-        ),
-      ],
-    ),
-  );
-}
+// Widget homeSecondTopNavBar(context, String title, String text) {
+//   return Container(
+//     decoration: const BoxDecoration(color: primaryColor),
+//     child: Row(
+//       crossAxisAlignment: CrossAxisAlignment.center,
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         InkWell(
+//           child: const Padding(
+//             padding: EdgeInsets.only(left: 10),
+//             child: Icon(Icons.arrow_back),
+//           ),
+//           onTap: () {
+//             Get.back(context);
+//           },
+//         ),
+//         const SizedBox(width: 10),
+//         Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             textH3(title),
+//             subtext(text),
+//           ],
+//         ),
+//         Expanded(child: Container()),
+//         Image.asset(
+//           'assets/images/cab-dark-logo.png',
+//           height: 80.0,
+//           width: 100.0,
+//           fit: BoxFit.contain,
+//         ),
+//       ],
+//     ),
+//   );
+// }
 
 Widget infoBoxWithIcon(Color color, String heading, String title,
     String imagePath, Function() callback) {
@@ -125,52 +125,6 @@ Widget infoBoxWithIcon(Color color, String heading, String title,
     ),
   );
 }
-
-// Widget bottomBar(context, indexSelected) {
-//   List<TabItem> items = const [
-//     TabItem(
-//       icon: Icons.home,
-//       title: 'Home',
-//     ),
-//     TabItem(
-//       icon: Icons.notifications,
-//       title: 'Bookings',
-//     ),
-//     TabItem(
-//       icon: Icons.post_add,
-//       title: 'Post Duty',
-//     ),
-//     TabItem(
-//       icon: Icons.wallet,
-//       title: 'Wallet',
-//     ),
-//     TabItem(
-//       icon: Icons.account_box,
-//       title: 'Profie',
-//     ),
-//   ];
-
-//   return BottomBarInspiredOutside(
-//     items: items,
-//     backgroundColor: const Color.fromARGB(255, 221, 74, 1),
-//     color: whiteColor,
-//     colorSelected: Colors.white,
-//     indexSelected: indexSelected,
-//     onTap: (int index) {
-//       if (index == 0) {
-//       } else if (index == 1) {
-//       } else if (index == 2) {
-//       } else if (index == 3) {
-//       } else if (index == 4) {}
-//     },
-//     top: -28,
-//     animated: false,
-//     itemStyle: ItemStyle.circle,
-//     chipStyle: const ChipStyle(
-//         notchSmoothness: NotchSmoothness.smoothEdge,
-//         background: Color.fromARGB(255, 221, 74, 1)),
-//   );
-// }
 
 Widget bulletPoint(String text) {
   return Padding(

@@ -9,14 +9,14 @@ import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
 import 'package:Freight4u/pages/dailyform/prestartfrom/prestartform.view.dart';
 
-class DailyformPage extends StatefulWidget {
-  const DailyformPage({super.key});
+class LinefoxPage extends StatefulWidget {
+  const LinefoxPage({super.key});
 
   @override
-  State<DailyformPage> createState() => _DailyformPageState();
+  State<LinefoxPage> createState() => _LinefoxPageState();
 }
 
-class _DailyformPageState extends State<DailyformPage> {
+class _LinefoxPageState extends State<LinefoxPage> {
   int _currentIndex = 0;
 
   @override
@@ -49,43 +49,44 @@ class _DailyformPageState extends State<DailyformPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    textH1("Daily Report Forms:"),
+                    textH1("NDC LineHaul Forms:"),
                     const SizedBox(height: 15),
                     customBox(
-                      text: "Pre-Start/Fit for Duty Declaration.",
+                      text: "General Form",
                       subtext:
-                          "Must be filled out before operating the vehicle.",
+                          "Use this form for daily general reporting and trip-related notes.",
                       onTap: () =>
                           Get.to(context, () => const PrestartformPage()),
                     ),
                     const SizedBox(height: 10),
                     customBox(
-                      text: "Runsheet",
+                      text: "Licence Declaration Form",
                       subtext:
-                          "To be filled out following the completion of your shift.",
+                          "Declare that your driver’s licence details are current and valid.",
                       onTap: () =>
                           Get.to(context, () => const PrestartformPage()),
                     ),
                     const SizedBox(height: 10),
                     customBox(
-                      text: "Weighbridge & Load Pic",
-                      subtext: "Weekly completion is required.",
+                      text: "Pre-Med Form",
+                      subtext:
+                          "Complete prior to duty to confirm you are fit for work.",
                       onTap: () =>
                           Get.to(context, () => const PrestartformPage()),
                     ),
                     const SizedBox(height: 10),
                     customBox(
-                      text: "Vehicle Condition Report.",
+                      text: "Driver History Renewal Form",
                       subtext:
-                          "Report all truck defects by completing this form.",
+                          "Submit updated driving history for compliance and records.",
                       onTap: () =>
                           Get.to(context, () => const PrestartformPage()),
                     ),
                     const SizedBox(height: 10),
                     customBox(
-                      text: "Fuel Reciept",
+                      text: "Policy Check Form",
                       subtext:
-                          "Attach the receipt and fill out the fuel expense form.",
+                          "Acknowledge and confirm understanding of current company policies.",
                       onTap: () =>
                           Get.to(context, () => const PrestartformPage()),
                     ),
@@ -95,7 +96,7 @@ class _DailyformPageState extends State<DailyformPage> {
             ),
             bottomNavigationBar: customBottomNavigationBar(
               context: context,
-              selectedIndex: 0,
+              selectedIndex: 1,
             ),
           ),
         );
