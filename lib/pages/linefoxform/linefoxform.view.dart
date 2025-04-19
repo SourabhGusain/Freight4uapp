@@ -7,7 +7,7 @@ import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
-import 'package:Freight4u/pages/dailyform/prestartfrom/prestartform.view.dart';
+import 'package:Freight4u/pages/dailyform/prestartform/prestartform.view.dart';
 
 class LinefoxPage extends StatefulWidget {
   const LinefoxPage({super.key});

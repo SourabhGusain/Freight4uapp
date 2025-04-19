@@ -52,7 +52,6 @@ class _NotificationPageState extends State<NotificationPage> {
               preferredSize: const Size.fromHeight(65),
               child: secondaryNavBar(
                 context,
-                "CompanyName",
                 "Notifications",
               ),
             ),

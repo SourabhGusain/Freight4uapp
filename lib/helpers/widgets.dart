@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/get.dart';
 
+enum DeclarationAnswer { yes, no }
+
 // Future<dynamic> getNotificationCount(int id) async {
 //   NoticeBoardModel obj = NoticeBoardModel();
 //   dynamic res = await obj.getCount(id);
@@ -127,7 +129,7 @@ Widget primaryNavBar(context, String companyName, String logoPath) {
   );
 }
 
-Widget secondaryNavBar(context, String companyName, String pageTitle) {
+Widget secondaryNavBar(context, String pageTitle) {
   return Container(
     height: 65,
     decoration: BoxDecoration(
@@ -211,6 +213,343 @@ Widget customBox({
             ),
           ],
         ),
+      ),
+    ),
+  );
+}
+
+Widget customTypeSelector({
+  required BuildContext context,
+  required String text,
+  required List<String> dropdownTypes,
+  String? hintText,
+}) {
+  String selectedDropdownType = '';
+
+  return StatefulBuilder(
+    builder: (context, setState) {
+      return GestureDetector(
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            backgroundColor: Colors.white,
+            builder: (BuildContext context) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Modal Title
+                    textH1(
+                      text,
+                      font_size: 20,
+                      font_weight: FontWeight.w500,
+                      color: blackColor,
+                    ),
+                    const SizedBox(height: 12),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: dropdownTypes.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final dropdownType = dropdownTypes[index];
+                        final isSelected = dropdownType == selectedDropdownType;
+
+                        return InkWell(
+                          onTap: () {
+                            setState(() {
+                              selectedDropdownType = dropdownType;
+                            });
+                            Navigator.pop(context);
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 14, horizontal: 16),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? const Color.fromARGB(255, 237, 244, 255)
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isSelected
+                                    ? const Color.fromARGB(255, 0, 123, 255)
+                                    : Colors.grey.shade300,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                textH3(
+                                  dropdownType,
+                                  font_size: 16,
+                                  font_weight: isSelected
+                                      ? FontWeight.w500
+                                      : FontWeight.w400,
+                                  color: isSelected
+                                      ? const Color.fromARGB(255, 0, 123, 255)
+                                      : Colors.black87,
+                                ),
+                                if (isSelected)
+                                  const Icon(
+                                    Icons.check_circle,
+                                    color: primaryColor,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: InputDecorator(
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              textH3(
+                selectedDropdownType.isNotEmpty
+                    ? selectedDropdownType
+                    : (hintText ?? 'Select an option'),
+                color: selectedDropdownType.isNotEmpty
+                    ? const Color.fromARGB(255, 54, 54, 54)
+                    : const Color.fromARGB(255, 54, 54, 54),
+                font_size: 15,
+                font_weight: FontWeight.w400,
+              ),
+              const Icon(Icons.arrow_drop_down),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget customTypeBreakSelector({
+  required BuildContext context,
+  required String text,
+  required List<String> dropdownTypes,
+  String? hintText,
+  Function(String)? onChanged, // ✅ STEP 1: Add this
+}) {
+  String selectedDropdownType = '';
+
+  return StatefulBuilder(
+    builder: (context, setState) {
+      return GestureDetector(
+        onTap: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            backgroundColor: Colors.white,
+            builder: (BuildContext context) {
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(16, 24, 16, 32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    textH1(
+                      text,
+                      font_size: 20,
+                      font_weight: FontWeight.w500,
+                      color: blackColor,
+                    ),
+                    const SizedBox(height: 12),
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: dropdownTypes.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      itemBuilder: (context, index) {
+                        final dropdownType = dropdownTypes[index];
+                        final isSelected = dropdownType == selectedDropdownType;
+
+                        return InkWell(
+                          onTap: () {
+                            setState(() {
+                              selectedDropdownType = dropdownType;
+                            });
+
+                            Navigator.pop(context);
+
+                            if (onChanged != null) {
+                              onChanged(
+                                  dropdownType); // ✅ STEP 2: Trigger callback
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 14, horizontal: 16),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? const Color.fromARGB(255, 237, 244, 255)
+                                  : Colors.white,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isSelected
+                                    ? const Color.fromARGB(255, 0, 123, 255)
+                                    : Colors.grey.shade300,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.1),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                textH3(
+                                  dropdownType,
+                                  font_size: 16,
+                                  font_weight: isSelected
+                                      ? FontWeight.w500
+                                      : FontWeight.w400,
+                                  color: isSelected
+                                      ? const Color.fromARGB(255, 0, 123, 255)
+                                      : Colors.black87,
+                                ),
+                                if (isSelected)
+                                  const Icon(
+                                    Icons.check_circle,
+                                    color: primaryColor,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        child: InputDecorator(
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              textH3(
+                selectedDropdownType.isNotEmpty
+                    ? selectedDropdownType
+                    : (hintText ?? 'Select an option'),
+                color: selectedDropdownType.isNotEmpty
+                    ? const Color.fromARGB(255, 54, 54, 54)
+                    : const Color.fromARGB(255, 54, 54, 54),
+                font_size: 15,
+                font_weight: FontWeight.w400,
+              ),
+              const Icon(Icons.arrow_drop_down),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget customDeclarationBox(
+  BuildContext context, {
+  required String text,
+  required DeclarationAnswer? selectedAnswer,
+  required Function(DeclarationAnswer?) onChanged,
+}) {
+  return Container(
+    decoration: BoxDecoration(
+      color: Colors.white,
+      border: Border.all(
+        color: blackColor,
+        width: 0.8,
+      ),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            flex: 2,
+            child: textH3(
+              text,
+              font_size: 12,
+              font_weight: FontWeight.w400,
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                textH3("Yes", font_weight: FontWeight.w600),
+                Checkbox(
+                  value: selectedAnswer == DeclarationAnswer.yes,
+                  onChanged: (checked) {
+                    onChanged(checked == true ? DeclarationAnswer.yes : null);
+                  },
+                  activeColor: primaryColor,
+                  checkColor: whiteColor,
+                  side: const BorderSide(
+                    color: Colors.black,
+                    width: 1,
+                  ),
+                  visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                textH3("No", font_weight: FontWeight.w600),
+                Checkbox(
+                  value: selectedAnswer == DeclarationAnswer.no,
+                  onChanged: (checked) {
+                    onChanged(checked == true ? DeclarationAnswer.no : null);
+                  },
+                  activeColor: primaryColor,
+                  checkColor: whiteColor,
+                  side: const BorderSide(
+                    color: Colors.black,
+                    width: 1,
+                  ),
+                  visualDensity: VisualDensity.compact,
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     ),
   );

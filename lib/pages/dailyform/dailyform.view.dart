@@ -7,7 +7,9 @@ import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
-import 'package:Freight4u/pages/dailyform/prestartfrom/prestartform.view.dart';
+import 'package:Freight4u/pages/dailyform/prestartform/prestartform.view.dart';
+import 'package:Freight4u/pages/dailyform/runsheetform/runsheetform.view.dart';
+import 'package:Freight4u/pages/dailyform/weighbridgeform/weighbridgeform.view.dart';
 
 class DailyformPage extends StatefulWidget {
   const DailyformPage({super.key});
@@ -63,15 +65,14 @@ class _DailyformPageState extends State<DailyformPage> {
                       text: "Runsheet",
                       subtext:
                           "To be filled out following the completion of your shift.",
-                      onTap: () =>
-                          Get.to(context, () => const PrestartformPage()),
+                      onTap: () => Get.to(context, () => const RunsheetPage()),
                     ),
                     const SizedBox(height: 10),
                     customBox(
                       text: "Weighbridge & Load Pic",
                       subtext: "Weekly completion is required.",
                       onTap: () =>
-                          Get.to(context, () => const PrestartformPage()),
+                          Get.to(context, () => const WeighbridgePage()),
                     ),
                     const SizedBox(height: 10),
                     customBox(
