@@ -49,7 +49,7 @@ class _NdcformPageState extends State<NdcformPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    textH1("NDC LineHaul Forms:"),
+                    textH1("NDC LINEHAUL ONLY:"),
                     const SizedBox(height: 15),
                     customBox(
                       text: "Hazard Form",

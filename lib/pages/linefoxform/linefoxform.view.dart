@@ -49,7 +49,7 @@ class _LinefoxPageState extends State<LinefoxPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    textH1("NDC LineHaul Forms:"),
+                    textH1("LINFOX COMPLIANCE:"),
                     const SizedBox(height: 15),
                     customBox(
                       text: "General Form",
@@ -96,7 +96,7 @@ class _LinefoxPageState extends State<LinefoxPage> {
             ),
             bottomNavigationBar: customBottomNavigationBar(
               context: context,
-              selectedIndex: 1,
+              selectedIndex: 2,
             ),
           ),
         );

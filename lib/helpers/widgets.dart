@@ -328,9 +328,7 @@ Widget customTypeSelector({
             selectedValue.isNotEmpty
                 ? selectedValue
                 : (hintText ?? 'Select an option'),
-            color: selectedValue.isNotEmpty
-                ? Colors.black54
-                : Color.fromARGB(255, 54, 54, 54),
+            color: selectedValue.isNotEmpty ? blackColor : blackColor,
             font_size: 15,
             font_weight: FontWeight.w400,
           ),
