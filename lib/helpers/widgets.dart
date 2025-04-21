@@ -7,6 +7,7 @@ import 'package:Freight4u/widgets/form.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:Freight4u/pages/notification/notification.view.dart';
+
 import 'package:flutter/material.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/get.dart';
@@ -60,6 +61,7 @@ enum DeclarationAnswer { yes, no }
 Widget primaryNavBar(context, String companyName, String logoPath) {
   return Container(
     height: 65,
+    width: double.infinity,
     decoration: BoxDecoration(
       color: primaryColor,
       borderRadius: BorderRadius.circular(50),
@@ -222,127 +224,120 @@ Widget customTypeSelector({
   required BuildContext context,
   required String text,
   required List<String> dropdownTypes,
+  required String selectedValue,
+  required Function(String) onChanged,
   String? hintText,
 }) {
-  String selectedDropdownType = '';
-
-  return StatefulBuilder(
-    builder: (context, setState) {
-      return GestureDetector(
-        onTap: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            backgroundColor: Colors.white,
-            builder: (BuildContext context) {
-              return Padding(
-                padding: const EdgeInsets.fromLTRB(16, 24, 16, 32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Modal Title
-                    textH1(
-                      text,
-                      font_size: 20,
-                      font_weight: FontWeight.w500,
-                      color: blackColor,
-                    ),
-                    const SizedBox(height: 12),
-                    ListView.separated(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: dropdownTypes.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 12),
-                      itemBuilder: (context, index) {
-                        final dropdownType = dropdownTypes[index];
-                        final isSelected = dropdownType == selectedDropdownType;
-
-                        return InkWell(
-                          onTap: () {
-                            setState(() {
-                              selectedDropdownType = dropdownType;
-                            });
-                            Navigator.pop(context);
-                          },
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 14, horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? const Color.fromARGB(255, 237, 244, 255)
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: isSelected
-                                    ? const Color.fromARGB(255, 0, 123, 255)
-                                    : Colors.grey.shade300,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                textH3(
-                                  dropdownType,
-                                  font_size: 16,
-                                  font_weight: isSelected
-                                      ? FontWeight.w500
-                                      : FontWeight.w400,
-                                  color: isSelected
-                                      ? const Color.fromARGB(255, 0, 123, 255)
-                                      : Colors.black87,
-                                ),
-                                if (isSelected)
-                                  const Icon(
-                                    Icons.check_circle,
-                                    color: primaryColor,
-                                  ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+  return GestureDetector(
+    onTap: () {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        backgroundColor: Colors.white,
+        builder: (BuildContext context) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(16, 24, 16, 32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                textH1(
+                  text,
+                  font_size: 20,
+                  font_weight: FontWeight.w500,
+                  color: blackColor,
                 ),
-              );
-            },
+                const SizedBox(height: 12),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: dropdownTypes.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final dropdownType = dropdownTypes[index];
+                    final isSelected = dropdownType == selectedValue;
+
+                    return InkWell(
+                      onTap: () {
+                        onChanged(dropdownType);
+                        Navigator.pop(context);
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 14, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? const Color.fromARGB(255, 237, 244, 255)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isSelected
+                                ? const Color.fromARGB(255, 0, 123, 255)
+                                : Colors.grey.shade300,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            textH3(
+                              dropdownType,
+                              font_size: 16,
+                              font_weight: isSelected
+                                  ? FontWeight.w500
+                                  : FontWeight.w400,
+                              color: isSelected
+                                  ? const Color.fromARGB(255, 0, 123, 255)
+                                  : Colors.black87,
+                            ),
+                            if (isSelected)
+                              const Icon(
+                                Icons.check_circle,
+                                color: primaryColor,
+                              ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           );
         },
-        child: InputDecorator(
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              textH3(
-                selectedDropdownType.isNotEmpty
-                    ? selectedDropdownType
-                    : (hintText ?? 'Select an option'),
-                color: selectedDropdownType.isNotEmpty
-                    ? const Color.fromARGB(255, 54, 54, 54)
-                    : const Color.fromARGB(255, 54, 54, 54),
-                font_size: 15,
-                font_weight: FontWeight.w400,
-              ),
-              const Icon(Icons.arrow_drop_down),
-            ],
-          ),
-        ),
       );
     },
+    child: InputDecorator(
+      decoration: const InputDecoration(
+        border: OutlineInputBorder(),
+        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          textH3(
+            selectedValue.isNotEmpty
+                ? selectedValue
+                : (hintText ?? 'Select an option'),
+            color: selectedValue.isNotEmpty
+                ? Colors.black54
+                : Color.fromARGB(255, 54, 54, 54),
+            font_size: 15,
+            font_weight: FontWeight.w400,
+          ),
+          const Icon(Icons.arrow_drop_down),
+        ],
+      ),
+    ),
   );
 }
 
@@ -480,77 +475,123 @@ Widget customTypeBreakSelector({
   );
 }
 
-Widget customDeclarationBox(
-  BuildContext context, {
-  required String text,
-  required DeclarationAnswer? selectedAnswer,
-  required Function(DeclarationAnswer?) onChanged,
+class CustomDeclarationBox extends StatelessWidget {
+  final String text;
+  final DeclarationAnswer? selectedAnswer;
+  final Function(DeclarationAnswer?) onChanged;
+
+  const CustomDeclarationBox({
+    Key? key,
+    required this.text,
+    required this.selectedAnswer,
+    required this.onChanged,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(
+          color: blackColor,
+          width: 0.8,
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              flex: 2,
+              child: textH3(
+                text,
+                font_size: 12,
+                font_weight: FontWeight.w400,
+              ),
+            ),
+            Expanded(
+              child: Column(
+                children: [
+                  textH3("Yes", font_weight: FontWeight.w600),
+                  Checkbox(
+                    value: selectedAnswer == DeclarationAnswer.yes,
+                    onChanged: (checked) {
+                      onChanged(checked == true ? DeclarationAnswer.yes : null);
+                    },
+                    activeColor: primaryColor,
+                    checkColor: whiteColor,
+                    side: const BorderSide(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Column(
+                children: [
+                  textH3("No", font_weight: FontWeight.w600),
+                  Checkbox(
+                    value: selectedAnswer == DeclarationAnswer.no,
+                    onChanged: (checked) {
+                      onChanged(checked == true ? DeclarationAnswer.no : null);
+                    },
+                    activeColor: primaryColor,
+                    checkColor: whiteColor,
+                    side: const BorderSide(
+                      color: Colors.black,
+                      width: 1,
+                    ),
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Widget buildCommentTextField({
+  TextEditingController? controller,
+  String hintText = "Enter your comment...",
+  int minLines = 3,
+  int? maxLines = 5,
+  Color fillColor = Colors.white,
+  Color borderColor = Colors.grey,
+  Color focusedBorderColor = Colors.black, // or your blackColor
 }) {
-  return Container(
-    decoration: BoxDecoration(
-      color: Colors.white,
-      border: Border.all(
-        color: blackColor,
-        width: 0.8,
+  return TextField(
+    controller: controller,
+    minLines: minLines,
+    maxLines: maxLines,
+    keyboardType: TextInputType.multiline,
+    decoration: InputDecoration(
+      hintText: hintText,
+      contentPadding: const EdgeInsets.all(16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+        borderSide: BorderSide(
+          color: borderColor,
+          width: 1.5,
+        ),
       ),
-    ),
-    child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            flex: 2,
-            child: textH3(
-              text,
-              font_size: 12,
-              font_weight: FontWeight.w400,
-            ),
-          ),
-          Expanded(
-            child: Column(
-              children: [
-                textH3("Yes", font_weight: FontWeight.w600),
-                Checkbox(
-                  value: selectedAnswer == DeclarationAnswer.yes,
-                  onChanged: (checked) {
-                    onChanged(checked == true ? DeclarationAnswer.yes : null);
-                  },
-                  activeColor: primaryColor,
-                  checkColor: whiteColor,
-                  side: const BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                  visualDensity: VisualDensity.compact,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Column(
-              children: [
-                textH3("No", font_weight: FontWeight.w600),
-                Checkbox(
-                  value: selectedAnswer == DeclarationAnswer.no,
-                  onChanged: (checked) {
-                    onChanged(checked == true ? DeclarationAnswer.no : null);
-                  },
-                  activeColor: primaryColor,
-                  checkColor: whiteColor,
-                  side: const BorderSide(
-                    color: Colors.black,
-                    width: 1,
-                  ),
-                  visualDensity: VisualDensity.compact,
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                ),
-              ],
-            ),
-          ),
-        ],
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+        borderSide: BorderSide(
+          color: focusedBorderColor,
+          width: 1,
+        ),
       ),
+      filled: true,
+      fillColor: fillColor,
     ),
   );
 }
@@ -885,8 +926,8 @@ Widget customBottomNavigationBar({
 
   return BottomNavigationBar(
     items: items,
-    backgroundColor: Colors.white,
-    selectedItemColor: Colors.blueAccent,
+    backgroundColor: whiteColor,
+    selectedItemColor: primaryColor,
     unselectedItemColor: Colors.grey,
     currentIndex: selectedIndex,
     onTap: (int index) {

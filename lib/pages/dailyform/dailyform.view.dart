@@ -10,6 +10,8 @@ import 'package:Freight4u/pages/format/format.controller.dart';
 import 'package:Freight4u/pages/dailyform/prestartform/prestartform.view.dart';
 import 'package:Freight4u/pages/dailyform/runsheetform/runsheetform.view.dart';
 import 'package:Freight4u/pages/dailyform/weighbridgeform/weighbridgeform.view.dart';
+import 'package:Freight4u/pages/dailyform/vehicleconditionform/vehicleconditionform.view.dart';
+import 'package:Freight4u/pages/dailyform/fuelrecieptform/fuelrecieptform.view.dart';
 
 class DailyformPage extends StatefulWidget {
   const DailyformPage({super.key});
@@ -80,7 +82,7 @@ class _DailyformPageState extends State<DailyformPage> {
                       subtext:
                           "Report all truck defects by completing this form.",
                       onTap: () =>
-                          Get.to(context, () => const PrestartformPage()),
+                          Get.to(context, () => const VehileconditionPage()),
                     ),
                     const SizedBox(height: 10),
                     customBox(
@@ -88,7 +90,7 @@ class _DailyformPageState extends State<DailyformPage> {
                       subtext:
                           "Attach the receipt and fill out the fuel expense form.",
                       onTap: () =>
-                          Get.to(context, () => const PrestartformPage()),
+                          Get.to(context, () => const FuelrecieptPage()),
                     ),
                   ],
                 ),

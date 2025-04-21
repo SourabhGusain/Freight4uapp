@@ -358,3 +358,102 @@ String? emailValidator(String? val) {
   }
   return null;
 }
+
+Widget calendarDateField({
+  required BuildContext context,
+  required String label,
+  required TextEditingController controller,
+  String hintText = "Select a date",
+}) {
+  return GestureDetector(
+    onTap: () async {
+      DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              colorScheme: ColorScheme.light(
+                primary: primaryColor, // Your app's primary color
+                onPrimary: Colors.white,
+                onSurface: Colors.black,
+              ),
+              dialogBackgroundColor: Colors.white,
+            ),
+            child: child!,
+          );
+        },
+      );
+
+      if (pickedDate != null) {
+        String formattedDate = "${pickedDate.day.toString().padLeft(2, '0')}/"
+            "${pickedDate.month.toString().padLeft(2, '0')}/"
+            "${pickedDate.year}";
+        controller.text = formattedDate;
+      }
+    },
+    child: AbsorbPointer(
+      child: SizedBox(
+        height: 50,
+        child: textField(
+          label,
+          controller: controller,
+          hintText: hintText,
+        ),
+      ),
+    ),
+  );
+}
+
+Widget calendarTimeField({
+  required BuildContext context,
+  required String label,
+  required TextEditingController controller,
+  String hintText = "Select time",
+}) {
+  return GestureDetector(
+    onTap: () async {
+      TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              timePickerTheme: TimePickerThemeData(
+                backgroundColor: Colors.white,
+                hourMinuteColor:
+                    MaterialStateColor.resolveWith((states) => Colors.white),
+              ),
+              colorScheme: ColorScheme.light(
+                primary: primaryColor,
+                onPrimary: Colors.white,
+                onSurface: Colors.black,
+              ),
+            ),
+            child: child!,
+          );
+        },
+      );
+
+      if (pickedTime != null) {
+        final now = DateTime.now();
+        final dt = DateTime(
+            now.year, now.month, now.day, pickedTime.hour, pickedTime.minute);
+        String formattedTime = TimeOfDay.fromDateTime(dt).format(context);
+        controller.text = formattedTime;
+      }
+    },
+    child: AbsorbPointer(
+      child: SizedBox(
+        height: 50,
+        child: textField(
+          label,
+          controller: controller,
+          hintText: hintText,
+        ),
+      ),
+    ),
+  );
+}

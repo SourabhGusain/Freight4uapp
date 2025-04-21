@@ -11,18 +11,19 @@ import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
 import 'package:Freight4u/pages/dailyform/runsheetform/runsheetform.controller.dart';
 
-class WeighbridgePage extends StatefulWidget {
-  const WeighbridgePage({super.key});
+class FuelrecieptPage extends StatefulWidget {
+  const FuelrecieptPage({super.key});
 
   @override
-  State<WeighbridgePage> createState() => _WeighbridgePageState();
+  State<FuelrecieptPage> createState() => _FuelrecieptPageState();
 }
 
-class _WeighbridgePageState extends State<WeighbridgePage> {
+class _FuelrecieptPageState extends State<FuelrecieptPage> {
   int _currentIndex = 0;
-  String _selectedDepo = '';
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
+
+  List<DeclarationAnswer?> _declarationAnswers = List.filled(8, null);
 
   String? fileName;
 
@@ -60,7 +61,7 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
               preferredSize: const Size.fromHeight(65),
               child: secondaryNavBar(
                 context,
-                "Weighbridge & Load Pic",
+                "Vehicle Condition Report",
               ),
             ),
             body: SingleChildScrollView(
@@ -76,67 +77,33 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
                       child: textField("Full Name"),
                     ),
                     const SizedBox(height: 15),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            height: 50,
-                            child: calendarDateField(
-                              context: context,
-                              label: "Date",
-                              controller: _dateController,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: SizedBox(
-                            height: 50,
-                            child: customTypeSelector(
-                              context: context,
-                              text: "Select Depo",
-                              hintText: "Depo",
-                              dropdownTypes: ['Day Shift', 'Night Shift'],
-                              selectedValue: _selectedDepo,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedDepo = value;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                    SizedBox(height: 50, child: textField("Driver Name")),
-                    const SizedBox(height: 15),
-                    textH3("Weighbridge Docket- Upload here",
-                        font_weight: FontWeight.w400),
-                    GestureDetector(
-                      onTap: _pickFile,
-                      child: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: textH3(
-                            fileName ?? "Browse File Here",
-                            color: blackColor,
-                            font_size: 15,
-                            font_weight: FontWeight.w500,
-                          ),
-                        ),
+                    SizedBox(
+                      height: 50,
+                      child: calendarDateField(
+                        context: context,
+                        label: "Date",
+                        controller: _dateController,
                       ),
                     ),
                     const SizedBox(height: 15),
-                    textH3("Load Pic & Matching Load Sheet - Upload here",
+                    SizedBox(
+                      height: 50,
+                      child: textField(
+                        "Rego",
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    CustomDeclarationBox(
+                      text: "Payment made with company fuel card.",
+                      selectedAnswer: _declarationAnswers[1],
+                      onChanged: (answer) {
+                        setState(() {
+                          _declarationAnswers[1] = answer;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 15),
+                    textH3("Upload Fuel Receipt ",
                         font_weight: FontWeight.w400),
                     GestureDetector(
                       onTap: _pickFile,

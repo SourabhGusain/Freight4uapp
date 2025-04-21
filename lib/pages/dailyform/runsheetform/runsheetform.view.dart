@@ -24,6 +24,13 @@ class _RunsheetPageState extends State<RunsheetPage> {
   String _selectedBreakValue = '';
   List<DeclarationAnswer?> _declarationAnswers = List.filled(8, null);
   late SignatureController _signatureController;
+  String _selectedShift = '';
+  String _selectedSite = '';
+  String _selectedShape = '';
+  String _selectedRego = '';
+
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
 
   String? fileName;
 
@@ -50,6 +57,13 @@ class _RunsheetPageState extends State<RunsheetPage> {
       penStrokeWidth: 5.0,
       exportBackgroundColor: Colors.transparent,
     );
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    _timeController.dispose();
+    super.dispose();
   }
 
   @override
@@ -118,9 +132,10 @@ class _RunsheetPageState extends State<RunsheetPage> {
                         Expanded(
                           child: SizedBox(
                             height: 50,
-                            child: textField(
-                              "Date",
-                              hintText: "i.e DD/MM/YYYY",
+                            child: calendarDateField(
+                              context: context,
+                              label: "Date",
+                              controller: _dateController,
                             ),
                           ),
                         ),
@@ -133,6 +148,12 @@ class _RunsheetPageState extends State<RunsheetPage> {
                               text: "Select Contractor",
                               hintText: "Shift",
                               dropdownTypes: ['Day Shift', 'Night Shift'],
+                              selectedValue: _selectedShift,
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedShift = value;
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -151,6 +172,12 @@ class _RunsheetPageState extends State<RunsheetPage> {
                       text: "Select Site",
                       hintText: "Site",
                       dropdownTypes: ['Full-time', 'Part-time', 'Freelance'],
+                      selectedValue: _selectedSite,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedSite = value;
+                        });
+                      },
                     ),
                     const SizedBox(height: 10),
                     customTypeSelector(
@@ -158,6 +185,12 @@ class _RunsheetPageState extends State<RunsheetPage> {
                       text: "Select Shape",
                       hintText: "Shape",
                       dropdownTypes: ['Box', 'Flatbed', 'Reefer'],
+                      selectedValue: _selectedShape,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedShape = value;
+                        });
+                      },
                     ),
                     const SizedBox(height: 10),
                     customTypeSelector(
@@ -165,6 +198,12 @@ class _RunsheetPageState extends State<RunsheetPage> {
                       text: "Select Rego",
                       hintText: "Rego",
                       dropdownTypes: ['Full-time', 'Part-time', 'Freelance'],
+                      selectedValue: _selectedRego,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedRego = value;
+                        });
+                      },
                     ),
                     const SizedBox(height: 10),
                     Row(
@@ -172,15 +211,28 @@ class _RunsheetPageState extends State<RunsheetPage> {
                         Expanded(
                           child: SizedBox(
                             height: 50,
-                            child:
-                                textField("Start Time", hintText: "i.e HH:MM"),
+                            child: SizedBox(
+                              height: 50,
+                              child: calendarTimeField(
+                                context: context,
+                                label: "Start Time",
+                                controller: _timeController,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 10),
                         Expanded(
                           child: SizedBox(
                             height: 50,
-                            child: textField("End Time", hintText: "i.e HH:MM"),
+                            child: SizedBox(
+                              height: 50,
+                              child: calendarTimeField(
+                                context: context,
+                                label: "End Time",
+                                controller: _timeController,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -222,9 +274,10 @@ class _RunsheetPageState extends State<RunsheetPage> {
                             Expanded(
                               child: SizedBox(
                                 height: 50,
-                                child: textField(
-                                  "Start Time ${index + 1}",
-                                  hintText: "i.e HH:MM",
+                                child: calendarTimeField(
+                                  context: context,
+                                  label: "Start Time (${index + 1})",
+                                  controller: _timeController,
                                 ),
                               ),
                             ),
@@ -232,9 +285,10 @@ class _RunsheetPageState extends State<RunsheetPage> {
                             Expanded(
                               child: SizedBox(
                                 height: 50,
-                                child: textField(
-                                  "End Time ${index + 1}",
-                                  hintText: "i.e HH:MM",
+                                child: calendarTimeField(
+                                  context: context,
+                                  label: "Start Time (${index + 1})",
+                                  controller: _timeController,
                                 ),
                               ),
                             ),
@@ -267,71 +321,30 @@ class _RunsheetPageState extends State<RunsheetPage> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    TextField(
-                      maxLines:
-                          5, // you can increase or make it null for unlimited
-                      minLines: 3,
-                      keyboardType: TextInputType.multiline,
-                      decoration: InputDecoration(
-                        hintText: "Enter your comment...",
-                        contentPadding: EdgeInsets.all(16),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(
-                            color: Colors.grey,
-                            width: 1.5,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(5),
-                          borderSide: BorderSide(
-                            color: blackColor,
-                            width: 1,
-                          ),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
-                      ),
+                    textH3("Comment", font_weight: FontWeight.w400),
+                    buildCommentTextField(
+                      // controller: myController,
+                      hintText: "Type your comment...",
+                      maxLines: null, // for unlimited lines
+                      fillColor: Colors.white,
+                      borderColor: Colors.grey,
+                      focusedBorderColor: Colors.black,
                     ),
                     const SizedBox(height: 10),
                     textH3("Signature:",
                         font_size: 17, font_weight: FontWeight.w400),
-                    Stack(
-                      children: [
-                        // Signature pad with border
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.black,
-                              width: 1,
-                            ),
-                          ),
-                          child: Signature(
-                            controller: _signatureController,
-                            height: 200,
-                            backgroundColor: Colors.white,
-                          ),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1,
                         ),
-
-                        // Upload icon in the top-right corner
-                        Positioned(
-                          top: -3,
-                          right: 0,
-                          child: Column(
-                            children: [
-                              IconButton(
-                                visualDensity: VisualDensity.compact,
-                                icon: Icon(Icons.upload_file),
-                                onPressed: _pickFile,
-                                color: blackColor,
-                                iconSize: 25,
-                              ),
-                              textH3("Browse",
-                                  font_size: 7, font_weight: FontWeight.w500),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
+                      child: Signature(
+                        controller: _signatureController,
+                        height: 200,
+                        backgroundColor: Colors.white,
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Align(
@@ -373,7 +386,6 @@ class _RunsheetPageState extends State<RunsheetPage> {
   }
 }
 
-// 🆕 Updated selector widget that accepts and displays selectedValue
 Widget customTypeBreakSelector({
   required BuildContext context,
   required String text,

@@ -17,9 +17,20 @@ class PrestartformPage extends StatefulWidget {
 
 class _PrestartformPageState extends State<PrestartformPage> {
   int _currentIndex = 0;
+  DeclarationAnswer? _selectedAnswer;
+  String _selectedContractor = '';
+  String _selectedShape = '';
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
 
-  // Use a list to hold individual answers for each declaration
   List<DeclarationAnswer?> _declarationAnswers = List.filled(8, null);
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    _timeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +63,10 @@ class _PrestartformPageState extends State<PrestartformPage> {
                     const SizedBox(height: 10),
                     SizedBox(
                       height: 50,
-                      child: textField(
-                        "Date",
-                        hintText: "e.g. DD/MM/YYYY",
+                      child: calendarDateField(
+                        context: context,
+                        label: "Date",
+                        controller: _dateController,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -63,9 +75,10 @@ class _PrestartformPageState extends State<PrestartformPage> {
                         Expanded(
                           child: SizedBox(
                             height: 50,
-                            child: textField(
-                              "Time",
-                              hintText: "e.g. HH:MM",
+                            child: calendarTimeField(
+                              context: context,
+                              label: "Time",
+                              controller: _timeController,
                             ),
                           ),
                         ),
@@ -87,6 +100,12 @@ class _PrestartformPageState extends State<PrestartformPage> {
                       text: "Select Contractor",
                       hintText: "Contractor",
                       dropdownTypes: ['Full-time', 'Part-time', 'Freelance'],
+                      selectedValue: _selectedContractor,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedContractor = value;
+                        });
+                      },
                     ),
                     const SizedBox(height: 10),
                     customTypeSelector(
@@ -94,6 +113,12 @@ class _PrestartformPageState extends State<PrestartformPage> {
                       text: "Select Shape",
                       hintText: "Shape",
                       dropdownTypes: ['Box', 'Flatbed', 'Reefer'],
+                      selectedValue: _selectedShape,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedShape = value;
+                        });
+                      },
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -107,8 +132,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    customDeclarationBox(
-                      context,
+                    CustomDeclarationBox(
                       text:
                           "I have a current and valid\nlicense to operate this\nvehicle.",
                       selectedAnswer: _declarationAnswers[0],
@@ -119,8 +143,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    customDeclarationBox(
-                      context,
+                    CustomDeclarationBox(
                       text: "I am fit to undertake my allocated tasks.",
                       selectedAnswer: _declarationAnswers[1],
                       onChanged: (answer) {
@@ -130,8 +153,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    customDeclarationBox(
-                      context,
+                    CustomDeclarationBox(
                       text:
                           "I am not fatigued or suffering any medical condition (that I am aware of) that may affect my ability to drive or complete my allocated tasks",
                       selectedAnswer: _declarationAnswers[2],
@@ -142,8 +164,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    customDeclarationBox(
-                      context,
+                    CustomDeclarationBox(
                       text:
                           "I have had 24 hrs. Continuous stationary rest within the last 7 Days",
                       selectedAnswer: _declarationAnswers[3],
@@ -154,8 +175,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    customDeclarationBox(
-                      context,
+                    CustomDeclarationBox(
                       text: "I have had a 10 hour rest break between shifts",
                       selectedAnswer: _declarationAnswers[4],
                       onChanged: (answer) {
@@ -165,8 +185,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    customDeclarationBox(
-                      context,
+                    CustomDeclarationBox(
                       text:
                           "I have NOT consumed alcohol and/or drugs (prescription) or otherwise that may impair my ability to work and drive",
                       selectedAnswer: _declarationAnswers[5],
@@ -177,8 +196,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    customDeclarationBox(
-                      context,
+                    CustomDeclarationBox(
                       text:
                           "To the best of my knowledge, I have had NO driving infringements issued to me in the last 24hrs",
                       selectedAnswer: _declarationAnswers[6],
@@ -189,8 +207,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    customDeclarationBox(
-                      context,
+                    CustomDeclarationBox(
                       text: "I am fit to undertake my allocated tasks.",
                       selectedAnswer: _declarationAnswers[7],
                       onChanged: (answer) {
