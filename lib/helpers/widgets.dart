@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:Freight4u/pages/dailyform/dailyform.view.dart';
 import 'package:Freight4u/pages/employeeform/employeeform.view.dart';
-import 'package:Freight4u/pages/ndcform/ndcform.view.dart';
+import 'package:Freight4u/pages/hnlpolicy/hnlpolicy.view.dart';
 import 'package:Freight4u/pages/linefoxform/linefoxform.view.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
@@ -889,7 +889,7 @@ Widget customBottomNavigationBar({
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.dashboard, size: 20),
-      label: 'NDC',
+      label: 'HNL',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.settings, size: 20),
@@ -934,7 +934,7 @@ Widget customBottomNavigationBar({
           _navigateWithLoading(context, () => DailyformPage());
           break;
         case 1:
-          _navigateWithLoading(context, () => NdcformPage());
+          _navigateWithLoading(context, () => HnlpolicyPage());
           break;
         case 2:
           _navigateWithLoading(context, () => LinefoxPage());
