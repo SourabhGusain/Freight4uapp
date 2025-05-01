@@ -19,7 +19,7 @@ class EmployeePage extends StatefulWidget {
 }
 
 class _EmployeePageState extends State<EmployeePage> {
-  int _currentIndex = 3;
+  int _currentIndex = 0;
 
   @override
   void initState() {
@@ -202,7 +202,7 @@ class _EmployeePageState extends State<EmployeePage> {
             ),
             bottomNavigationBar: customBottomNavigationBar(
               context: context,
-              selectedIndex: 3,
+              selectedIndex: 2,
             ),
           ),
         );

@@ -37,6 +37,7 @@ flutter:
   assets:
       - assets/images/logo.png
       - assets/images/login.png
+      - assets/images/profile.jpg
       # - assets/icons/
       # - assets/fonts/
       # - assets/strings/

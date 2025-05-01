@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:Freight4u/pages/dailyform/dailyform.view.dart';
 import 'package:Freight4u/pages/employeeform/employeeform.view.dart';
 import 'package:Freight4u/pages/hnlpolicy/hnlpolicy.view.dart';
-import 'package:Freight4u/pages/linefoxform/linefoxform.view.dart';
+import 'package:Freight4u/pages/profile/profile.view.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
@@ -58,73 +58,61 @@ enum DeclarationAnswer { yes, no }
 //   }
 // }
 
-Widget primaryNavBar(context, String companyName, String logoPath) {
+Widget primaryNavBar(
+    BuildContext context, String companyName, String logoPath) {
   return Container(
     height: 65,
     width: double.infinity,
+    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+    padding: const EdgeInsets.symmetric(horizontal: 20),
     decoration: BoxDecoration(
       color: primaryColor,
       borderRadius: BorderRadius.circular(50),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 10,
+          offset: const Offset(0, 4),
+        )
+      ],
     ),
-    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-    padding: const EdgeInsets.only(right: 25),
-    child: Stack(
-      alignment: Alignment.centerRight,
+    child: Row(
       children: [
+        // Logo and company name
         Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                const SizedBox(width: 10),
-                Image.asset(
-                  logoPath,
-                  width: 35,
-                  height: 35,
-                ),
-                const SizedBox(width: 10),
-                textH2(companyName, color: whiteColor, font_size: 17),
-              ],
+            Image.asset(
+              logoPath,
+              width: 35,
+              height: 35,
+              fit: BoxFit.contain,
             ),
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.notifications,
-                      color: whiteColor, size: 20),
-                  onPressed: () async {
-                    // Show loading dialog
-                    showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(primaryColor),
-                          ),
-                        );
-                      },
-                    );
-
-                    // Simulate delay or replace with real async logic
-                    await Future.delayed(const Duration(seconds: 1));
-
-                    // Close the loading dialog
-                    Navigator.of(context).pop();
-
-                    // Navigate to NotificationPage
-                    Get.to(
-                      context,
-                      () => const NotificationPage(),
-                    );
-                  },
-                ),
-                const SizedBox(width: 10),
-                const Icon(Icons.account_circle, color: whiteColor, size: 22),
-              ],
-            ),
+            const SizedBox(width: 10),
+            textH2(companyName, color: whiteColor, font_size: 17),
           ],
+        ),
+        const Spacer(),
+
+        IconButton(
+          icon:
+              const Icon(Icons.notifications_none, color: whiteColor, size: 20),
+          tooltip: 'Notifications',
+          onPressed: () async {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                ),
+              ),
+            );
+
+            await Future.delayed(const Duration(seconds: 1));
+            Navigator.of(context).pop();
+
+            Get.to(context, () => const NotificationPage());
+          },
         ),
       ],
     ),
@@ -157,7 +145,7 @@ Widget secondaryNavBar(context, String pageTitle) {
                   },
                   child: Container(
                     padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: whiteColor,
                       shape: BoxShape.circle,
                     ),
@@ -892,12 +880,12 @@ Widget customBottomNavigationBar({
       label: 'HNL',
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.settings, size: 20),
-      label: 'LINEFOX',
-    ),
-    BottomNavigationBarItem(
       icon: Icon(Icons.people, size: 20),
       label: 'Employee',
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.person, size: 20),
+      label: 'profile',
     ),
   ];
 
@@ -937,10 +925,10 @@ Widget customBottomNavigationBar({
           _navigateWithLoading(context, () => HnlpolicyPage());
           break;
         case 2:
-          _navigateWithLoading(context, () => LinefoxPage());
+          _navigateWithLoading(context, () => EmployeePage());
           break;
         case 3:
-          _navigateWithLoading(context, () => EmployeePage());
+          _navigateWithLoading(context, () => ProfilePage());
           break;
       }
     },
