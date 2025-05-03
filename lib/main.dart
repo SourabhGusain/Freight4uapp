@@ -1,33 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/pages/format/format.view.dart';
 import 'package:Freight4u/pages/utils/splash.view.dart';
+import 'package:Freight4u/pages/dailyform/dailyform.view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Session session = Session();
   String? key = await session.getSession("loggedInUserKey");
   bool isLoggedIn = false;
-  if (key != null && key != "") {
+
+  if (key != null && key.isNotEmpty) {
     isLoggedIn = true;
   }
-  LoggedInUserActivity.set(isLoggedIn);
-  runApp(const MainApp());
+
+  runApp(MainApp(isLoggedIn: isLoggedIn, session: session));
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final bool isLoggedIn;
+  final Session session;
+
+  const MainApp({super.key, required this.isLoggedIn, required this.session});
 
   @override
   Widget build(BuildContext context) {
-    ResponsiveApp.set(context);
     return MaterialApp(
       title: 'Freight 4 You',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          primarySwatch: Colors.orange, scaffoldBackgroundColor: Colors.white),
-      home: const SplashPage(),
+        primarySwatch: Colors.orange,
+        scaffoldBackgroundColor: Colors.white,
+      ),
+      // Conditional navigation based on login status
+      home: isLoggedIn
+          ? DailyformPage(session: session)
+          : SplashPage(session: session),
     );
   }
 }

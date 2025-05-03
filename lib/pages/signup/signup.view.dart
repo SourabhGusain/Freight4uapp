@@ -3,6 +3,7 @@ import 'package:Freight4u/widgets/ui.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:Freight4u/helpers/values.dart';
+import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
 
@@ -10,7 +11,8 @@ import 'package:Freight4u/pages/format/format.controller.dart';
 import 'package:stacked/stacked.dart';
 
 class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+  final Session session;
+  const SignupPage({super.key, required this.session});
   @override
   State<SignupPage> createState() => _SignupPageState();
 }
@@ -87,7 +89,11 @@ class _SignupPageState extends State<SignupPage> {
                             subtext("Already have an account?", font_size: 14),
                             GestureDetector(
                               onTap: () {
-                                Get.to(context, () => const LoginPage());
+                                Get.to(
+                                    context,
+                                    () => LoginPage(
+                                          session: widget.session,
+                                        ));
                               },
                               child: linkText(
                                 " Log in",

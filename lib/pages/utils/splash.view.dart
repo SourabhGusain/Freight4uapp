@@ -2,11 +2,13 @@ import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/helpers/values.dart';
+import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});
+  final Session session;
+  const SplashPage({super.key, required this.session});
   @override
   State<SplashPage> createState() => _SplashPageState();
 }
@@ -17,7 +19,11 @@ class _SplashPageState extends State<SplashPage> {
     super.initState();
 
     Future.delayed(const Duration(seconds: 3), () {
-      Get.toWithNoBack(context, () => const LoginPage());
+      Get.toWithNoBack(
+          context,
+          () => LoginPage(
+                session: widget.session,
+              ));
     });
   }
 

@@ -919,7 +919,7 @@ Widget customBottomNavigationBar({
     onTap: (int index) {
       switch (index) {
         case 0:
-          _navigateWithLoading(context, () => DailyformPage());
+          _navigateWithLoading(context, () => DailyformPage(session: ,));
           break;
         case 1:
           _navigateWithLoading(context, () => HnlpolicyPage());

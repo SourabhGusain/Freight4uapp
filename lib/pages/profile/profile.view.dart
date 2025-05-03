@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
+import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/widgets/ui.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/widgets/form.dart';
@@ -9,7 +10,8 @@ import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final Session session;
+  const ProfilePage({super.key, required this.session});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -262,7 +264,11 @@ class _ProfilePageState extends State<ProfilePage> {
               child: textH2("Log Out", color: primaryColor),
               onPressed: () {
                 Navigator.of(context).pop();
-                Get.to(context, () => const LoginPage());
+                Get.to(
+                    context,
+                    () => LoginPage(
+                          session: widget.session,
+                        ));
               },
             ),
           ],
