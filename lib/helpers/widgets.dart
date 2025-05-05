@@ -7,12 +7,14 @@ import 'package:Freight4u/widgets/form.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:Freight4u/pages/notification/notification.view.dart';
-
+import 'package:Freight4u/helpers/session.dart';
 import 'package:flutter/material.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/get.dart';
 
 enum DeclarationAnswer { yes, no }
+
+final Session session = Session();
 
 // Future<dynamic> getNotificationCount(int id) async {
 //   NoticeBoardModel obj = NoticeBoardModel();
@@ -919,16 +921,16 @@ Widget customBottomNavigationBar({
     onTap: (int index) {
       switch (index) {
         case 0:
-          _navigateWithLoading(context, () => DailyformPage(session: ,));
+          _navigateWithLoading(context, () => DailyformPage(session: session));
           break;
         case 1:
-          _navigateWithLoading(context, () => HnlpolicyPage());
+          _navigateWithLoading(context, () => HnlpolicyPage(session: session));
           break;
         case 2:
-          _navigateWithLoading(context, () => EmployeePage());
+          _navigateWithLoading(context, () => EmployeePage(session: session));
           break;
         case 3:
-          _navigateWithLoading(context, () => ProfilePage());
+          _navigateWithLoading(context, () => ProfilePage(session: session));
           break;
       }
     },

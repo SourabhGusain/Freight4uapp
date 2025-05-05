@@ -94,6 +94,7 @@ class DriverModel {
 
   static Future<DriverModel?> loginApi(String mobile, String password) async {
     final url = '$api_url/employee/drivers/login/';
+    print(url);
 
     Map<String, dynamic> loginData = {
       'mobile': mobile,
@@ -105,24 +106,29 @@ class DriverModel {
     try {
       final Map response = await Api().postCalling(
         url,
-        loginData,
+        jsonEncode(loginData),
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
       );
 
       if (response['ok'] == 1 && response['data'] != null) {
-        DriverModel driver = DriverModel.fromJson(response['data']);
+        var data = response['data'];
+        if (data is List && data.isNotEmpty) {
+          data = data[0];
+        }
 
+        DriverModel driver = DriverModel.fromJson(data);
         print('Login successful, Driver data: ${driver.toString()}');
 
         Session session = Session();
-
-        Map<String, dynamic> driverJson = driver.toJson();
-
-        String driverJsonString = jsonEncode(driverJson);
-
+        String driverJsonString = jsonEncode(driver.toJson());
         await session.setSession('loggedInUserKey', driverJsonString);
 
         return driver;
       } else {
+        print(response);
         print('Login failed: ${response['error'] ?? "Unknown error"}');
         return null;
       }

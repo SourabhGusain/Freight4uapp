@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:Freight4u/widgets/ui.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/widgets/form.dart';
+import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
@@ -10,9 +11,8 @@ import 'package:Freight4u/pages/format/format.controller.dart';
 import 'package:Freight4u/pages/dailyform/prestartform/prestartform.view.dart';
 
 class EmployeePage extends StatefulWidget {
-  const EmployeePage({
-    super.key,
-  });
+  final Session session;
+  const EmployeePage({super.key, required this.session});
 
   @override
   State<EmployeePage> createState() => _EmployeePageState();
