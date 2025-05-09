@@ -262,13 +262,16 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             TextButton(
               child: textH2("Log Out", color: primaryColor),
-              onPressed: () {
+              onPressed: () async {
+                await widget.session.removeSession("loggedInUserKey");
+                // await widget.session.removeSession('user_id');
+
                 Navigator.of(context).pop();
+
                 Get.to(
-                    context,
-                    () => LoginPage(
-                          session: widget.session,
-                        ));
+                  context,
+                  () => LoginPage(session: widget.session),
+                );
               },
             ),
           ],

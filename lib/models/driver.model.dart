@@ -93,7 +93,7 @@ class DriverModel {
   }
 
   static Future<DriverModel?> loginApi(String mobile, String password) async {
-    final url = '$api_url/employee/drivers/login/';
+    final url = '$api_url/drivers/login/';
     print(url);
 
     Map<String, dynamic> loginData = {

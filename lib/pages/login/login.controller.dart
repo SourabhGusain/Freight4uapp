@@ -59,24 +59,24 @@ class LoginController extends BaseViewModel {
       DriverModel? user = await DriverModel.loginApi(mobile, password);
 
       if (user != null) {
-        driver = user; // Set the driver data on successful login
-        setBusy(false); // End the busy state
-        return true; // Login successful
+        driver = user;
+        setBusy(false);
+        return true;
       } else {
-        setBusy(false); // End the busy state
-        return false; // Login failed
+        setBusy(false);
+        return false;
       }
     } catch (e) {
       debugPrint("Login error: $e");
-      setBusy(false); // End the busy state
-      return false; // Login failed due to an exception
+      setBusy(false);
+      return false;
     }
   }
 
   @override
   void dispose() {
-    mobileController.dispose(); // Dispose mobile controller
-    passwordController.dispose(); // Dispose password controller
+    mobileController.dispose();
+    passwordController.dispose();
     super.dispose();
   }
 }

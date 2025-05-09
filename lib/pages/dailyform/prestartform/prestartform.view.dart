@@ -7,6 +7,7 @@ import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
+import 'package:Freight4u/models/settings.model.dart';
 
 class PrestartformPage extends StatefulWidget {
   const PrestartformPage({super.key});
@@ -20,6 +21,10 @@ class _PrestartformPageState extends State<PrestartformPage> {
   DeclarationAnswer? _selectedAnswer;
   String _selectedContractor = '';
   String _selectedShape = '';
+
+  // Adding controllers for all required fields
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _regoNameController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
 
@@ -27,6 +32,8 @@ class _PrestartformPageState extends State<PrestartformPage> {
 
   @override
   void dispose() {
+    _fullNameController.dispose();
+    _regoNameController.dispose();
     _dateController.dispose();
     _timeController.dispose();
     super.dispose();
@@ -56,11 +63,16 @@ class _PrestartformPageState extends State<PrestartformPage> {
                   children: [
                     textH1("Forms:"),
                     const SizedBox(height: 10),
+                    // Full Name TextField with Controller
                     SizedBox(
                       height: 50,
-                      child: textField("Full Name"),
+                      child: textField(
+                        "Full Name",
+                        controller: _fullNameController, // Using the controller
+                      ),
                     ),
                     const SizedBox(height: 10),
+                    // Date Field with Controller
                     SizedBox(
                       height: 50,
                       child: calendarDateField(
@@ -89,6 +101,8 @@ class _PrestartformPageState extends State<PrestartformPage> {
                             child: textField(
                               "Rego Name",
                               hintText: "e.g. ABC123",
+                              controller:
+                                  _regoNameController, // Using the controller
                             ),
                           ),
                         ),
