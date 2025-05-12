@@ -22,14 +22,22 @@ class Api {
       Session session = Session();
       String? key = await session.getSession("loggedInUserKey");
       if (key != null) {
+        print(
+            "-------------------------------------------------------------------------");
+        print("Token $key");
         dio.options.headers['Authorization'] = "Token $key";
       }
+      print(api);
 
       var response = await dio.get(api);
+      print(response);
 
       if (response.statusCode == 200) {
         if (response.data['ok'] > 0) {
           if (response.data['data'] != null) {
+            print(
+                "................................................fromJson(response.data['data'])");
+            print(fromJson(response.data['data']));
             returnObj["data"] = fromJson(response.data['data']);
           }
           returnObj["message"] = response.data['message'];
