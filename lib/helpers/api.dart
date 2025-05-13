@@ -80,7 +80,10 @@ class Api {
       //     'gAAAAABnWoSsfV85KkUSdWq3hnBoHtYR9pMBFLTmpYVOSPgvW-jNe6JfUPD9d6qfHJoCWOYFsnaA_Ss0Ru2-Gm-_-obAcm6wYHkKE7Blf0Wa0OHZAJefZn0yG5tZZP9SdkFQ0-Xd6Ba4';
 
       var response = await dio.post(api, data: JsonEncodedData);
-      // List<Cookie> cookie = await cookieJar.loadForRequest(Uri.parse(api));
+      // print("------------------------------------------response");
+      // print(response);
+      // // List<Cookie> cookie = await cookieJar.loadForRequest(Uri.parse(api));
+      // print(response.statusCode);
       if (response.statusCode == 200) {
         if (response.data['ok'] > 0) {
           returnObj["data"] = response.data['data'];

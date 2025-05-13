@@ -4,8 +4,6 @@ import 'package:Freight4u/widgets/ui.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
-import 'package:Freight4u/pages/login/login.view.dart';
-import 'package:Freight4u/models/settings.model.dart';
 import 'package:Freight4u/pages/dailyform/prestartform/prestartform.controller.dart';
 
 class PrestartformPage extends StatefulWidget {
@@ -16,49 +14,25 @@ class PrestartformPage extends StatefulWidget {
 }
 
 class _PrestartformPageState extends State<PrestartformPage> {
-  int _currentIndex = 0;
-  String _selectedContractor = '';
-  String _selectedShape = '';
-
-  final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _regoNameController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _timeController = TextEditingController();
-
-  final List<DeclarationAnswer?> _declarationAnswers = List.filled(8, null);
-
   final PrestartFormController _formController = PrestartFormController();
-
-  List<String> _contractorNames = [];
-  List<String> _shapeNames = [];
+  int _currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
     DateTime now = DateTime.now();
-
-    String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-    String formattedTime = DateFormat('HH:mm').format(now);
-
-    // Set the controllers to the current date and time
-    _dateController.text = formattedDate;
-    _timeController.text = formattedTime;
+    _formController.dateController.text = DateFormat('yyyy-MM-dd').format(now);
+    _formController.timeController.text = DateFormat('HH:mm').format(now);
 
     _formController.init().then((_) {
-      setState(() {
-        _contractorNames = _formController.contractorNames;
-        _shapeNames = _formController.shapeNames;
-      });
+      setState(() {});
     });
   }
 
   @override
   void dispose() {
-    _fullNameController.dispose();
-    _regoNameController.dispose();
-    _dateController.dispose();
-    _timeController.dispose();
+    _formController.dispose();
     super.dispose();
   }
 
@@ -73,210 +47,158 @@ class _PrestartformPageState extends State<PrestartformPage> {
               secondaryNavBar(context, "Pre-Start/Fit for Duty Declaration."),
         ),
         body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                textH1("Forms:"),
-                const SizedBox(height: 10),
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              textH1("Forms:"),
+              const SizedBox(height: 10),
 
-                SizedBox(
-                  height: 50,
-                  child:
-                      textField("Full Name", controller: _fullNameController),
+              // Full Name
+              SizedBox(
+                height: 50,
+                child: textField("Full Name",
+                    controller: _formController.fullNameController),
+              ),
+              const SizedBox(height: 10),
+
+              // Date
+              SizedBox(
+                height: 50,
+                child: calendarDateField(
+                  context: context,
+                  label: "Date",
+                  controller: _formController.dateController,
                 ),
-                const SizedBox(height: 10),
+              ),
+              const SizedBox(height: 10),
 
-                SizedBox(
-                  height: 50,
-                  child: calendarDateField(
-                    context: context,
-                    label: "Date",
-                    controller: _dateController,
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 50,
-                        child: calendarTimeField(
-                          context: context,
-                          label: "Time",
-                          controller: _timeController,
-                        ),
+              // Time and Rego Name
+              Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      height: 50,
+                      child: calendarTimeField(
+                        context: context,
+                        label: "Time",
+                        controller: _formController.timeController,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: SizedBox(
-                        height: 50,
-                        child: textField(
-                          "Rego Name",
-                          hintText: "e.g. ABC123",
-                          controller: _regoNameController,
-                        ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: SizedBox(
+                      height: 50,
+                      child: textField(
+                        "Rego Name",
+                        hintText: "e.g. ABC123",
+                        controller: _formController.regoNameController,
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-
-                // Contractor Dropdown (Now dynamic)
-                customTypeSelector(
-                  context: context,
-                  text: "Select Contractor",
-                  hintText: "Contractor",
-                  dropdownTypes: _contractorNames,
-                  selectedValue: _selectedContractor,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedContractor = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 10),
-
-                // Shape Dropdown (Now dynamic)
-                customTypeSelector(
-                  context: context,
-                  text: "Select Shape",
-                  hintText: "Shape",
-                  dropdownTypes: _shapeNames,
-                  selectedValue: _selectedShape,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedShape = value;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-
-                // Fit for Duty Declaration
-                Row(
-                  children: [
-                    textH1("FIT FOR DUTY DECLARATION:",
-                        font_size: 15, font_weight: FontWeight.w600),
-                    textH1(" *",
-                        font_size: 20,
-                        font_weight: FontWeight.bold,
-                        color: Colors.red),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
-                // Declaration Checkbox List
-                CustomDeclarationBox(
-                  text:
-                      "I have a current and valid\nlicense to operate this\nvehicle.",
-                  selectedAnswer: _declarationAnswers[0],
-                  onChanged: (answer) {
-                    setState(() {
-                      _declarationAnswers[0] = answer;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-
-                CustomDeclarationBox(
-                  text: "I am fit to undertake my allocated tasks.",
-                  selectedAnswer: _declarationAnswers[1],
-                  onChanged: (answer) {
-                    setState(() {
-                      _declarationAnswers[1] = answer;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-
-                CustomDeclarationBox(
-                  text:
-                      "I am not fatigued or suffering any medical condition (that I am aware of) that may affect my ability to drive or complete my allocated tasks",
-                  selectedAnswer: _declarationAnswers[2],
-                  onChanged: (answer) {
-                    setState(() {
-                      _declarationAnswers[2] = answer;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-
-                CustomDeclarationBox(
-                  text:
-                      "I have had 24 hrs. Continuous stationary rest within the last 7 Days",
-                  selectedAnswer: _declarationAnswers[3],
-                  onChanged: (answer) {
-                    setState(() {
-                      _declarationAnswers[3] = answer;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-
-                CustomDeclarationBox(
-                  text: "I have had a 10 hour rest break between shifts",
-                  selectedAnswer: _declarationAnswers[4],
-                  onChanged: (answer) {
-                    setState(() {
-                      _declarationAnswers[4] = answer;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-
-                CustomDeclarationBox(
-                  text:
-                      "I have NOT consumed alcohol and/or drugs (prescription) or otherwise that may impair my ability to work and drive",
-                  selectedAnswer: _declarationAnswers[5],
-                  onChanged: (answer) {
-                    setState(() {
-                      _declarationAnswers[5] = answer;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-
-                CustomDeclarationBox(
-                  text:
-                      "To the best of my knowledge, I have had NO driving infringements issued to me in the last 24hrs",
-                  selectedAnswer: _declarationAnswers[6],
-                  onChanged: (answer) {
-                    setState(() {
-                      _declarationAnswers[6] = answer;
-                    });
-                  },
-                ),
-                const SizedBox(height: 20),
-
-                CustomDeclarationBox(
-                  text: "I am fit to undertake my allocated tasks.",
-                  selectedAnswer: _declarationAnswers[7],
-                  onChanged: (answer) {
-                    setState(() {
-                      _declarationAnswers[7] = answer;
-                    });
-                  },
-                ),
-                const SizedBox(height: 40),
-
-                // Save Button
-                SizedBox(
-                  height: 45,
-                  width: double.infinity,
-                  child: darkButton(
-                    buttonText("Save", color: whiteColor),
-                    primary: primaryColor,
-                    onPressed: () {
-                      _formController.saveForm(); // Call saveForm on button tap
-                    },
                   ),
+                ],
+              ),
+              const SizedBox(height: 10),
+
+              // Contractor Dropdown
+              customTypeSelector(
+                context: context,
+                text: "Select Contractor",
+                hintText: "Contractor",
+                dropdownTypes: _formController.contractorNames,
+                selectedValue: _formController.selectedContractor,
+                onChanged: (value) {
+                  setState(() {
+                    _formController.selectedContractor = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 10),
+
+              // Shape Dropdown
+              customTypeSelector(
+                context: context,
+                text: "Select Shape",
+                hintText: "Shape",
+                dropdownTypes: _formController.shapeNames,
+                selectedValue: _formController.selectedShape,
+                onChanged: (value) {
+                  setState(() {
+                    _formController.selectedShape = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+
+              // Fit for Duty Declaration Section
+              Row(
+                children: [
+                  textH1("FIT FOR DUTY DECLARATION:",
+                      font_size: 15, font_weight: FontWeight.w600),
+                  textH1(" *",
+                      font_size: 20,
+                      font_weight: FontWeight.bold,
+                      color: Colors.red),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Declaration Checkboxes
+              _declaration(
+                  "I have a current and valid\nlicense to operate this\nvehicle.",
+                  _formController.hasValidLicense,
+                  (val) =>
+                      setState(() => _formController.hasValidLicense = val)),
+              _declaration(
+                  "I am fit to undertake my allocated tasks.",
+                  _formController.isFitForTask,
+                  (val) => setState(() => _formController.isFitForTask = val)),
+              _declaration(
+                  "I am not fatigued or suffering any medical condition (that I am aware of) that may affect my ability to drive or complete my allocated tasks",
+                  _formController.noMedicalCondition,
+                  (val) =>
+                      setState(() => _formController.noMedicalCondition = val)),
+              _declaration(
+                  "I have had 24 hrs. Continuous stationary rest within the last 7 Days",
+                  _formController.had24HrRest,
+                  (val) => setState(() => _formController.had24HrRest = val)),
+              _declaration(
+                  "I have had a 10 hour rest break between shifts",
+                  _formController.had10HrBreak,
+                  (val) => setState(() => _formController.had10HrBreak = val)),
+              _declaration(
+                  "I have NOT consumed alcohol and/or drugs (prescription) or otherwise that may impair my ability to work and drive",
+                  _formController.noSubstanceUse,
+                  (val) =>
+                      setState(() => _formController.noSubstanceUse = val)),
+              _declaration(
+                  "To the best of my knowledge, I have had NO driving infringements issued to me in the last 24hrs",
+                  _formController.noInfringements,
+                  (val) =>
+                      setState(() => _formController.noInfringements = val)),
+              _declaration(
+                  "I am fit to undertake my allocated tasks.",
+                  _formController.fitForTaskRepeat,
+                  (val) =>
+                      setState(() => _formController.fitForTaskRepeat = val)),
+
+              const SizedBox(height: 40),
+
+              // Save Button
+              SizedBox(
+                height: 45,
+                width: double.infinity,
+                child: darkButton(
+                  buttonText("Save", color: whiteColor),
+                  primary: primaryColor,
+                  onPressed: () {
+                    _formController.submitPrestartForm(context);
+                  },
                 ),
-                const SizedBox(height: 10),
-              ],
-            ),
+              ),
+              const SizedBox(height: 10),
+            ],
           ),
         ),
         bottomNavigationBar: customBottomNavigationBar(
@@ -284,6 +206,33 @@ class _PrestartformPageState extends State<PrestartformPage> {
           selectedIndex: _currentIndex,
         ),
       ),
+    );
+  }
+
+  Widget _declaration(String text, bool? value, Function(bool?) onBoolChanged) {
+    // Convert bool? to DeclarationAnswer?
+    DeclarationAnswer? selected = switch (value) {
+      true => DeclarationAnswer.yes,
+      false => DeclarationAnswer.no,
+      null => null,
+    };
+
+    return Column(
+      children: [
+        CustomDeclarationBox(
+          text: text,
+          selectedAnswer: selected,
+          onChanged: (DeclarationAnswer? answer) {
+            bool? boolValue = switch (answer) {
+              DeclarationAnswer.yes => true,
+              DeclarationAnswer.no => false,
+              null => null,
+            };
+            onBoolChanged(boolValue);
+          },
+        ),
+        const SizedBox(height: 20),
+      ],
     );
   }
 }

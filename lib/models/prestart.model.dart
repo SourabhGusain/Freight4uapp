@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:Freight4u/helpers/api.dart';
 import 'package:Freight4u/helpers/values.dart';
 
-class DriverShiftModel {
+class PrestartModel {
   final String date;
   final String time;
   final String name;
@@ -21,7 +21,7 @@ class DriverShiftModel {
   final String createdOn;
   final int createdBy;
 
-  DriverShiftModel({
+  PrestartModel({
     required this.date,
     required this.time,
     required this.name,
@@ -41,7 +41,7 @@ class DriverShiftModel {
     required this.createdBy,
   });
 
-  DriverShiftModel.empty()
+  PrestartModel.empty()
       : date = '',
         time = '',
         name = '',
@@ -60,8 +60,8 @@ class DriverShiftModel {
         createdOn = '',
         createdBy = 0;
 
-  factory DriverShiftModel.fromJson(Map<String, dynamic> json) {
-    return DriverShiftModel(
+  factory PrestartModel.fromJson(Map<String, dynamic> json) {
+    return PrestartModel(
       date: json['date'] ?? '',
       time: json['time'] ?? '',
       name: json['name'] ?? '',
@@ -99,45 +99,47 @@ class DriverShiftModel {
       "substance_clear": substanceClear,
       "no_infringements": noInfringements,
       "is_active": isActive,
-      "created_on": createdOn,
+      "created_on": createdOn.split('T').first,
       "created_by": createdBy,
     };
   }
 
   @override
   String toString() {
-    return 'DriverShiftModel{date: $date, time: $time, name: $name, rego: $rego, contract: $contract, '
+    return 'PrestartModel {date: $date, time: $time, name: $name, rego: $rego, contract: $contract, '
         'shape: $shape, validLicense: $validLicense, fitForTask: $fitForTask, notFatigued: $notFatigued, '
         'willNotify: $willNotify, weeklyRest: $weeklyRest, restBreak: $restBreak, substanceClear: $substanceClear, '
         'noInfringements: $noInfringements, isActive: $isActive, createdOn: $createdOn, createdBy: $createdBy}';
   }
 
-  static Future<bool> preStartForm(DriverShiftModel driverShift) async {
-    final url = '$api_url/drivers/shift/';
-    print(url);
+  static Future<bool> preStartForm(PrestartModel prestartModel) async {
+    final url = '$api_url/dailyreport/prestart/';
+    print('API URL: $url');
 
     try {
-      final Map<String, dynamic> shiftData = driverShift.toJson();
+      final data = prestartModel.toJson();
+      print('Sending data: $data');
 
-      final Map response = await Api().postCalling(
+      final response = await Api().postCalling(
         url,
-        jsonEncode(shiftData),
+        jsonEncode(data),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
       );
+      print('Response: $response');
 
-      if (response['ok'] == 1) {
-        print('Driver shift created successfully');
+      if (response != null && response['ok'] == 1) {
+        print('Prestart form submitted successfully');
         return true;
       } else {
         print(
-            'Failed to create driver shift: ${response['error'] ?? "Unknown error"}');
+            'Failed to create prestart: ${response?['error'] ?? "Unknown error"}');
         return false;
       }
     } catch (e) {
-      print('Exception during preStartForm: $e');
+      print('Error during preStartForm: $e');
       return false;
     }
   }
