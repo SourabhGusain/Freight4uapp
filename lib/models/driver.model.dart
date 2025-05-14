@@ -124,10 +124,13 @@ class DriverModel {
 
         Session session = Session();
         String driverJsonString = jsonEncode(driver.toJson());
-        Map<String, dynamic> key = jsonDecode(driverJsonString);
-        String tokenkey = key['token'];
-        await session.setSession('loggedInUserKey', tokenkey);
+        await session.setSession('loggedInUserKey', driver.token);
         await session.setSession('loggedInUser', driverJsonString);
+
+        int userId = driver.id;
+        String userIdString = userId.toString();
+        print(userIdString);
+        await session.setSession('userId', userIdString);
 
         return driver;
       } else {

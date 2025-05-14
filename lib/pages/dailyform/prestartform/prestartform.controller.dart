@@ -27,13 +27,15 @@ class PrestartFormController {
   bool? fitForTaskRepeat;
 
   SettingsModel? settings;
+  int userId = 0;
 
   final Session session = Session();
 
   Future<void> init() async {
     try {
       settings = await fetchSettingsData();
-      print(session);
+      String? userId = await session.getSession("userId");
+      // print(userId);
     } catch (e) {
       print('Failed to load settings: $e');
     }
@@ -41,6 +43,7 @@ class PrestartFormController {
 
   List<String> get contractorNames =>
       settings?.contracts.map((c) => c.name).toList() ?? [];
+
   List<String> get shapeNames =>
       settings?.shapes.map((s) => s.name).toList() ?? [];
 
@@ -72,24 +75,24 @@ class PrestartFormController {
     );
 
     PrestartModel prestartModel = PrestartModel(
-        date: dateController.text,
-        time: timeController.text,
-        name: fullNameController.text,
-        rego: regoNameController.text,
-        contract: _getContractIdFromName(selectedContractor),
-        shape: _getShapeIdFromName(selectedShape),
-        validLicense: hasValidLicense == true ? 'yes' : 'no',
-        fitForTask: isFitForTask == true ? 'yes' : 'no',
-        notFatigued: noMedicalCondition == true ? 'yes' : 'no',
-        willNotify: had24HrRest == true ? 'yes' : 'no',
-        weeklyRest: had10HrBreak == true ? 'yes' : 'no',
-        restBreak: noSubstanceUse == true ? 'yes' : 'no',
-        substanceClear: noInfringements == true ? 'yes' : 'no',
-        noInfringements: fitForTaskRepeat == true ? 'yes' : 'no',
-        isActive: true,
-        createdOn: DateTime.now().toIso8601String(),
-        createdBy: 1 //session.id ?? 0,
-        );
+      date: dateController.text,
+      time: timeController.text,
+      name: fullNameController.text,
+      rego: regoNameController.text,
+      contract: _getContractIdFromName(selectedContractor),
+      shape: _getShapeIdFromName(selectedShape),
+      validLicense: hasValidLicense == true ? 'yes' : 'no',
+      fitForTask: isFitForTask == true ? 'yes' : 'no',
+      notFatigued: noMedicalCondition == true ? 'yes' : 'no',
+      willNotify: had24HrRest == true ? 'yes' : 'no',
+      weeklyRest: had10HrBreak == true ? 'yes' : 'no',
+      restBreak: noSubstanceUse == true ? 'yes' : 'no',
+      substanceClear: noInfringements == true ? 'yes' : 'no',
+      noInfringements: fitForTaskRepeat == true ? 'yes' : 'no',
+      isActive: true,
+      createdOn: DateTime.now().toIso8601String(),
+      createdBy: userId,
+    );
 
     bool success = await PrestartModel.preStartForm(prestartModel);
 

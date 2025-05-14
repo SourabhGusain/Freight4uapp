@@ -3,7 +3,7 @@ import 'package:Freight4u/helpers/api.dart';
 import 'package:Freight4u/helpers/values.dart';
 
 class RunsheetModel {
-  final String shiftTiming;
+  final String shiftType;
   final String shiftDate;
   final String name;
   final String email;
@@ -20,7 +20,7 @@ class RunsheetModel {
   final int createdBy;
 
   RunsheetModel({
-    required this.shiftTiming,
+    required this.shiftType,
     required this.shiftDate,
     required this.name,
     required this.email,
@@ -39,8 +39,8 @@ class RunsheetModel {
 
   factory RunsheetModel.fromJson(Map<String, dynamic> json) {
     return RunsheetModel(
-      shiftTiming: json['shift_timing'] ?? '',
       shiftDate: json['shift_date'] ?? '',
+      shiftType: json['shift_type'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       site: json['site'] ?? 0,
@@ -59,8 +59,8 @@ class RunsheetModel {
 
   Map<String, dynamic> toJson() {
     return {
-      "shift_timing": shiftTiming,
       "shift_date": shiftDate,
+      "shift_type": shiftType,
       "name": name,
       "email": email,
       "site": site,
@@ -79,7 +79,7 @@ class RunsheetModel {
 
   @override
   String toString() {
-    return 'RunsheetModel {shiftTiming: $shiftTiming, shiftDate: $shiftDate, name: $name, email: $email, '
+    return 'RunsheetModel {shiftType: $shiftType, shiftDate: $shiftDate, name: $name, email: $email, '
         'site: $site, shape: $shape, rego: $rego, shiftStartTime: $shiftStartTime, shiftEndTime: $shiftEndTime, '
         'loadsDone: $loadsDone, breaksTaken: $breaksTaken, loadSheet: $loadSheet, isActive: $isActive, '
         'createdOn: $createdOn, createdBy: $createdBy}';

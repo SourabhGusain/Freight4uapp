@@ -333,13 +333,14 @@ Widget customTypeBreakSelector({
   required BuildContext context,
   required String text,
   required List<String> dropdownTypes,
+  String? selectedValue,
   String? hintText,
-  Function(String)? onChanged, // ✅ STEP 1: Add this
+  Function(String)? onChanged,
 }) {
-  String selectedDropdownType = '';
-
   return StatefulBuilder(
-    builder: (context, setState) {
+    builder: (context, setModalState) {
+      String selectedDropdownType = selectedValue ?? '';
+
       return GestureDetector(
         onTap: () {
           showModalBottomSheet(
@@ -373,15 +374,14 @@ Widget customTypeBreakSelector({
 
                         return InkWell(
                           onTap: () {
-                            setState(() {
+                            setModalState(() {
                               selectedDropdownType = dropdownType;
                             });
 
                             Navigator.pop(context);
 
                             if (onChanged != null) {
-                              onChanged(
-                                  dropdownType); // ✅ STEP 2: Trigger callback
+                              onChanged(dropdownType);
                             }
                           },
                           borderRadius: BorderRadius.circular(12),
@@ -445,12 +445,10 @@ Widget customTypeBreakSelector({
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               textH3(
-                selectedDropdownType.isNotEmpty
-                    ? selectedDropdownType
+                selectedValue?.isNotEmpty == true
+                    ? selectedValue!
                     : (hintText ?? 'Select an option'),
-                color: selectedDropdownType.isNotEmpty
-                    ? const Color.fromARGB(255, 54, 54, 54)
-                    : const Color.fromARGB(255, 54, 54, 54),
+                color: const Color.fromARGB(255, 54, 54, 54),
                 font_size: 15,
                 font_weight: FontWeight.w400,
               ),
@@ -550,8 +548,8 @@ class CustomDeclarationBox extends StatelessWidget {
 Widget buildCommentTextField({
   TextEditingController? controller,
   String hintText = "Enter your comment...",
-  int minLines = 3,
-  int? maxLines = 5,
+  int minLines = 6,
+  int? maxLines = 10,
   Color fillColor = Colors.white,
   Color borderColor = Colors.grey,
   Color focusedBorderColor = Colors.black, // or your blackColor
