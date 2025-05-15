@@ -28,4 +28,12 @@ class Session {
   Future<String?> getUserId() async {
     return await getSession("userId");
   }
+
+  Future<String?> getToken() async {
+    return await getSession("token");
+  }
+
+  Future<void> saveToken(String token) async {
+    await setSession("token", token);
+  }
 }

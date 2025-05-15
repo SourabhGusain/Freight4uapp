@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:async';
 // import 'package:chanakyaapp/helpers/get.dart';
 import 'package:Freight4u/helpers/session.dart';
@@ -109,7 +110,86 @@ class Api {
     }
   }
 
-// ignore: non_constant_identifier_names
+  Future<Map<String, dynamic>> multipartOrJsonPostCall(
+    String endpoint,
+    dynamic body, {
+    bool isMultipart = false,
+    Map<String, dynamic>? extraHeaders,
+  }) async {
+    final Map<String, dynamic> result = {
+      "ok": 0,
+      "data": [],
+      "message": "",
+      "error": "",
+    };
+
+    try {
+      if (extraHeaders != null) {
+        dio.options.headers.addAll(extraHeaders);
+      }
+
+      final session = Session();
+      final token = await session.getSession("loggedInUserKey");
+      if (token != null) {
+        dio.options.headers['Authorization'] = "Token $token";
+      }
+
+      dynamic requestData;
+
+      if (isMultipart && body is Map<String, dynamic>) {
+        final formMap = <String, dynamic>{};
+
+        body.forEach((key, value) {
+          if (value is File) {
+            formMap[key] = MultipartFile.fromFileSync(
+              value.path,
+              filename: value.path.split('/').last,
+            );
+          } else {
+            formMap[key] = value;
+          }
+        });
+
+        requestData = FormData.fromMap(formMap);
+
+        // Print all fields manually:
+        print('FormData fields:');
+        requestData.fields.forEach((field) {
+          print('Field: ${field.key} = ${field.value}');
+        });
+
+        // Print all files:
+        requestData.files.forEach((file) {
+          print('File field: ${file.key}, filename: ${file.value.filename}');
+        });
+      } else {
+        requestData = body;
+      }
+
+      final response = await dio.post(endpoint, data: requestData);
+      print(response);
+      print(response.statusCode);
+
+      if (response.statusCode == 200) {
+        final resData = response.data;
+        if (resData['ok'] > 0) {
+          result["ok"] = 1;
+          result["data"] = resData['data'];
+          result["message"] = resData['message'];
+        } else {
+          result["error"] = resData['error'] ?? "Unknown error";
+        }
+      } else {
+        result["error"] =
+            response.statusMessage ?? "HTTP error ${response.statusCode}";
+      }
+    } catch (e) {
+      result["error"] = "Exception occurred: $e";
+    }
+
+    return result;
+  }
+
   Future<Map> putCalling(api, JsonEncodedData) async {
     Map returnObj = {"ok": 0, "data": [], "message": "", "error": ""};
     try {

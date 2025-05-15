@@ -1,118 +1,107 @@
+import 'dart:io';
 import 'dart:convert';
 import 'package:Freight4u/helpers/api.dart';
 import 'package:Freight4u/helpers/values.dart';
+
+class ShiftBreak {
+  final String startTime;
+  final String endTime;
+
+  ShiftBreak({required this.startTime, required this.endTime});
+
+  factory ShiftBreak.fromJson(Map<String, dynamic> json) {
+    return ShiftBreak(
+      startTime: json['start_time'] ?? '',
+      endTime: json['end_time'] ?? '',
+    );
+  }
+
+  Map<String, String> toMap() => {
+        'start_time': startTime,
+        'end_time': endTime,
+      };
+}
 
 class RunsheetModel {
   final String shiftType;
   final String shiftDate;
   final String name;
   final String email;
-  final int site;
-  final int shape;
+  final int? site;
+  final int? shape;
   final String rego;
   final String shiftStartTime;
   final String shiftEndTime;
   final int loadsDone;
   final int breaksTaken;
-  final String loadSheet;
+  final List<ShiftBreak> shiftBreaks;
   final bool isActive;
   final String createdOn;
-  final int createdBy;
+  final int? createdBy;
 
   RunsheetModel({
     required this.shiftType,
     required this.shiftDate,
     required this.name,
     required this.email,
-    required this.site,
-    required this.shape,
+    this.site,
+    this.shape,
     required this.rego,
     required this.shiftStartTime,
     required this.shiftEndTime,
     required this.loadsDone,
     required this.breaksTaken,
-    required this.loadSheet,
+    required this.shiftBreaks,
     required this.isActive,
     required this.createdOn,
-    required this.createdBy,
+    this.createdBy,
   });
 
-  factory RunsheetModel.fromJson(Map<String, dynamic> json) {
-    return RunsheetModel(
-      shiftDate: json['shift_date'] ?? '',
-      shiftType: json['shift_type'] ?? '',
-      name: json['name'] ?? '',
-      email: json['email'] ?? '',
-      site: json['site'] ?? 0,
-      shape: json['shape'] ?? 0,
-      rego: json['rego'] ?? '',
-      shiftStartTime: json['shift_start_time'] ?? '',
-      shiftEndTime: json['shift_end_time'] ?? '',
-      loadsDone: json['loads_done'] ?? 0,
-      breaksTaken: json['breaks_taken'] ?? 0,
-      loadSheet: json['load_sheet'] ?? '',
-      isActive: json['is_active'] ?? false,
-      createdOn: json['created_on'] ?? '',
-      createdBy: json['created_by'] ?? 0,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      "shift_date": shiftDate,
+  Map<String, dynamic> toMultipartFields({File? loadSheetFile}) {
+    final fields = <String, dynamic>{
       "shift_type": shiftType,
+      "shift_date": shiftDate,
       "name": name,
       "email": email,
-      "site": site,
-      "shape": shape,
       "rego": rego,
       "shift_start_time": shiftStartTime,
       "shift_end_time": shiftEndTime,
-      "loads_done": loadsDone,
-      "breaks_taken": breaksTaken,
-      "load_sheet": loadSheet,
-      "is_active": isActive,
-      "created_on": createdOn.split('T').first,
-      "created_by": createdBy,
+      "loads_done": loadsDone.toString(),
+      "breaks_taken": breaksTaken.toString(),
+      "is_active": isActive.toString(),
+      "created_on":
+          createdOn.contains('T') ? createdOn.split('T').first : createdOn,
+      "shift_breaks": jsonEncode(
+        shiftBreaks.map((e) => e.toMap()).toList(),
+      ),
     };
+
+    if (site != null) fields["site"] = site.toString();
+    if (shape != null) fields["shape"] = shape.toString();
+    if (createdBy != null) fields["created_by"] = createdBy.toString();
+    if (loadSheetFile != null) fields["load_sheet"] = loadSheetFile;
+
+    return fields;
   }
 
-  @override
-  String toString() {
-    return 'RunsheetModel {shiftType: $shiftType, shiftDate: $shiftDate, name: $name, email: $email, '
-        'site: $site, shape: $shape, rego: $rego, shiftStartTime: $shiftStartTime, shiftEndTime: $shiftEndTime, '
-        'loadsDone: $loadsDone, breaksTaken: $breaksTaken, loadSheet: $loadSheet, isActive: $isActive, '
-        'createdOn: $createdOn, createdBy: $createdBy}';
-  }
+  static Future<bool> submitRunsheet(
+      RunsheetModel model, File loadSheetFile) async {
+    final url = "$api_url/dailyreport/runsheet/";
+    final api = Api();
 
-  static Future<bool> submitRunsheet(RunsheetModel RunsheetModel) async {
-    final url = '$api_url/dailyreport/runsheet/';
-    print('API URL: $url');
+    final fields = model.toMultipartFields(loadSheetFile: loadSheetFile);
 
-    try {
-      final data = RunsheetModel.toJson();
-      print('Sending data: $data');
+    final result = await api.multipartOrJsonPostCall(
+      url,
+      fields,
+      isMultipart: true,
+    );
 
-      final response = await Api().postCalling(
-        url,
-        jsonEncode(data),
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-      );
-      print('Response: $response');
-
-      if (response != null && response['ok'] == 1) {
-        print('Shift form submitted successfully');
-        return true;
-      } else {
-        print(
-            'Failed to submit shift: ${response?['error'] ?? "Unknown error"}');
-        return false;
-      }
-    } catch (e) {
-      print('Error during submitRunsheet: $e');
+    if (result["ok"] == 1) {
+      print("Runsheet submitted successfully.");
+      return true;
+    } else {
+      print("Failed to submit runsheet: ${result["error"]}");
       return false;
     }
   }

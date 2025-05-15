@@ -22,49 +22,21 @@ class _RunsheetPageState extends State<RunsheetPage> {
   final RunsheetFormController _formController = RunsheetFormController();
 
   int _currentIndex = 0;
-  int _numberOfBreaks = 0;
-
-  String _selectedBreakValue = '';
-  String? fileName;
   bool _isPickingFile = false;
-
-  final List<TextEditingController> _breakStartControllers = [];
-  final List<TextEditingController> _breakEndControllers = [];
-
-  Future<void> _pickFile() async {
-    setState(() => _isPickingFile = true);
-    try {
-      final result = await FilePicker.platform.pickFiles();
-      if (result != null && result.files.isNotEmpty) {
-        final pickedFile = result.files.first;
-        setState(() {
-          fileName =
-              "${pickedFile.name} (${(pickedFile.size / 1024).toStringAsFixed(1)} KB)";
-        });
-      }
-    } catch (e) {
-      print("File pick error: $e");
-    } finally {
-      setState(() => _isPickingFile = false);
-    }
-  }
 
   @override
   void initState() {
     super.initState();
     _formController.dateController.text =
         DateFormat('yyyy-MM-dd').format(DateTime.now());
-    _formController.init().then((_) => setState(() {}));
+    _formController.init().then((_) {
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
-    for (var c in _breakStartControllers) {
-      c.dispose();
-    }
-    for (var c in _breakEndControllers) {
-      c.dispose();
-    }
+    _formController.dispose();
     super.dispose();
   }
 
@@ -75,11 +47,23 @@ class _RunsheetPageState extends State<RunsheetPage> {
     return null;
   }
 
+  Future<void> _pickFile() async {
+    setState(() => _isPickingFile = true);
+    try {
+      await _formController.pickFile();
+      setState(() {}); // Refresh to show new file name
+    } catch (e) {
+      print("File pick error: $e");
+    } finally {
+      setState(() => _isPickingFile = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<FormatController>.reactive(
       viewModelBuilder: () => FormatController(),
-      onViewModelReady: (controller) => controller.init(),
+      onViewModelReady: (ctrl) => ctrl.init(),
       builder: (context, ctrl, child) {
         return SafeArea(
           child: Scaffold(
@@ -129,8 +113,9 @@ class _RunsheetPageState extends State<RunsheetPage> {
                                 dropdownTypes: ['Day Shift', 'Night Shift'],
                                 selectedValue: _formController.selectedShift,
                                 onChanged: (value) {
-                                  setState(() =>
-                                      _formController.selectedShift = value);
+                                  setState(() {
+                                    _formController.selectedShift = value;
+                                  });
                                 },
                               ),
                             ),
@@ -164,7 +149,9 @@ class _RunsheetPageState extends State<RunsheetPage> {
                         dropdownTypes: _formController.siteNames,
                         selectedValue: _formController.selectedSite,
                         onChanged: (value) {
-                          setState(() => _formController.selectedSite = value);
+                          setState(() {
+                            _formController.selectedSite = value;
+                          });
                         },
                       ),
                       const SizedBox(height: 15),
@@ -175,15 +162,17 @@ class _RunsheetPageState extends State<RunsheetPage> {
                         dropdownTypes: _formController.shapeNames,
                         selectedValue: _formController.selectedShape,
                         onChanged: (value) {
-                          setState(() => _formController.selectedShape = value);
+                          setState(() {
+                            _formController.selectedShape = value;
+                          });
                         },
                       ),
                       const SizedBox(height: 15),
                       SizedBox(
                         height: 50,
                         child: textField(
-                          "rego",
-                          hintText: "e.g.Au1233",
+                          "Rego",
+                          hintText: "e.g. Au1233",
                           controller: _formController.regoController,
                           validator: _requiredValidator,
                         ),
@@ -222,7 +211,7 @@ class _RunsheetPageState extends State<RunsheetPage> {
                       SizedBox(
                         height: 50,
                         child: textField(
-                          "Enter how many loads have you done ?",
+                          "Enter how many loads have you done?",
                           hintText: "e.g. 10, 20, etc.",
                           controller: _formController.loadCountController,
                           validator: _requiredValidator,
@@ -237,20 +226,12 @@ class _RunsheetPageState extends State<RunsheetPage> {
                         selectedValue: _formController.selectedBreakValue,
                         onChanged: (value) {
                           setState(() {
-                            _selectedBreakValue = value;
-                            _numberOfBreaks = int.tryParse(value) ?? 0;
-                            _breakStartControllers.clear();
-                            _breakEndControllers.clear();
-                            for (int i = 0; i < _numberOfBreaks; i++) {
-                              _breakStartControllers
-                                  .add(TextEditingController());
-                              _breakEndControllers.add(TextEditingController());
-                            }
+                            _formController.updateBreaks(value);
                           });
                         },
                       ),
                       const SizedBox(height: 15),
-                      ...List.generate(_numberOfBreaks, (index) {
+                      ...List.generate(_formController.numberOfBreaks, (index) {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: Row(
@@ -261,7 +242,8 @@ class _RunsheetPageState extends State<RunsheetPage> {
                                   child: calendarTimeField(
                                     context: context,
                                     label: "Start Time (${index + 1})",
-                                    controller: _breakStartControllers[index],
+                                    controller: _formController
+                                        .breakStartControllers[index],
                                   ),
                                 ),
                               ),
@@ -272,7 +254,8 @@ class _RunsheetPageState extends State<RunsheetPage> {
                                   child: calendarTimeField(
                                     context: context,
                                     label: "End Time (${index + 1})",
-                                    controller: _breakEndControllers[index],
+                                    controller: _formController
+                                        .breakEndControllers[index],
                                   ),
                                 ),
                               ),
@@ -303,7 +286,8 @@ class _RunsheetPageState extends State<RunsheetPage> {
                                     ),
                                   )
                                 : textH3(
-                                    fileName ?? "Browse File Here",
+                                    _formController.fileName ??
+                                        "Browse File Here",
                                     color: blackColor,
                                     font_size: 15,
                                     font_weight: FontWeight.w500,
@@ -330,46 +314,21 @@ class _RunsheetPageState extends State<RunsheetPage> {
                           buttonText("Save", color: whiteColor),
                           primary: primaryColor,
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _printFormValues();
+                            if (_formKey.currentState?.validate() ?? false) {
                               _formController.submitRunsheetForm(context);
                             }
                           },
                         ),
                       ),
-                      const SizedBox(height: 15),
+                      const SizedBox(height: 20),
                     ],
                   ),
                 ),
               ),
             ),
-            bottomNavigationBar: customBottomNavigationBar(
-              context: context,
-              selectedIndex: _currentIndex,
-            ),
           ),
         );
       },
     );
-  }
-
-  void _printFormValues() {
-    print("Date: ${_formController.dateController.text}");
-    print("Start Time: ${_formController.startTimeController.text}");
-    print("End Time: ${_formController.endTimeController.text}");
-    print("Driver Name: ${_formController.driverNameController.text}");
-    print("Email: ${_formController.emailController.text}");
-    print("Rego: ${_formController.regoController.text}");
-    print("Load Count: ${_formController.loadCountController.text}");
-    print("Comment: ${_formController.commentController.text}");
-    print("Selected Shift: ${_formController.selectedShift}");
-    print("Selected Site: ${_formController.selectedSite}");
-    print("Selected Shape: ${_formController.selectedShape}");
-    print("Breaks Taken: $_numberOfBreaks");
-    for (int i = 0; i < _numberOfBreaks; i++) {
-      print("Break ${i + 1} Start: ${_breakStartControllers[i].text}");
-      print("Break ${i + 1} End: ${_breakEndControllers[i].text}");
-    }
-    print("Uploaded File: $fileName");
   }
 }

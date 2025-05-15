@@ -1,10 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:signature/signature.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/session.dart';
-import 'package:Freight4u/widgets/form.dart';
 import 'package:Freight4u/models/settings.model.dart';
 import 'package:Freight4u/models/runsheet.model.dart';
 import 'package:Freight4u/pages/dailyform/dailyform.view.dart';
@@ -21,23 +20,22 @@ class RunsheetFormController {
 
   final List<TextEditingController> breakStartControllers = [];
   final List<TextEditingController> breakEndControllers = [];
+
   int numberOfBreaks = 0;
   String selectedBreakValue = '';
-
   String selectedShift = '';
   String selectedSite = '';
   String selectedShape = '';
 
   String? fileName;
+  File? selectedFile;
 
   SettingsModel? settings;
-
   final Session session = Session();
 
   Future<void> init() async {
     try {
       settings = await fetchSettingsData();
-
       print('Settings loaded successfully.');
     } catch (e) {
       print('Failed to load settings: $e');
@@ -69,10 +67,8 @@ class RunsheetFormController {
   void updateBreaks(String value) {
     selectedBreakValue = value;
     numberOfBreaks = int.tryParse(value) ?? 0;
-
     breakStartControllers.clear();
     breakEndControllers.clear();
-
     for (int i = 0; i < numberOfBreaks; i++) {
       breakStartControllers.add(TextEditingController());
       breakEndControllers.add(TextEditingController());
@@ -83,36 +79,104 @@ class RunsheetFormController {
     final result = await FilePicker.platform.pickFiles();
     if (result != null && result.files.isNotEmpty) {
       final pickedFile = result.files.first;
+      selectedFile = File(pickedFile.path!);
       fileName =
           "${pickedFile.name} (${(pickedFile.size / 1024).toStringAsFixed(1)} KB)";
     }
   }
 
-  Future<void> submitRunsheetForm(BuildContext context) async {
-    // if (driverNameController.text.isEmpty || emailController.text.isEmpty) {
-    //   _showErrorDialog(context, "Please fill in all required fields.");
-    //   return;
-    // }
+  String to24HourFormat(String input) {
+    try {
+      final time = TimeOfDay(
+        hour: int.parse(input.split(":")[0]),
+        minute: int.parse(input.split(":")[1].split(" ")[0]),
+      );
+      final period =
+          input.toUpperCase().contains("PM") && time.hour < 12 ? 12 : 0;
+      final hour = (time.hour + period) % 24;
+      return '${hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+    } catch (_) {
+      return input;
+    }
+  }
 
+  void printFormData() {
+    print('--- Runsheet Form Data ---');
+    print('Date: ${dateController.text}');
+    print('Shift: $selectedShift');
+    print('Driver Name: ${driverNameController.text}');
+    print('Email: ${emailController.text}');
+    print('Site: $selectedSite (ID: ${_getSiteIdFromName(selectedSite)})');
+    print('Shape: $selectedShape (ID: ${_getShapeIdFromName(selectedShape)})');
+    print('Rego: ${regoController.text}');
+    print('Shift Start Time: ${startTimeController.text}');
+    print('Shift End Time: ${endTimeController.text}');
+    print('Loads Done: ${loadCountController.text}');
+    print('Number of Breaks: $numberOfBreaks');
+    for (int i = 0; i < breakStartControllers.length; i++) {
+      print(
+          'Break ${i + 1}: Start - ${breakStartControllers[i].text}, End - ${breakEndControllers[i].text}');
+    }
+    print('File Name: $fileName');
+    print('-------------------------');
+  }
+
+  Future<void> submitRunsheetForm(BuildContext context) async {
     _showLoadingDialog(context);
 
+    if (selectedFile == null) {
+      Navigator.pop(context);
+      _showErrorDialog(context, "Please upload a valid load sheet file.");
+      return;
+    }
+
+    if (dateController.text.isEmpty ||
+        selectedShift.isEmpty ||
+        driverNameController.text.isEmpty ||
+        emailController.text.isEmpty ||
+        selectedSite.isEmpty ||
+        selectedShape.isEmpty ||
+        regoController.text.isEmpty ||
+        startTimeController.text.isEmpty ||
+        endTimeController.text.isEmpty) {
+      Navigator.pop(context);
+      _showErrorDialog(context, "Please fill in all required fields.");
+      return;
+    }
+
     try {
-      // DEBUG: Print controller data
-      print("====== SUBMITTING RUNSHEET FORM ======");
-      print("Date: ${dateController.text}");
-      print("Shift Type: $selectedShift");
-      print("Driver Name: ${driverNameController.text}");
-      print("Email: ${emailController.text}");
-      print("Site: $selectedSite");
-      print("Shape: $selectedShape");
-      print("Rego: ${regoController.text}");
-      print("Start Time: ${startTimeController.text}");
-      print("End Time: ${endTimeController.text}");
-      print("Loads Done: ${loadCountController.text}");
-      print("Breaks Taken: $numberOfBreaks");
-      print("Uploaded File: $fileName");
-      print("Created On: ${DateTime.now().toIso8601String()}");
-      print("======================================");
+      final startTime = to24HourFormat(startTimeController.text);
+      final endTime = to24HourFormat(endTimeController.text);
+
+      if (startTime == endTime) {
+        Navigator.pop(context);
+        _showErrorDialog(
+            context, "Start time and end time cannot be the same.");
+        return;
+      }
+
+      List<ShiftBreak> breaks = [];
+      for (int i = 0; i < numberOfBreaks; i++) {
+        final rawStart = breakStartControllers[i].text;
+        final rawEnd = breakEndControllers[i].text;
+
+        if (rawStart.isEmpty || rawEnd.isEmpty) continue;
+
+        final start = to24HourFormat(rawStart);
+        final end = to24HourFormat(rawEnd);
+
+        final startDt = DateTime.parse("2025-01-01 $start:00");
+        final endDt = DateTime.parse("2025-01-01 $end:00");
+
+        if (!endDt.isAfter(startDt)) {
+          Navigator.pop(context);
+          _showErrorDialog(
+              context, "Break ${i + 1}: End time must be after start time.");
+          return;
+        }
+
+        breaks.add(ShiftBreak(startTime: start, endTime: end));
+      }
 
       final runsheetModel = RunsheetModel(
         shiftDate: dateController.text,
@@ -122,20 +186,22 @@ class RunsheetFormController {
         site: _getSiteIdFromName(selectedSite),
         shape: _getShapeIdFromName(selectedShape),
         rego: regoController.text,
-        shiftStartTime: startTimeController.text,
-        shiftEndTime: endTimeController.text,
+        shiftStartTime: startTime,
+        shiftEndTime: endTime,
         loadsDone: int.tryParse(loadCountController.text) ?? 0,
-        breaksTaken: numberOfBreaks,
-        loadSheet: fileName ?? '',
+        breaksTaken: breaks.length,
+        shiftBreaks: breaks,
         isActive: true,
         createdOn: DateTime.now().toIso8601String(),
-        createdBy: 1, // session.userId ?? 1,
+        createdBy: 1,
       );
 
-      bool success = await RunsheetModel.submitRunsheet(runsheetModel);
+      printFormData();
+
+      bool success =
+          await RunsheetModel.submitRunsheet(runsheetModel, selectedFile!);
 
       Navigator.pop(context);
-
       _showSuccessDialog(context, success);
     } catch (e) {
       Navigator.pop(context);
@@ -152,14 +218,13 @@ class RunsheetFormController {
     emailController.clear();
     loadCountController.clear();
     commentController.clear();
-
     fileName = null;
+    selectedFile = null;
     selectedShift = '';
     selectedSite = '';
     selectedShape = '';
     selectedBreakValue = '';
     numberOfBreaks = 0;
-
     breakStartControllers.clear();
     breakEndControllers.clear();
   }
@@ -177,12 +242,12 @@ class RunsheetFormController {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Error'),
+        title: const Text('Error'),
         content: Text(message),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('OK'),
+            child: const Text('OK'),
           ),
         ],
       ),
@@ -198,7 +263,7 @@ class RunsheetFormController {
           success
               ? "Runsheet form submitted successfully."
               : "Failed to submit runsheet form. Please try again.",
-          style: TextStyle(fontSize: 15),
+          style: const TextStyle(fontSize: 15),
         ),
         actions: [
           TextButton(
@@ -208,7 +273,7 @@ class RunsheetFormController {
                 Get.to(context, () => DailyformPage(session: session));
               }
             },
-            child: Text("OK"),
+            child: const Text("OK"),
           ),
         ],
       ),
@@ -224,7 +289,6 @@ class RunsheetFormController {
     emailController.dispose();
     loadCountController.dispose();
     commentController.dispose();
-
     for (final c in breakStartControllers) {
       c.dispose();
     }
