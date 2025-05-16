@@ -87,15 +87,29 @@ class RunsheetFormController {
 
   String to24HourFormat(String input) {
     try {
-      final time = TimeOfDay(
-        hour: int.parse(input.split(":")[0]),
-        minute: int.parse(input.split(":")[1].split(" ")[0]),
-      );
-      final period =
-          input.toUpperCase().contains("PM") && time.hour < 12 ? 12 : 0;
-      final hour = (time.hour + period) % 24;
-      return '${hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-    } catch (_) {
+      input = input.trim().toUpperCase();
+      final regExp = RegExp(r'^(\d{1,2}):(\d{2})(?:\s?(AM|PM))?$');
+      final match = regExp.firstMatch(input);
+
+      if (match == null) {
+        return input;
+      }
+
+      int hour = int.parse(match.group(1)!);
+      int minute = int.parse(match.group(2)!);
+      String? meridiem = match.group(3);
+
+      if (meridiem != null) {
+        if (meridiem == 'AM') {
+          if (hour == 12) hour = 0;
+        } else if (meridiem == 'PM') {
+          if (hour != 12) hour += 12;
+        }
+      }
+
+      // Return with seconds (:00) appended
+      return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:00';
+    } catch (e) {
       return input;
     }
   }
@@ -165,8 +179,8 @@ class RunsheetFormController {
         final start = to24HourFormat(rawStart);
         final end = to24HourFormat(rawEnd);
 
-        final startDt = DateTime.parse("2025-01-01 $start:00");
-        final endDt = DateTime.parse("2025-01-01 $end:00");
+        final startDt = DateTime.parse("2025-01-01 $start");
+        final endDt = DateTime.parse("2025-01-01 $end");
 
         if (!endDt.isAfter(startDt)) {
           Navigator.pop(context);
