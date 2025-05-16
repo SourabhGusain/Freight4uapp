@@ -29,6 +29,7 @@ class RunsheetFormController {
 
   String? fileName;
   File? selectedFile;
+  int userId = 0;
 
   SettingsModel? settings;
   final Session session = Session();
@@ -207,7 +208,7 @@ class RunsheetFormController {
         shiftBreaks: breaks,
         isActive: true,
         createdOn: DateTime.now().toIso8601String(),
-        createdBy: 1,
+        createdBy: userId,
       );
 
       printFormData();

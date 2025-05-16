@@ -6,7 +6,7 @@ class SettingsModel {
   final List<Contract> contracts;
   final List<Shape> shapes;
   final List<Site> sites;
-  final List<dynamic> depots;
+  final List<Depot> depots;
 
   SettingsModel({
     required this.ok,
@@ -23,7 +23,7 @@ class SettingsModel {
           (json['contracts'] as List).map((e) => Contract.fromJson(e)).toList(),
       shapes: (json['shapes'] as List).map((e) => Shape.fromJson(e)).toList(),
       sites: (json['sites'] as List).map((e) => Site.fromJson(e)).toList(),
-      depots: json['depots'] ?? [],
+      depots: (json['depots'] as List).map((e) => Depot.fromJson(e)).toList(),
     );
   }
 }
@@ -97,6 +97,32 @@ class Site {
 
   factory Site.fromJson(Map<String, dynamic> json) {
     return Site(
+      id: json['id'],
+      name: json['name'],
+      isActive: json['is_active'],
+      createdOn: json['created_on'],
+      createdBy: json['created_by'],
+    );
+  }
+}
+
+class Depot {
+  final int id;
+  final String name;
+  final bool isActive;
+  final String createdOn;
+  final dynamic createdBy;
+
+  Depot({
+    required this.id,
+    required this.name,
+    required this.isActive,
+    required this.createdOn,
+    this.createdBy,
+  });
+
+  factory Depot.fromJson(Map<String, dynamic> json) {
+    return Depot(
       id: json['id'],
       name: json['name'],
       isActive: json['is_active'],

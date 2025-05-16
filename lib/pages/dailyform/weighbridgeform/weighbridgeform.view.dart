@@ -1,15 +1,13 @@
 import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
-import 'package:signature/signature.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:Freight4u/widgets/ui.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/widgets/form.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
-import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
-import 'package:Freight4u/pages/dailyform/runsheetform/runsheetform.controller.dart';
+import 'package:Freight4u/pages/dailyform/Weighbridgeform/Weighbridgeform.controller.dart';
 
 class WeighbridgePage extends StatefulWidget {
   const WeighbridgePage({super.key});
@@ -19,31 +17,22 @@ class WeighbridgePage extends StatefulWidget {
 }
 
 class _WeighbridgePageState extends State<WeighbridgePage> {
+  final WeighbridgeController _formController = WeighbridgeController();
   int _currentIndex = 0;
-  String _selectedDepo = '';
-  final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _timeController = TextEditingController();
 
-  String? fileName;
-
-  Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles();
-
-    if (result != null && result.files.isNotEmpty) {
-      setState(() {
-        final pickedFile = result.files.first;
-        fileName =
-            "${pickedFile.name} (${(pickedFile.size / 1024).toStringAsFixed(1)} KB)";
-      });
-    } else {
-      // User canceled the picker
-    }
+  @override
+  void initState() {
+    super.initState();
+    _formController.init().then((_) {
+      _formController.dateController.text =
+          DateTime.now().toString().substring(0, 16);
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
-    _dateController.dispose();
-    _timeController.dispose();
+    _formController.dispose();
     super.dispose();
   }
 
@@ -55,122 +44,84 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
       builder: (context, ctrl, child) {
         return SafeArea(
           child: Scaffold(
-            backgroundColor: const Color.fromARGB(255, 252, 253, 255),
+            backgroundColor: const Color(0xFFFCFDFF),
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(65),
-              child: secondaryNavBar(
-                context,
-                "Weighbridge & Load Pic",
-              ),
+              child: secondaryNavBar(context, "Weighbridge & Load Pic"),
             ),
             body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    textH1("Forms:"),
-                    const SizedBox(height: 15),
-                    SizedBox(
-                      height: 50,
-                      child: textField("Full Name"),
-                    ),
-                    const SizedBox(height: 15),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            height: 50,
-                            child: calendarDateField(
-                              context: context,
-                              label: "Date",
-                              controller: _dateController,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 15),
-                        Expanded(
-                          child: SizedBox(
-                            height: 50,
-                            child: customTypeSelector(
-                              context: context,
-                              text: "Select Depo",
-                              hintText: "Depo",
-                              dropdownTypes: ['Day Shift', 'Night Shift'],
-                              selectedValue: _selectedDepo,
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedDepo = value;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 15),
-                    SizedBox(height: 50, child: textField("Driver Name")),
-                    const SizedBox(height: 15),
-                    textH3("Weighbridge Docket- Upload here",
-                        font_weight: FontWeight.w400),
-                    GestureDetector(
-                      onTap: _pickFile,
-                      child: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: textH3(
-                            fileName ?? "Browse File Here",
-                            color: blackColor,
-                            font_size: 15,
-                            font_weight: FontWeight.w500,
-                          ),
-                        ),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  textH1("Forms:"),
+                  const SizedBox(height: 15),
+
+                  // Full Name
+                  _buildTextField("Full Name", _formController.nameController),
+
+                  const SizedBox(height: 15),
+
+                  // Date + Depo Row
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildCalendarField(
+                            "Date", _formController.dateController),
                       ),
-                    ),
-                    const SizedBox(height: 15),
-                    textH3("Load Pic & Matching Load Sheet - Upload here",
-                        font_weight: FontWeight.w400),
-                    GestureDetector(
-                      onTap: _pickFile,
-                      child: Container(
-                        height: 50,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: textH3(
-                            fileName ?? "Browse File Here",
-                            color: blackColor,
-                            font_size: 15,
-                            font_weight: FontWeight.w500,
-                          ),
-                        ),
+                      const SizedBox(width: 15),
+                      Expanded(
+                        child: _buildDepotDropdown(),
                       ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  // Driver Name
+                  _buildTextField(
+                      "Driver Name", _formController.drivernameController),
+
+                  const SizedBox(height: 15),
+
+                  // Weighbridge Docket
+                  _buildFileUploadSection(
+                    label: "Weighbridge Docket - Upload here",
+                    fileName: _formController.weighbridgeFileName,
+                    onTap: () async {
+                      await _formController.pickWeighbridgeFile();
+                      setState(() {});
+                    },
+                  ),
+
+                  const SizedBox(height: 15),
+
+                  // Load Pic Upload
+                  _buildFileUploadSection(
+                    label: "Load Pic & Matching Load Sheet - Upload here",
+                    fileName: _formController.loadPicFileName,
+                    onTap: () async {
+                      await _formController.pickLoadPicFile();
+                      setState(() {});
+                    },
+                  ),
+
+                  const SizedBox(height: 50),
+
+                  // Save Button
+                  SizedBox(
+                    height: 45,
+                    width: double.infinity,
+                    child: darkButton(
+                      buttonText("Save", color: whiteColor),
+                      primary: primaryColor,
+                      onPressed: () async {
+                        await _formController.submitWeighbridgeForm(context);
+                        setState(() {});
+                      },
                     ),
-                    const SizedBox(height: 50),
-                    SizedBox(
-                      height: 45,
-                      width: double.infinity,
-                      child: darkButton(
-                        buttonText("Save", color: whiteColor),
-                        primary: primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             bottomNavigationBar: customBottomNavigationBar(
@@ -180,6 +131,75 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller) {
+    return SizedBox(
+      height: 50,
+      child: textField(label, controller: controller),
+    );
+  }
+
+  Widget _buildCalendarField(String label, TextEditingController controller) {
+    return SizedBox(
+      height: 50,
+      child: calendarDateField(
+        context: context,
+        label: label,
+        controller: controller,
+      ),
+    );
+  }
+
+  Widget _buildDepotDropdown() {
+    return SizedBox(
+      height: 50,
+      child: customTypeSelector(
+        context: context,
+        text: "Select Depo",
+        hintText: "Depo",
+        dropdownTypes: _formController.depotNames,
+        selectedValue: _formController.selectedDepot,
+        onChanged: (value) {
+          setState(() {
+            _formController.selectedDepot = value ?? '';
+          });
+        },
+      ),
+    );
+  }
+
+  Widget _buildFileUploadSection({
+    required String label,
+    required String? fileName,
+    required VoidCallback onTap,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        textH3(label, font_weight: FontWeight.w400),
+        const SizedBox(height: 8),
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black),
+              borderRadius: BorderRadius.circular(5),
+              color: Colors.white,
+            ),
+            child: Center(
+              child: textH3(
+                fileName ?? "Browse File Here",
+                color: blackColor,
+                font_size: 15,
+                font_weight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
