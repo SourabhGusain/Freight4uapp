@@ -8,11 +8,12 @@ import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/pages/dailyform/dailyform.view.dart';
 import 'package:intl/intl.dart';
 import 'package:Freight4u/models/weighbridge.model.dart';
+import 'package:Freight4u/widgets/form.dart';
 
 class WeighbridgeController extends BaseViewModel {
   final nameController = TextEditingController();
   final dateController = TextEditingController();
-  final drivernameController = TextEditingController();
+  final regoController = TextEditingController();
 
   String selectedDepot = '';
   SettingsModel? settings;
@@ -29,7 +30,7 @@ class WeighbridgeController extends BaseViewModel {
     try {
       settings = await fetchSettingsData();
       notifyListeners();
-      print(depotNames);
+      print("Available Depots: ${depotNames.join(', ')}");
     } catch (e) {
       print('Failed to load settings: $e');
     }
@@ -37,6 +38,14 @@ class WeighbridgeController extends BaseViewModel {
 
   List<String> get depotNames =>
       settings?.depots.map((d) => d.name).toList() ?? [];
+
+  int _getDepotIdFromName(String depotName) {
+    final depot = settings?.depots.firstWhere(
+      (c) => c.name == depotName,
+      orElse: () => Depot(id: 0, name: '', isActive: false, createdOn: ''),
+    );
+    return depot?.id ?? 0;
+  }
 
   Future<void> pickWeighbridgeFile() async {
     await _pickFile(isWeighbridge: true);
@@ -68,7 +77,7 @@ class WeighbridgeController extends BaseViewModel {
   bool isFormValid() {
     return nameController.text.trim().isNotEmpty &&
         dateController.text.trim().isNotEmpty &&
-        drivernameController.text.trim().isNotEmpty &&
+        regoController.text.trim().isNotEmpty &&
         selectedDepot.trim().isNotEmpty &&
         weighbridgeFile != null &&
         loadPicFile != null;
@@ -87,16 +96,28 @@ class WeighbridgeController extends BaseViewModel {
       final userIdStr = await session.getSession("userId");
       final userId = int.tryParse(userIdStr ?? '');
 
+      final depotId = _getDepotIdFromName(selectedDepot);
+
       final model = WeighbridgeModel(
         date: dateController.text.trim(),
         name: nameController.text.trim(),
-        drivername: drivernameController.text.trim(),
-        depot: selectedDepot.trim(),
+        rego: regoController.text.trim(),
+        depot: depotId.toString(), // Pass depot ID as string
         weighbridgeDocketFile: weighbridgeFile,
         loadPicAndSheetFile: loadPicFile,
         createdOn: DateFormat('yyyy-MM-dd').format(DateTime.now()),
         createdBy: userId,
       );
+
+      print('Submitting the following data:');
+      print('Date: ${model.date}');
+      print('Name: ${model.name}');
+      print('Driver Name: ${model.rego}');
+      print('Depot (ID): ${model.depot}');
+      print('Weighbridge File: ${model.weighbridgeDocketFile?.path}');
+      print('Load Pic File: ${model.loadPicAndSheetFile?.path}');
+      print('Created On: ${model.createdOn}');
+      print('Created By (User ID): ${model.createdBy}');
 
       final success = await WeighbridgeModel.submitWeighbridge(model);
 
@@ -116,7 +137,7 @@ class WeighbridgeController extends BaseViewModel {
   void reset() {
     nameController.clear();
     dateController.clear();
-    drivernameController.clear();
+    regoController.clear();
     selectedDepot = '';
     weighbridgeFile = null;
     weighbridgeFileName = null;
@@ -139,8 +160,8 @@ class WeighbridgeController extends BaseViewModel {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Error'),
-        content: Text(message),
+        title: textH1("Missing Information", font_size: 20),
+        content: textH3(message, font_size: 14, font_weight: FontWeight.w400),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -181,7 +202,7 @@ class WeighbridgeController extends BaseViewModel {
   void dispose() {
     nameController.dispose();
     dateController.dispose();
-    drivernameController.dispose();
+    regoController.dispose();
     super.dispose();
   }
 }

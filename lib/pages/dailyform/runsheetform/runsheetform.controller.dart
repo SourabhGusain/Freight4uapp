@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:Freight4u/widgets/form.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/helpers/values.dart';
@@ -139,12 +140,6 @@ class RunsheetFormController {
   Future<void> submitRunsheetForm(BuildContext context) async {
     _showLoadingDialog(context);
 
-    if (selectedFile == null) {
-      Navigator.pop(context);
-      _showErrorDialog(context, "Please upload a valid load sheet file.");
-      return;
-    }
-
     if (dateController.text.isEmpty ||
         selectedShift.isEmpty ||
         driverNameController.text.isEmpty ||
@@ -156,6 +151,12 @@ class RunsheetFormController {
         endTimeController.text.isEmpty) {
       Navigator.pop(context);
       _showErrorDialog(context, "Please fill in all required fields.");
+      return;
+    }
+
+    if (selectedFile == null) {
+      Navigator.pop(context);
+      _showErrorDialog(context, "Please upload a valid load sheet file.");
       return;
     }
 
@@ -257,8 +258,8 @@ class RunsheetFormController {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Error'),
-        content: Text(message),
+        title: textH1("Missing Information", font_size: 20),
+        content: textH3(message, font_size: 14, font_weight: FontWeight.w400),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),

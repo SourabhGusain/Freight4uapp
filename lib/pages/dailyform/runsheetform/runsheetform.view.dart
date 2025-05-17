@@ -40,13 +40,6 @@ class _RunsheetPageState extends State<RunsheetPage> {
     super.dispose();
   }
 
-  String? _requiredValidator(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'This field is required';
-    }
-    return null;
-  }
-
   Future<void> _pickFile() async {
     setState(() => _isPickingFile = true);
     try {
@@ -128,7 +121,7 @@ class _RunsheetPageState extends State<RunsheetPage> {
                         child: textField(
                           "Driver Name",
                           controller: _formController.driverNameController,
-                          validator: _requiredValidator,
+                          // validator removed
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -138,7 +131,7 @@ class _RunsheetPageState extends State<RunsheetPage> {
                           "Email",
                           hintText: "e.g. xyz@gmail.com",
                           controller: _formController.emailController,
-                          validator: _requiredValidator,
+                          // validator removed
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -174,7 +167,7 @@ class _RunsheetPageState extends State<RunsheetPage> {
                           "Rego",
                           hintText: "e.g. Au1233",
                           controller: _formController.regoController,
-                          validator: _requiredValidator,
+                          // validator removed
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -214,7 +207,7 @@ class _RunsheetPageState extends State<RunsheetPage> {
                           "Enter how many loads have you done?",
                           hintText: "e.g. 10, 20, etc.",
                           controller: _formController.loadCountController,
-                          validator: _requiredValidator,
+                          // validator removed
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -314,9 +307,8 @@ class _RunsheetPageState extends State<RunsheetPage> {
                           buttonText("Save", color: whiteColor),
                           primary: primaryColor,
                           onPressed: () {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              _formController.submitRunsheetForm(context);
-                            }
+                            // Validation removed, so just call submit directly
+                            _formController.submitRunsheetForm(context);
                           },
                         ),
                       ),

@@ -8,8 +8,8 @@ class FuelReceiptModel {
   final String name;
   final String date; // yyyy-MM-dd
   final String rego;
-  final String paymentWithFuelCard; // should be 'YES' or 'NO'
-  final File fuelReceipt; // required file
+  final String paymentWithFuelCard; // 'YES' or 'NO'
+  final File fuelReceipt; // file to upload
   final bool isActive;
   final String createdOn; // yyyy-MM-dd
   final int? createdBy;
@@ -35,8 +35,9 @@ class FuelReceiptModel {
       'date': date,
       'rego': rego,
       'payment_with_fuel_card': paymentWithFuelCard,
+      // Assuming your Api helper can handle File directly for multipart
       'fuel_receipt': fuelReceipt,
-      'is_active': isActive.toString(),
+      'is_active': isActive ? '1' : '0', // use '1'/'0' if API expects it
       'created_on':
           createdOn.contains('T') ? createdOn.split('T').first : createdOn,
     };

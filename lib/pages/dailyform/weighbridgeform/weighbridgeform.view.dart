@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -25,7 +26,7 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
     super.initState();
     _formController.init().then((_) {
       _formController.dateController.text =
-          DateTime.now().toString().substring(0, 16);
+          DateFormat('yyyy-MM-dd').format(DateTime.now());
       setState(() {});
     });
   }
@@ -80,7 +81,7 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
 
                   // Driver Name
                   _buildTextField(
-                      "Driver Name", _formController.drivernameController),
+                      "Driver Name", _formController.regoController),
 
                   const SizedBox(height: 15),
 

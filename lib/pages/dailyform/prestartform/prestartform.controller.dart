@@ -35,7 +35,7 @@ class PrestartFormController {
     try {
       settings = await fetchSettingsData();
       String? userId = await session.getSession("userId");
-      // print(userId);
+      print(userId);
     } catch (e) {
       print('Failed to load settings: $e');
     }
@@ -64,6 +64,38 @@ class PrestartFormController {
   }
 
   Future<void> submitPrestartForm(BuildContext context) async {
+    // Validate required fields first
+    if (fullNameController.text.trim().isEmpty ||
+        regoNameController.text.trim().isEmpty ||
+        dateController.text.trim().isEmpty ||
+        timeController.text.trim().isEmpty ||
+        selectedContractor.isEmpty ||
+        selectedShape.isEmpty ||
+        hasValidLicense == null ||
+        isFitForTask == null ||
+        noMedicalCondition == null ||
+        had24HrRest == null ||
+        had10HrBreak == null ||
+        noSubstanceUse == null ||
+        noInfringements == null ||
+        fitForTaskRepeat == null) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: textH1("Missing Information", font_size: 20),
+          content: textH3("Please fill all required fields before submitting.",
+              font_size: 14, font_weight: FontWeight.w400),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: textH3("OK"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -99,7 +131,6 @@ class PrestartFormController {
     Navigator.pop(context);
 
     if (success) {
-      // Show success dialog
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
@@ -120,7 +151,6 @@ class PrestartFormController {
         ),
       );
     } else {
-      // Show error dialog
       showDialog(
         context: context,
         builder: (context) => AlertDialog(

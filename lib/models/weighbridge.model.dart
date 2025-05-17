@@ -5,7 +5,7 @@ import 'package:Freight4u/helpers/values.dart';
 class WeighbridgeModel {
   final String date;
   final String name;
-  final String drivername;
+  final String rego;
   final String depot;
   final File? weighbridgeDocketFile;
   final File? loadPicAndSheetFile;
@@ -16,7 +16,7 @@ class WeighbridgeModel {
   WeighbridgeModel({
     required this.date,
     required this.name,
-    required this.drivername,
+    required this.rego,
     required this.depot,
     this.weighbridgeDocketFile,
     this.loadPicAndSheetFile,
@@ -29,7 +29,7 @@ class WeighbridgeModel {
     final fields = <String, dynamic>{
       'date': date,
       'name': name,
-      'drivername': drivername,
+      'rego': rego,
       'depot': depot,
       'is_active': isActive.toString(),
       'created_on':
