@@ -3,7 +3,9 @@ import 'package:Freight4u/helpers/api.dart';
 import 'package:Freight4u/helpers/values.dart';
 
 class PolicyModel {
+  final int id;
   final String name;
+  final String subtext;
   final String content;
   final DateTime date;
   final bool isActive;
@@ -11,7 +13,9 @@ class PolicyModel {
   final int? createdBy;
 
   PolicyModel({
+    required this.id,
     required this.name,
+    required this.subtext,
     required this.content,
     required this.date,
     required this.isActive,
@@ -21,7 +25,9 @@ class PolicyModel {
 
   factory PolicyModel.fromJson(Map<String, dynamic> json) {
     return PolicyModel(
+      id: json['id'] ?? '',
       name: json['name'] ?? '',
+      subtext: json['subtext'] ?? '',
       content: json['content'] ?? '',
       date: DateTime.parse(json['date']),
       isActive: json['is_active'] ?? true,
@@ -42,10 +48,11 @@ class PolicyService {
 
   Future<List<PolicyModel>> fetchPolicies() async {
     final response = await api.getCalling(
-      "$api_url/api/policies/",
+      "$api_url/policies/",
       (data) => PolicyModel.fromJsonList(data),
     );
 
+    print(response);
     if (response['ok'] == 1) {
       return response['data'];
     } else {
