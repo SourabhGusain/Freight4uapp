@@ -25,6 +25,13 @@ class _DailyformPageState extends State<DailyformPage> {
   int _currentIndex = 0;
   bool _isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    // Print the session data once the page is loaded
+    print("Session Data: ${widget.session}");
+  }
+
   Future<void> _navigateWithLoading(Widget page) async {
     setState(() => _isLoading = true);
 
@@ -115,7 +122,7 @@ class _DailyformPageState extends State<DailyformPage> {
                   color: Colors.black.withOpacity(0.5),
                   child: const Center(
                     child: CircularProgressIndicator(
-                      color: Colors.blue, // your primary color here
+                      color: Colors.blue,
                     ),
                   ),
                 ),

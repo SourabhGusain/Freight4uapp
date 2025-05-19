@@ -163,14 +163,17 @@ Widget textField(String labelText,
     onChanged: onChanged,
     onTap: onTap,
     decoration: InputDecoration(
-        counterText: "",
-        prefixText: prefixText, // Prefix text
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        labelText: labelText,
-        hintText: hintText,
-        hintStyle: const TextStyle(fontWeight: FontWeight.w400)),
+      counterText: "",
+      prefixText: prefixText, // Prefix text
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      labelText: labelText,
+      hintText: hintText,
+      hintStyle: const TextStyle(
+          fontWeight: FontWeight.w400,
+          color: Color.fromARGB(255, 108, 108, 108)),
+    ),
   );
 }
 

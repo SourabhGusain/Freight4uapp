@@ -23,52 +23,92 @@ class LoginController extends BaseViewModel {
     final mobile = mobileController.text.trim();
     final password = passwordController.text.trim();
 
-    // Validate mobile number
     if (mobile.isEmpty) {
       mobileError = "Mobile number is required";
     } else if (mobile.length != 10 || int.tryParse(mobile) == null) {
       mobileError = "Enter a valid 10-digit mobile number";
     }
 
-    // Validate password
     if (password.isEmpty) {
       passwordError = "Password is required";
     } else if (password.length < 4) {
       passwordError = "Password must be at least 4 characters";
     }
 
-    // Notify listeners when there are validation changes
     notifyListeners();
     return mobileError == null && passwordError == null;
   }
 
-  Future<bool> login() async {
-    // First validate inputs
-    if (!validateInputs()) return false;
+  Future<bool> login(BuildContext context) async {
+    // Validate inputs first
+    if (!validateInputs()) {
+      // Show dialog for errors
+      String errorMsg = '';
+      if (mobileError != null) errorMsg += '$mobileError\n';
+      if (passwordError != null) errorMsg += '$passwordError';
 
-    setBusy(true); // Start the busy state
+      await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Input Error'),
+          content: Text(errorMsg.trim()),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            )
+          ],
+        ),
+      );
+      return false;
+    }
+
+    setBusy(true);
 
     final mobile = mobileController.text.trim();
     final password = passwordController.text.trim();
 
-    debugPrint("Mobile: $mobile");
-    debugPrint("Password: $password");
-
     try {
-      // Call the login API and get user data
       DriverModel? user = await DriverModel.loginApi(mobile, password);
+
+      setBusy(false);
 
       if (user != null) {
         driver = user;
-        setBusy(false);
         return true;
       } else {
-        setBusy(false);
+        await showDialog(
+          context: context,
+          builder: (_) => AlertDialog(
+            title: const Text('Login Failed'),
+            content: const Text('Incorrect mobile number or password.'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              )
+            ],
+          ),
+        );
         return false;
       }
     } catch (e) {
-      debugPrint("Login error: $e");
       setBusy(false);
+
+      await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Error'),
+          content: Text('Login failed due to an error: $e'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            )
+          ],
+        ),
+      );
+
       return false;
     }
   }

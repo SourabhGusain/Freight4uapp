@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:Freight4u/helpers/session.dart';
-import 'package:Freight4u/widgets/ui.dart';
+// import 'package:Freight4u/widgets/ui.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
-import 'package:Freight4u/pages/format/format.controller.dart';
+import 'package:Freight4u/pages/profile/profile.controller.dart';
 
 class ProfilePage extends StatefulWidget {
   final Session session;
@@ -21,7 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<FormatController>.reactive(
-      viewModelBuilder: () => FormatController(),
+      viewModelBuilder: () => FormatController(widget.session),
       onViewModelReady: (controller) => controller.init(),
       builder: (context, ctrl, child) {
         return SafeArea(
@@ -29,7 +29,7 @@ class _ProfilePageState extends State<ProfilePage> {
             backgroundColor: const Color(0xFFF5F7FA),
             body: Column(
               children: [
-                _buildHeader(),
+                _buildHeader(ctrl, context),
                 Expanded(
                   child: SingleChildScrollView(
                     padding:
@@ -37,8 +37,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _buildProfileInfoCard(),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 10),
                         textH1("Settings", font_size: 18),
                         const SizedBox(height: 10),
                         _buildProfileOptions(context),
@@ -58,12 +57,11 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(FormatController ctrl, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
       child: Stack(
         children: [
-          // Background container with gradient
           Container(
             height: 100,
             decoration: BoxDecoration(
@@ -114,85 +112,38 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        textH1("John Doe",
+                        // Use data from controller
+                        textH2(ctrl.name,
                             color: whiteColor,
-                            font_size: 18,
-                            font_weight: FontWeight.w600),
+                            font_size: 15,
+                            font_weight: FontWeight.w700),
                         const SizedBox(height: 6),
                         textH3(
                           "Driver / Freight Operator",
                           color: whiteColor,
-                          font_size: 13,
+                          font_size: 11,
                         ),
                       ],
                     ),
                   ),
 
+                  // Changed icon here from edit to info_outline
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.15),
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.edit_outlined,
+                      onPressed: () {
+                        _showCustomerDetailsDialog(context, ctrl);
+                      },
+                      icon: const Icon(Icons.info_outline,
                           color: Colors.white, size: 22),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProfileInfoCard() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: whiteColor,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              textH2("Email:", color: primaryColor),
-              textH2("johndoe@example.com",
-                  color: primaryColor, font_weight: FontWeight.w500),
-            ],
-          ),
-          const SizedBox(
-            height: 6,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              textH2("Phone:", color: primaryColor),
-              textH2("+61 400 000 000",
-                  color: primaryColor, font_weight: FontWeight.w500),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              textH2("Employee ID:", color: primaryColor),
-              textH2("F4U-001234",
-                  color: primaryColor, font_weight: FontWeight.w500),
-            ],
           ),
         ],
       ),
@@ -252,6 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: Colors.white,
           title: textH1("Log Out", font_size: 20),
           content: subtext("Are you sure you want to log out?",
               font_size: 15, font_weight: FontWeight.w400),
@@ -263,16 +215,130 @@ class _ProfilePageState extends State<ProfilePage> {
             TextButton(
               child: textH2("Log Out", color: primaryColor),
               onPressed: () async {
-                await widget.session.removeSession("loggedInUserKey");
-                // await widget.session.removeSession('user_id');
+                // Remove the session key
+                bool removed =
+                    await widget.session.removeSession('loggedInUser');
+                print('Session key removed: $removed');
 
+                // Double check if the session key still exists
+                bool stillExists =
+                    await widget.session.hasSession('loggedInUser');
+                if (!stillExists) {
+                  print('Session successfully cleared.');
+                } else {
+                  print('Session key still exists after removal!');
+                }
+
+                // Close the dialog
                 Navigator.of(context).pop();
 
+                // Navigate to login page
                 Get.to(
                   context,
                   () => LoginPage(session: widget.session),
                 );
               },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showCustomerDetailsDialog(BuildContext context, FormatController ctrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              const Icon(Icons.account_circle, color: primaryColor),
+              const SizedBox(width: 8),
+              textH1(
+                "Employee Details",
+                font_size: 20,
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Divider(),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  textH2("Name:",
+                      font_size: 15,
+                      font_weight: FontWeight.w600,
+                      overflow: TextOverflow.clip),
+                  textH3(" ${ctrl.name}",
+                      font_size: 14,
+                      font_weight: FontWeight.w500,
+                      color: primaryColor),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  textH2("Employee ID:",
+                      font_size: 15, font_weight: FontWeight.w600),
+                  textH3(" ${ctrl.name.split(' ').first}${ctrl.userId}",
+                      font_size: 14,
+                      font_weight: FontWeight.w500,
+                      color: primaryColor),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  textH2("Email:", font_size: 15, font_weight: FontWeight.w600),
+                  textH3(" ${ctrl.email}",
+                      font_size: 14,
+                      font_weight: FontWeight.w500,
+                      color: primaryColor),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  textH2("Phone:", font_size: 15, font_weight: FontWeight.w600),
+                  textH3(" ${ctrl.phone}",
+                      font_size: 14,
+                      font_weight: FontWeight.w500,
+                      color: primaryColor),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  textH2("License Number:",
+                      font_size: 15, font_weight: FontWeight.w600),
+                  textH3(" ${ctrl.licenseNumber}",
+                      font_size: 14,
+                      font_weight: FontWeight.w500,
+                      color: primaryColor),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  textH2("Vehicle Number:",
+                      font_size: 15, font_weight: FontWeight.w600),
+                  textH3(" ${ctrl.vehicleNumber}",
+                      font_size: 14,
+                      font_weight: FontWeight.w500,
+                      color: primaryColor),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            Center(
+              child: TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: textH2("Close", color: primaryColor),
+              ),
             ),
           ],
         );
