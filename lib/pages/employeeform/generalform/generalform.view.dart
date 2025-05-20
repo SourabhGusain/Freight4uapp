@@ -17,11 +17,16 @@ class GeneralFormPage extends StatefulWidget {
 class _GeneralFormPageState extends State<GeneralFormPage> {
   final GeneralFormController _controller = GeneralFormController();
   bool isBackLoading = false;
-  bool isLoading = true; // to show loading state
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    print("__________________________________________----check");
+    _controller.init().then((_) {
+      setState(() {});
+    });
+    print("__________________________________________----check");
     _loadUserData();
   }
 
@@ -96,7 +101,6 @@ class _GeneralFormPageState extends State<GeneralFormPage> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      // show loading spinner while session loads
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
@@ -177,7 +181,7 @@ class _GeneralFormPageState extends State<GeneralFormPage> {
                   const SizedBox(height: 10),
                   _field(
                       "Name of Institution",
-                      _controller.institutionNameController,
+                      _controller.nameOfInstitutionController,
                       TextInputType.text),
                   _field("Account Number", _controller.accountNumberController,
                       TextInputType.number),
@@ -213,8 +217,10 @@ class _GeneralFormPageState extends State<GeneralFormPage> {
                       _controller.colesInductionController, TextInputType.text),
                   _dateField("Start Date", _controller.startDateController),
                   _dateField("Expiry Date", _controller.expiryDateController),
-                  _field("Last Employer in 24 Months",
-                      _controller.lastEmployerController, TextInputType.text),
+                  _field(
+                      "Last Employer in 24 Months",
+                      _controller.lastEmployerIn24MonthsController,
+                      TextInputType.text),
                   _field(
                       "Reason for Leaving",
                       _controller.reasonForLeavingController,
@@ -240,7 +246,7 @@ class _GeneralFormPageState extends State<GeneralFormPage> {
                       buttonText("Save", color: whiteColor),
                       primary: primaryColor,
                       onPressed: () {
-                        // Implement save logic here
+                        _controller.submitGeneralForm(context);
                       },
                     ),
                   ),
