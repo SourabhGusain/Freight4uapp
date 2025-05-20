@@ -22,9 +22,9 @@ class VehicleConditionFormController {
   final TextEditingController commentsController = TextEditingController();
 
   File? selectedFile;
-  File? signatureFile;
-
   String? fileName;
+
+  File? signatureFile;
   String? signatureFileName;
 
   String selectedSite = '';
@@ -115,6 +115,7 @@ class VehicleConditionFormController {
       );
 
       bool success = await VehicleConditionReportModel.submitReport(model);
+
       Navigator.pop(context);
       _showSuccessDialog(context, success);
     } catch (e) {

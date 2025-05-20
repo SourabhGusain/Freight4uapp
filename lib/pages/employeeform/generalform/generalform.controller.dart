@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/helpers/session.dart';
@@ -74,10 +75,51 @@ class GeneralFormController {
 
     try {
       final Map<String, dynamic> userData = jsonDecode(userJsonString);
-      nameController.text = userData["name"] ?? "";
-      phoneController.text = userData["phone"] ?? "";
-      emailController.text = userData["email"] ?? "";
-      passwordController.text = userData["password"] ?? "";
+      nameController.text = userData["name"] ?? "John Doe";
+      phoneController.text = userData["phone"] ?? "0412345678";
+      emailController.text = userData["email"] ?? "john.doe@example.com";
+      passwordController.text = userData["password"] ?? "temporary123";
+
+      // dateOfBirthController.text = "1990-01-01";
+      // streetAddressController.text = "123 Main St";
+      // streetAddressLine2Controller.text = "Apt 4B";
+      // cityController.text = "Melbourne";
+      // stateController.text = "VIC";
+      // zipCodeController.text = "3000";
+      // areaCodeController.text = "03";
+
+      // tnfController.text = "TNF-123456";
+
+      // emergencyNameController.text = "Jane Doe";
+      // emergencyRelationshipController.text = "Sister";
+      // emergencyAreaCodeController.text = "03";
+      // emergencyPhoneController.text = "0411222333";
+      // emergencyStreetAddressController.text = "456 Secondary St";
+      // emergencyStreetAddressLine2Controller.text = "Unit 2";
+      // emergencyCityController.text = "Sydney";
+      // emergencyStateController.text = "NSW";
+      // emergencyZipCodeController.text = "2000";
+
+      // nameOfInstitutionController.text = "Commonwealth Bank";
+      // accountNumberController.text = "12345678";
+      // branchBSBController.text = "062000";
+
+      // superfundController.text = "AustralianSuper";
+      // superfundNumberController.text = "987654321";
+      // superfundAccountNameController.text = "John Doe";
+      // superfundBranchBSBController.text = "123456";
+      // superfundAccountNumberController.text = "11223344";
+
+      // sitesPreviouslyWorkedController.text = "Warehouse A, Site B";
+      // colesInductionController.text = "Yes";
+      // startDateController.text = "2024-01-01";
+      // expiryDateController.text = "2025-01-01";
+      // lastEmployerIn24MonthsController.text = "FreightCorp";
+      // reasonForLeavingController.text = "Career growth";
+
+      // referenceNameController.text = "Mark";
+      // referenceLastNameController.text = "Smith";
+      // referencePhoneNumberController.text = "0400111222";
     } catch (e) {
       print('Failed to parse session user data: $e');
     }
@@ -172,7 +214,7 @@ class GeneralFormController {
       "reference_last_name": referenceLastNameController.text,
       "reference_phone_number": referencePhoneNumberController.text,
       "is_active": true,
-      "created_on": DateTime.now().toIso8601String()
+      "created_on": DateFormat('yyyy-MM-dd').format(DateTime.now())
     };
 
     print("🚀 SUBMITTING GENERAL FORM DATA:");

@@ -31,7 +31,7 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
     super.initState();
     _signatureController = SignatureController(
       penColor: Colors.black,
-      penStrokeWidth: 5.0,
+      penStrokeWidth: 3,
       exportBackgroundColor: Colors.transparent,
     );
     DateTime now = DateTime.now();

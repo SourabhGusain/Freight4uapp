@@ -38,6 +38,8 @@ flutter:
       - assets/images/logo.png
       - assets/images/login.png
       - assets/images/profile.jpg
+      - assets/images/inductiontext1.jpg
+      - assets/images/inductiontext2.jpg
       # - assets/icons/
       # - assets/fonts/
       # - assets/strings/

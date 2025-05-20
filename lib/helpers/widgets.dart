@@ -142,7 +142,27 @@ Widget secondaryNavBar(BuildContext context, String pageTitle,
               children: [
                 const SizedBox(width: 10),
                 GestureDetector(
-                  onTap: onBack,
+                  onTap: () async {
+                    // Show loading dialog with primary color spinner
+                    showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (_) => Center(
+                        child: CircularProgressIndicator(
+                          color: primaryColor,
+                        ),
+                      ),
+                    );
+
+                    // Wait for 1 second
+                    await Future.delayed(const Duration(seconds: 1));
+
+                    // Close the loading dialog
+                    Navigator.of(context).pop();
+
+                    // Then call the original onBack callback
+                    onBack();
+                  },
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: const BoxDecoration(
