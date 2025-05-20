@@ -9,6 +9,7 @@ import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
 import 'package:Freight4u/pages/dailyform/prestartform/prestartform.view.dart';
+import 'package:Freight4u/pages/employeeform/generalform/generalform.view.dart';
 
 class EmployeePage extends StatefulWidget {
   final Session session;
@@ -57,8 +58,8 @@ class _EmployeePageState extends State<EmployeePage> {
                       text: "General Form",
                       subtext:
                           "Complete this form daily to record general activity.",
-                      onTap: () =>
-                          Get.to(context, () => const PrestartformPage()),
+                      onTap: () => Get.to(
+                          context, () => GeneralFormPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(

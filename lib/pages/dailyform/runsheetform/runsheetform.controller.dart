@@ -5,8 +5,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/session.dart';
-import 'package:Freight4u/models/settings.model.dart';
-import 'package:Freight4u/models/runsheet.model.dart';
+import 'package:Freight4u/models/dailyformmodels/settings.model.dart';
+import 'package:Freight4u/models/dailyformmodels/runsheet.model.dart';
 import 'package:Freight4u/pages/dailyform/dailyform.view.dart';
 
 class RunsheetFormController {

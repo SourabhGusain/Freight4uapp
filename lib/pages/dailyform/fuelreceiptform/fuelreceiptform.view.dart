@@ -17,6 +17,7 @@ class FuelReceiptPage extends StatefulWidget {
 class _FuelReceiptPageState extends State<FuelReceiptPage> {
   final FuelReceiptFormController _formController = FuelReceiptFormController();
   String? fileName;
+  bool isBackLoading = false;
 
   @override
   void initState() {
@@ -43,6 +44,19 @@ class _FuelReceiptPageState extends State<FuelReceiptPage> {
     super.dispose();
   }
 
+  Future<void> _handleBack() async {
+    setState(() {
+      isBackLoading = true;
+    });
+
+    // Optional small delay so loading spinner is visible
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -50,7 +64,8 @@ class _FuelReceiptPageState extends State<FuelReceiptPage> {
         backgroundColor: const Color(0xFFFCFDFE),
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(65),
-          child: secondaryNavBar(context, "Fuel Receipt Form"),
+          child: secondaryNavBar(context, "Fuel Receipt Form",
+              onBack: _handleBack),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16),

@@ -20,6 +20,7 @@ class WeighbridgePage extends StatefulWidget {
 class _WeighbridgePageState extends State<WeighbridgePage> {
   final WeighbridgeController _formController = WeighbridgeController();
   int _currentIndex = 0;
+  bool isBackLoading = false;
 
   @override
   void initState() {
@@ -37,6 +38,19 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
     super.dispose();
   }
 
+  Future<void> _handleBack() async {
+    setState(() {
+      isBackLoading = true;
+    });
+
+    // Optional small delay so loading spinner is visible
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<FormatController>.reactive(
@@ -48,7 +62,8 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
             backgroundColor: const Color(0xFFFCFDFF),
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(65),
-              child: secondaryNavBar(context, "Weighbridge & Load Pic"),
+              child: secondaryNavBar(context, "Weighbridge & Load Pic",
+                  onBack: _handleBack),
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(16),

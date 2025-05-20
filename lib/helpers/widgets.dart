@@ -121,7 +121,8 @@ Widget primaryNavBar(
   );
 }
 
-Widget secondaryNavBar(context, String pageTitle) {
+Widget secondaryNavBar(BuildContext context, String pageTitle,
+    {required VoidCallback onBack}) {
   return Container(
     height: 65,
     decoration: BoxDecoration(
@@ -140,11 +141,8 @@ Widget secondaryNavBar(context, String pageTitle) {
             Row(
               children: [
                 const SizedBox(width: 10),
-                // Circular back arrow button
                 GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
+                  onTap: onBack,
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: const BoxDecoration(

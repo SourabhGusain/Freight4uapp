@@ -3,11 +3,11 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:Freight4u/helpers/session.dart';
-import 'package:Freight4u/models/settings.model.dart';
+import 'package:Freight4u/models/dailyformmodels/settings.model.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/pages/dailyform/dailyform.view.dart';
 import 'package:intl/intl.dart';
-import 'package:Freight4u/models/weighbridge.model.dart';
+import 'package:Freight4u/models/dailyformmodels/weighbridge.model.dart';
 import 'package:Freight4u/widgets/form.dart';
 
 class WeighbridgeController extends BaseViewModel {

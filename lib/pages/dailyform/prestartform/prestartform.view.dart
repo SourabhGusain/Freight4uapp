@@ -16,6 +16,7 @@ class PrestartformPage extends StatefulWidget {
 class _PrestartformPageState extends State<PrestartformPage> {
   final PrestartFormController _formController = PrestartFormController();
   int _currentIndex = 0;
+  bool isBackLoading = false;
 
   @override
   void initState() {
@@ -36,6 +37,19 @@ class _PrestartformPageState extends State<PrestartformPage> {
     super.dispose();
   }
 
+  Future<void> _handleBack() async {
+    setState(() {
+      isBackLoading = true;
+    });
+
+    // Optional small delay so loading spinner is visible
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -43,8 +57,8 @@ class _PrestartformPageState extends State<PrestartformPage> {
         backgroundColor: const Color.fromARGB(255, 252, 253, 255),
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(65),
-          child:
-              secondaryNavBar(context, "Pre-Start/Fit for Duty Declaration."),
+          child: secondaryNavBar(context, "Pre-Start/Fit for Duty Declaration.",
+              onBack: _handleBack),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),

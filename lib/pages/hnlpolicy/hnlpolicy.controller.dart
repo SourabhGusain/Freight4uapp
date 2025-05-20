@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:Freight4u/models/policy.model.dart';
-import 'package:Freight4u/models/agreement.model.dart';
+import 'package:Freight4u/models/policymodels/policy.model.dart';
+import 'package:Freight4u/models/policymodels/agreement.model.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:signature/signature.dart';
 import 'package:stacked/stacked.dart';

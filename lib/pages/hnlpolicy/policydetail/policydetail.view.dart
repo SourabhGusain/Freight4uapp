@@ -6,7 +6,7 @@ import 'package:Freight4u/widgets/ui.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:Freight4u/helpers/values.dart';
-import 'package:Freight4u/models/policy.model.dart';
+import 'package:Freight4u/models/policymodels/policy.model.dart';
 import 'package:Freight4u/pages/hnlpolicy/hnlpolicy.controller.dart';
 
 class PolicyPage extends StatefulWidget {
@@ -18,6 +18,21 @@ class PolicyPage extends StatefulWidget {
 }
 
 class _PolicyPageState extends State<PolicyPage> {
+  bool isBackLoading = false;
+
+  Future<void> _handleBack() async {
+    setState(() {
+      isBackLoading = true;
+    });
+
+    // Optional small delay so loading spinner is visible
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final markdown = widget.policy.content;
@@ -30,7 +45,8 @@ class _PolicyPageState extends State<PolicyPage> {
           child: Scaffold(
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(65),
-              child: secondaryNavBar(context, widget.policy.name),
+              child: secondaryNavBar(context, widget.policy.name,
+                  onBack: _handleBack),
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),

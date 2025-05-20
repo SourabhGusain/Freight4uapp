@@ -20,6 +20,7 @@ class RunsheetPage extends StatefulWidget {
 class _RunsheetPageState extends State<RunsheetPage> {
   final _formKey = GlobalKey<FormState>();
   final RunsheetFormController _formController = RunsheetFormController();
+  bool isBackLoading = false;
 
   int _currentIndex = 0;
   bool _isPickingFile = false;
@@ -38,6 +39,19 @@ class _RunsheetPageState extends State<RunsheetPage> {
   void dispose() {
     _formController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleBack() async {
+    setState(() {
+      isBackLoading = true;
+    });
+
+    // Optional small delay so loading spinner is visible
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   Future<void> _pickFile() async {
@@ -63,7 +77,7 @@ class _RunsheetPageState extends State<RunsheetPage> {
             backgroundColor: const Color.fromARGB(255, 252, 253, 255),
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(65),
-              child: secondaryNavBar(context, " Runsheet"),
+              child: secondaryNavBar(context, " Runsheet", onBack: _handleBack),
             ),
             body: SingleChildScrollView(
               child: Padding(

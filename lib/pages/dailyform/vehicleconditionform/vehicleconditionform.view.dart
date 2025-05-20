@@ -24,6 +24,7 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
       VehicleConditionFormController();
 
   late SignatureController _signatureController;
+  bool isBackLoading = false;
 
   @override
   void initState() {
@@ -48,6 +49,19 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
     super.dispose();
   }
 
+  Future<void> _handleBack() async {
+    setState(() {
+      isBackLoading = true;
+    });
+
+    // Optional small delay so loading spinner is visible
+    await Future.delayed(const Duration(milliseconds: 400));
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<FormatController>.reactive(
@@ -59,7 +73,8 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
             backgroundColor: const Color.fromARGB(255, 252, 253, 255),
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(65),
-              child: secondaryNavBar(context, "Vehicle Condition Report"),
+              child: secondaryNavBar(context, "Vehicle Condition Report",
+                  onBack: _handleBack),
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),

@@ -120,7 +120,8 @@ class DriverModel {
         }
 
         DriverModel driver = DriverModel.fromJson(data);
-        print('Login successful, Driver data: ${driver.toString()}');
+        print(
+            'Login successful, Driver JSON data: ${jsonEncode(driver.toJson())}');
 
         Session session = Session();
         String driverJsonString = jsonEncode(driver.toJson());

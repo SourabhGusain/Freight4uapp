@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:Freight4u/helpers/session.dart';
-import 'package:Freight4u/models/fuelreceipt.model.dart';
+import 'package:Freight4u/models/dailyformmodels/fuelreceipt.model.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/pages/dailyform/dailyform.view.dart';
 import 'package:Freight4u/helpers/values.dart';
