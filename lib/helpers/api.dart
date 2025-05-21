@@ -158,7 +158,6 @@ class Api {
           print('Field: ${field.key} = ${field.value}');
         });
 
-        // Print all files:
         requestData.files.forEach((file) {
           print('File field: ${file.key}, filename: ${file.value.filename}');
         });

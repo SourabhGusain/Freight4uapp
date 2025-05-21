@@ -6,11 +6,13 @@ import 'package:Freight4u/widgets/form.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
-import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
 import 'package:Freight4u/pages/dailyform/prestartform/prestartform.view.dart';
 import 'package:Freight4u/pages/employeeform/generalform/generalform.view.dart';
 import 'package:Freight4u/pages/employeeform/inductionform/inductionform.view.dart';
+import 'package:Freight4u/pages/employeeform/fitnesschecklist/fitnesschecklist.view.dart';
+import 'package:Freight4u/pages/employeeform/pitbulldocking/pitbulldocking.view.dart';
+import 'package:Freight4u/pages/employeeform/palletoperation/palletoperation.view.dart';
 
 class EmployeePage extends StatefulWidget {
   final Session session;
@@ -89,24 +91,24 @@ class _EmployeePageState extends State<EmployeePage> {
                     customBox(
                       text: "A Drivers Fit for Duty Checklist",
                       subtext: "Ensure you are fit for duty. Complete weekly.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => FitnessChecklistFormPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(
                       text: "Pitbull and Docking Operation SWP Assessment",
                       subtext:
                           "Complete to assess safety during docking operations.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => PitbullDockingSWPFormPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(
-                      text: "EPJ/MPJ",
+                      text: "Manual and Electrical Pallet Operation",
                       subtext:
                           "Record fuel usage and attach the corresponding receipt.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => EPJMPJAssessmentFormPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(

@@ -191,6 +191,8 @@ class _InductionFormPageState extends State<InductionFormPage> {
                       _formcontroller.signatureFile = file;
 
                       await _formcontroller.submitInductionForm(context);
+                      print(
+                          'Signature file: ${_formcontroller.signatureFile?.path}');
                     } else {
                       showDialog(
                         context: context,

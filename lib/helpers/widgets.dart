@@ -253,11 +253,11 @@ Widget customTypeSelector({
               children: [
                 textH1(
                   text,
-                  font_size: 20,
+                  font_size: 16,
                   font_weight: FontWeight.w500,
                   color: blackColor,
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 15),
                 ListView.separated(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -332,13 +332,16 @@ Widget customTypeSelector({
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          textH3(
-            selectedValue.isNotEmpty
-                ? selectedValue
-                : (hintText ?? 'Select an option'),
-            color: selectedValue.isNotEmpty ? blackColor : blackColor,
-            font_size: 15,
-            font_weight: FontWeight.w400,
+          Flexible(
+            child: textH3(
+              selectedValue.isNotEmpty
+                  ? selectedValue
+                  : (hintText ?? 'Select an option'),
+              color: blackColor,
+              font_size: 15,
+              font_weight: FontWeight.w400,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
           const Icon(Icons.arrow_drop_down),
         ],
