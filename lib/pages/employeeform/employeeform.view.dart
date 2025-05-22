@@ -13,6 +13,7 @@ import 'package:Freight4u/pages/employeeform/inductionform/inductionform.view.da
 import 'package:Freight4u/pages/employeeform/fitnesschecklist/fitnesschecklist.view.dart';
 import 'package:Freight4u/pages/employeeform/pitbulldocking/pitbulldocking.view.dart';
 import 'package:Freight4u/pages/employeeform/palletoperation/palletoperation.view.dart';
+import 'package:Freight4u/pages/employeeform/fatigueriskform/fatigueriskform.view.dart';
 
 class EmployeePage extends StatefulWidget {
   final Session session;
@@ -115,8 +116,8 @@ class _EmployeePageState extends State<EmployeePage> {
                       text: "FATIGUE RISK MANAGEMENT",
                       subtext:
                           "Assess fatigue levels and ensure compliance with rest policies.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => FatigueRiskManagementPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(

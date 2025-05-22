@@ -61,10 +61,10 @@ class EPJMPJAssessmentController {
       acknowledgmentDate: acknowledgmentDateController.text.trim(),
       name: nameController.text.trim(),
       q1ManualPalletCheck: selectedQ1ManualPalletCheck.trim(),
-      q2RideOnPalletJack: q2RideOnPalletJack!,
+      q2RideOnPalletJack: q2RideOnPalletJack! ? "Yes" : "No",
       q3SurfaceCheck: selectedQ3SurfaceCheck.trim(),
-      q4PushWithHandle: q4PushWithHandle!,
-      q5EnsureLoadStable: q5EnsureLoadStable!,
+      q4PushWithHandle: q4PushWithHandle! ? "Yes" : "No",
+      q5EnsureLoadStable: q5EnsureLoadStable! ? "Yes" : "No",
       q6IfDifficultToMove: selectedQ6IfDifficultToMove.trim(),
       signature: signatureFile!,
       isActive: true,
@@ -74,7 +74,7 @@ class EPJMPJAssessmentController {
 
     final success = await EPJMPJAssessmentModel.submitForm(model);
 
-    Navigator.pop(context);
+    Navigator.pop(context); // close loading dialog
 
     if (success) {
       _showDialog(context, "Success", "Form submitted successfully.",

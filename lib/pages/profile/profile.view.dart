@@ -1,13 +1,16 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
-import 'package:Freight4u/helpers/session.dart';
-// import 'package:Freight4u/widgets/ui.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:Freight4u/helpers/values.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/profile/profile.controller.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   final Session session;
@@ -18,6 +21,60 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  File? _selectedImage;
+  String? _savedImagePath;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileImage();
+  }
+
+  Future<void> _loadProfileImage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? path = prefs.getString('profile_image_path');
+    if (path != null && File(path).existsSync()) {
+      setState(() {
+        _savedImagePath = path;
+        _selectedImage = File(path);
+      });
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final directory = await getApplicationDocumentsDirectory();
+      final newPath = '${directory.path}/profile_image.jpg';
+      final newImage = await File(pickedFile.path).copy(newPath);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('profile_image_path', newImage.path);
+
+      setState(() {
+        _selectedImage = newImage;
+        _savedImagePath = newImage.path;
+      });
+    }
+  }
+
+  Future<void> _removeProfileImage() async {
+    if (_savedImagePath != null) {
+      File file = File(_savedImagePath!);
+      if (await file.exists()) {
+        await file.delete();
+      }
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('profile_image_path');
+
+    setState(() {
+      _selectedImage = null;
+      _savedImagePath = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<FormatController>.reactive(
@@ -32,12 +89,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 _buildHeader(ctrl, context),
                 Expanded(
                   child: SingleChildScrollView(
-                    padding:
-                        const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                    padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(height: 10),
                         textH1("Settings", font_size: 18),
                         const SizedBox(height: 10),
                         _buildProfileOptions(context),
@@ -80,15 +135,11 @@ class _ProfilePageState extends State<ProfilePage> {
               ],
             ),
           ),
-
-          // Foreground content
           Positioned.fill(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Avatar with border
                   Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -101,33 +152,36 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ],
                     ),
-                    child: const CircleAvatar(
-                      radius: 25,
-                      backgroundImage: AssetImage("assets/images/profile.jpg"),
+                    child: CircleAvatar(
+                      radius: 32,
+                      backgroundColor: whiteColor,
+                      backgroundImage: _selectedImage != null
+                          ? FileImage(_selectedImage!)
+                          : null,
+                      child: _selectedImage == null
+                          ? Icon(Icons.person, size: 48, color: primaryColor)
+                          : null,
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Use data from controller
                         textH2(ctrl.name,
                             color: whiteColor,
                             font_size: 15,
                             font_weight: FontWeight.w700),
                         const SizedBox(height: 6),
-                        textH3(
-                          "Driver / Freight Operator",
-                          color: whiteColor,
-                          font_size: 11,
-                        ),
+                        textH3("Driver / Freight Operator",
+                            color: whiteColor,
+                            font_size: 11,
+                            font_weight: FontWeight.w500),
                       ],
                     ),
                   ),
-
-                  // Changed icon here from edit to info_outline
+                  const SizedBox(width: 5),
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.15),
@@ -198,151 +252,145 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void _showLogoutConfirmation(BuildContext context) {
+  void _showCustomerDetailsDialog(BuildContext context, FormatController ctrl) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: textH1("Log Out", font_size: 20),
-          content: subtext("Are you sure you want to log out?",
-              font_size: 15, font_weight: FontWeight.w400),
-          actions: <Widget>[
-            TextButton(
-              child: textH2("Cancel", color: primaryColor),
-              onPressed: () => Navigator.of(context).pop(),
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding:
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.95),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 20,
+                  offset: Offset(0, 8),
+                ),
+              ],
             ),
-            TextButton(
-              child: textH2("Log Out", color: primaryColor),
-              onPressed: () async {
-                // Remove the session key
-                bool removed =
-                    await widget.session.removeSession('loggedInUser');
-                print('Session key removed: $removed');
-
-                // Double check if the session key still exists
-                bool stillExists =
-                    await widget.session.hasSession('loggedInUser');
-                if (!stillExists) {
-                  print('Session successfully cleared.');
-                } else {
-                  print('Session key still exists after removal!');
-                }
-
-                // Close the dialog
-                Navigator.of(context).pop();
-
-                // Navigate to login page
-                Get.to(
-                  context,
-                  () => LoginPage(session: widget.session),
-                );
-              },
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CircleAvatar(
+                  radius: 50,
+                  backgroundColor: primaryColor,
+                  backgroundImage: _selectedImage != null
+                      ? FileImage(_selectedImage!)
+                      : null,
+                  child: _selectedImage == null
+                      ? const Icon(Icons.person,
+                          size: 48, color: Colors.white70)
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                // if (_selectedImage != null)
+                TextButton.icon(
+                  onPressed: _pickImage,
+                  icon: const Icon(Icons.upload, color: primaryColor),
+                  label: const Text(
+                    "Add/Change Profile Image",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    minimumSize: const Size(0, 0),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                ),
+                if (_selectedImage != null)
+                  TextButton.icon(
+                    onPressed: _removeProfileImage,
+                    icon: const Icon(Icons.delete_outline,
+                        color: Colors.redAccent),
+                    label: const Text(
+                      "Remove Profile Image",
+                      style: TextStyle(
+                          color: Colors.redAccent, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                const SizedBox(height: 10),
+                textH1(ctrl.name, font_size: 22, font_weight: FontWeight.bold),
+                const SizedBox(height: 4),
+                textH3("Driver / Freight Operator"),
+                const Divider(height: 30, thickness: 1),
+                _infoTile(Icons.badge, "Employee ID",
+                    "${ctrl.name.split(' ').first}${ctrl.userId}"),
+                _infoTile(Icons.email, "Email", ctrl.email),
+                _infoTile(Icons.phone, "Phone", ctrl.phone),
+                _infoTile(Icons.confirmation_num, "License Number",
+                    ctrl.licenseNumber),
+                _infoTile(
+                    Icons.directions_car, "Vehicle Number", ctrl.vehicleNumber),
+                const SizedBox(height: 24),
+                SizedBox(
+                  height: 40,
+                  width: double.infinity,
+                  child: darkButton(
+                    buttonText("Close", color: whiteColor, font_size: 15),
+                    primary: primaryColor,
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
   }
 
-  void _showCustomerDetailsDialog(BuildContext context, FormatController ctrl) {
+  Widget _infoTile(IconData icon, String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 22, color: primaryColor),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                textH2(title.toUpperCase(),
+                    font_size: 12, font_weight: FontWeight.w600),
+                const SizedBox(height: 2),
+                textH1(value, font_size: 15, font_weight: FontWeight.w500),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _showLogoutConfirmation(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              const Icon(Icons.account_circle, color: primaryColor),
-              const SizedBox(width: 8),
-              textH1(
-                "Employee Details",
-                font_size: 20,
-              ),
-            ],
+      builder: (_) => AlertDialog(
+        title: textH1("Log Out", font_size: 20),
+        content: subtext("Are you sure you want to log out?", font_size: 15),
+        actions: [
+          TextButton(
+            child: textH2("Cancel", color: primaryColor),
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Divider(),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  textH2("Name:",
-                      font_size: 15,
-                      font_weight: FontWeight.w600,
-                      overflow: TextOverflow.clip),
-                  textH3(" ${ctrl.name}",
-                      font_size: 14,
-                      font_weight: FontWeight.w500,
-                      color: primaryColor),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  textH2("Employee ID:",
-                      font_size: 15, font_weight: FontWeight.w600),
-                  textH3(" ${ctrl.name.split(' ').first}${ctrl.userId}",
-                      font_size: 14,
-                      font_weight: FontWeight.w500,
-                      color: primaryColor),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  textH2("Email:", font_size: 15, font_weight: FontWeight.w600),
-                  textH3(" ${ctrl.email}",
-                      font_size: 14,
-                      font_weight: FontWeight.w500,
-                      color: primaryColor),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  textH2("Phone:", font_size: 15, font_weight: FontWeight.w600),
-                  textH3(" ${ctrl.phone}",
-                      font_size: 14,
-                      font_weight: FontWeight.w500,
-                      color: primaryColor),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  textH2("License Number:",
-                      font_size: 15, font_weight: FontWeight.w600),
-                  textH3(" ${ctrl.licenseNumber}",
-                      font_size: 14,
-                      font_weight: FontWeight.w500,
-                      color: primaryColor),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  textH2("Vehicle Number:",
-                      font_size: 15, font_weight: FontWeight.w600),
-                  textH3(" ${ctrl.vehicleNumber}",
-                      font_size: 14,
-                      font_weight: FontWeight.w500,
-                      color: primaryColor),
-                ],
-              ),
-            ],
+          TextButton(
+            child: textH2("Log Out", color: primaryColor),
+            onPressed: () async {
+              await widget.session.removeSession('loggedInUser');
+              Navigator.of(context).pop();
+              Get.to(context, () => LoginPage(session: widget.session));
+            },
           ),
-          actions: [
-            Center(
-              child: TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: textH2("Close", color: primaryColor),
-              ),
-            ),
-          ],
-        );
-      },
+        ],
+      ),
     );
   }
 }
@@ -350,46 +398,47 @@ class _ProfilePageState extends State<ProfilePage> {
 Widget customProfileBox({
   required String text,
   required String subtext,
+  required IconData icon,
   required VoidCallback onTap,
-  IconData? icon,
 }) {
   return InkWell(
     onTap: onTap,
-    borderRadius: BorderRadius.circular(16),
+    borderRadius: BorderRadius.circular(12),
     child: Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.15),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: const Offset(0, 3),
           ),
         ],
       ),
       child: Row(
         children: [
-          if (icon != null) ...[
-            Icon(icon, color: primaryColor, size: 26),
-            const SizedBox(width: 16),
-          ],
+          Icon(icon, size: 28, color: primaryColor),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                textH1(text, font_size: 15, font_weight: FontWeight.w600),
-                const SizedBox(height: 4),
-                textH3(subtext,
-                    color: Colors.grey.shade600,
-                    font_size: 13,
-                    font_weight: FontWeight.w400),
+                Text(text,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87)),
+                Text(subtext,
+                    style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black54)),
               ],
             ),
           ),
-          const Icon(Icons.arrow_forward_ios_rounded,
-              size: 16, color: Colors.grey),
+          const Icon(Icons.chevron_right, color: Colors.black26),
         ],
       ),
     ),

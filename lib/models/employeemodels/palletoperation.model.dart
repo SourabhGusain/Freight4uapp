@@ -6,15 +6,19 @@ class EPJMPJAssessmentModel {
   final String acknowledgmentDate;
   final String name;
   final File? signature;
+
+  // Choice fields (Strings expected by Django)
   final String q1ManualPalletCheck;
-  final bool q2RideOnPalletJack;
+  final String q2RideOnPalletJack; // "Yes" / "No"
   final String q3SurfaceCheck;
-  final bool q4PushWithHandle;
-  final bool q5EnsureLoadStable;
+  final String q4PushWithHandle; // "Yes" / "No"
+  final String q5EnsureLoadStable; // "Yes" / "No"
   final String q6IfDifficultToMove;
-  final bool isActive;
-  final String createdOn;
-  final int createdBy;
+
+  // Read-only server-managed fields
+  final bool? isActive;
+  final String? createdOn;
+  final int? createdBy;
 
   EPJMPJAssessmentModel({
     required this.acknowledgmentDate,
@@ -26,26 +30,33 @@ class EPJMPJAssessmentModel {
     required this.q4PushWithHandle,
     required this.q5EnsureLoadStable,
     required this.q6IfDifficultToMove,
-    required this.isActive,
-    required this.createdOn,
-    required this.createdBy,
+    this.isActive,
+    this.createdOn,
+    this.createdBy,
   });
 
+  /// Data to send to API
   Map<String, dynamic> toMultipartFields() {
     final fields = <String, dynamic>{
       "acknowledgment_date": acknowledgmentDate,
       "name": name,
       "q1_manual_pallet_check": q1ManualPalletCheck,
-      "q2_ride_on_pallet_jack": q2RideOnPalletJack.toString(),
+      "q2_ride_on_pallet_jack": q2RideOnPalletJack,
       "q3_surface_check": q3SurfaceCheck,
-      "q4_push_with_handle": q4PushWithHandle.toString(),
-      "q5_ensure_load_stable": q5EnsureLoadStable.toString(),
+      "q4_push_with_handle": q4PushWithHandle,
+      "q5_ensure_load_stable": q5EnsureLoadStable,
       "q6_if_difficult_to_move": q6IfDifficultToMove,
-      "is_active": isActive.toString(),
-      "created_on": createdOn.split('T').first,
-      "created_by": createdBy.toString(),
     };
 
+    if (isActive != null) {
+      fields["is_active"] = isActive.toString();
+    }
+    if (createdOn != null) {
+      fields["created_on"] = createdOn!.split('T').first;
+    }
+    if (createdBy != null) {
+      fields["created_by"] = createdBy.toString();
+    }
     if (signature != null) {
       fields["signature"] = signature;
     }
@@ -53,26 +64,25 @@ class EPJMPJAssessmentModel {
     return fields;
   }
 
+  /// Convert from JSON response (e.g. from GET)
   factory EPJMPJAssessmentModel.fromJson(Map<String, dynamic> json) {
     return EPJMPJAssessmentModel(
       acknowledgmentDate: json['acknowledgment_date'] ?? '',
       name: json['name'] ?? '',
-      signature: null,
+      signature: null, // Handle separately
       q1ManualPalletCheck: json['q1_manual_pallet_check'] ?? '',
-      q2RideOnPalletJack: json['q2_ride_on_pallet_jack'] == true ||
-          json['q2_ride_on_pallet_jack'] == 'true',
+      q2RideOnPalletJack: json['q2_ride_on_pallet_jack'] ?? 'No',
       q3SurfaceCheck: json['q3_surface_check'] ?? '',
-      q4PushWithHandle: json['q4_push_with_handle'] == true ||
-          json['q4_push_with_handle'] == 'true',
-      q5EnsureLoadStable: json['q5_ensure_load_stable'] == true ||
-          json['q5_ensure_load_stable'] == 'true',
+      q4PushWithHandle: json['q4_push_with_handle'] ?? 'No',
+      q5EnsureLoadStable: json['q5_ensure_load_stable'] ?? 'No',
       q6IfDifficultToMove: json['q6_if_difficult_to_move'] ?? '',
-      isActive: json['is_active'] == true || json['is_active'] == 'true',
-      createdOn: json['created_on'] ?? '',
-      createdBy: json['created_by'] ?? 0,
+      isActive: json['is_active'] ?? true,
+      createdOn: json['created_on'],
+      createdBy: json['created_by'],
     );
   }
 
+  /// Send POST request
   static Future<bool> submitForm(EPJMPJAssessmentModel model) async {
     final api = Api();
     final url = '$api_url/employee/epjmpj-assessment/';
@@ -89,6 +99,19 @@ class EPJMPJAssessmentModel {
 
   @override
   String toString() {
-    return 'EPJMPJAssessmentModel(acknowledgmentDate: $acknowledgmentDate, name: $name, signature: ${signature?.path}, createdBy: $createdBy)';
+    return 'EPJMPJAssessmentModel('
+        'acknowledgmentDate: $acknowledgmentDate, '
+        'name: $name, '
+        'signature: ${signature?.path}, '
+        'q1ManualPalletCheck: $q1ManualPalletCheck, '
+        'q2RideOnPalletJack: $q2RideOnPalletJack, '
+        'q3SurfaceCheck: $q3SurfaceCheck, '
+        'q4PushWithHandle: $q4PushWithHandle, '
+        'q5EnsureLoadStable: $q5EnsureLoadStable, '
+        'q6IfDifficultToMove: $q6IfDifficultToMove, '
+        'createdBy: $createdBy, '
+        'createdOn: $createdOn, '
+        'isActive: $isActive'
+        ')';
   }
 }
