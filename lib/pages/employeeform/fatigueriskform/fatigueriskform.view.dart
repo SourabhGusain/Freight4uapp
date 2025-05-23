@@ -103,7 +103,7 @@ class _FatigueRiskManagementFormPageState
                 text: "How long are you able to drive without taking a break?",
                 hintText: "Select a duration",
                 dropdownTypes: _formController.FATIGUE_CHOICES_1,
-                selectedValue: _formController.q1DriveWithoutBreak,
+                selectedValue: _formController.q1DriveWithoutBreak ?? "",
                 onChanged: (value) {
                   setState(() {
                     _formController.q1DriveWithoutBreak = value ?? "";
@@ -118,7 +118,7 @@ class _FatigueRiskManagementFormPageState
                 text: "How long must you rest in between shifts?",
                 hintText: "Select a rest duration",
                 dropdownTypes: _formController.FATIGUE_CHOICES_2,
-                selectedValue: _formController.q2RestBetweenShifts,
+                selectedValue: _formController.q2RestBetweenShifts ?? "",
                 onChanged: (value) {
                   setState(() {
                     _formController.q2RestBetweenShifts = value ?? "";
@@ -133,7 +133,7 @@ class _FatigueRiskManagementFormPageState
                 text: "How long is your rest break?",
                 hintText: "Select a break duration",
                 dropdownTypes: _formController.FATIGUE_CHOICES_3,
-                selectedValue: _formController.q3RestBreakDuration,
+                selectedValue: _formController.q3RestBreakDuration ?? "",
                 onChanged: (value) {
                   setState(() {
                     _formController.q3RestBreakDuration = value ?? "";
@@ -199,9 +199,9 @@ class _FatigueRiskManagementFormPageState
                         '${Directory.systemTemp.path}/signature_${DateTime.now().millisecondsSinceEpoch}.png',
                       );
                       await tempFile.writeAsBytes(bytes);
-                      _formController.signatureFile = tempFile;
+                      // _formController.signatureFile = tempFile;
 
-                      await _formController.submitForm(context);
+                      await _formController.submitForm();
                     } else {
                       _showErrorDialog('Failed to capture signature.');
                     }

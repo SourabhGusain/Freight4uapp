@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "491668097601",
+    "project_id": "freight4you-3e3d0",
+    "storage_bucket": "freight4you-3e3d0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491668097601:android:fbe78604ce8ab40b6614c0",
+        "android_client_info": {
+          "package_name": "com.freight.app.flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWXa-c7bR7PNTgx_Yrm5Q_zgi_DKSW4qw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

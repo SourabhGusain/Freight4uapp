@@ -116,8 +116,10 @@ class _EmployeePageState extends State<EmployeePage> {
                       text: "FATIGUE RISK MANAGEMENT",
                       subtext:
                           "Assess fatigue levels and ensure compliance with rest policies.",
-                      onTap: () => _showLoadingAndNavigate(context,
-                          () => FatigueRiskManagementPage(session: session)),
+                      onTap: () => _showLoadingAndNavigate(
+                          context,
+                          () =>
+                              FatigueRiskManagementFormPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(
