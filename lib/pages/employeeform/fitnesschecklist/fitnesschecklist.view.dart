@@ -98,8 +98,8 @@ class _FitnessChecklistFormPageState extends State<FitnessChecklistFormPage> {
       child: Scaffold(
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(65),
-          child:
-              secondaryNavBar(context, "Induction Form:", onBack: _handleBack),
+          child: secondaryNavBar(context, "A Drivers Fit for Duty Checklist",
+              onBack: _handleBack),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
