@@ -16,6 +16,8 @@ import 'package:Freight4u/pages/employeeform/palletoperation/palletoperation.vie
 import 'package:Freight4u/pages/employeeform/fatigueriskform/fatigueriskform.view.dart';
 import 'package:Freight4u/pages/employeeform/corform/corform.view.dart';
 import 'package:Freight4u/pages/employeeform/roadassessment/roadassessment.view.dart';
+import 'package:Freight4u/pages/employeeform/cabassessment/cabassessment.view.dart';
+import 'package:Freight4u/pages/employeeform/yellowbookassessment/yellowbookassessment.view.dart';
 
 class EmployeePage extends StatefulWidget {
   final Session session;
@@ -144,16 +146,16 @@ class _EmployeePageState extends State<EmployeePage> {
                       text: "In cab Assessment",
                       subtext:
                           "Evaluate safe driving habits and cab operations.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => InCabAssessmentFormPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(
                       text: "LINFOX Yellow Book Assessment",
                       subtext:
                           "Confirm knowledge of the LINFOX safety procedures.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => YellowBookAssessmentFormPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(

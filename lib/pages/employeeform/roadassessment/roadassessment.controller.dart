@@ -1,127 +1,158 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'dart:typed_data';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:Freight4u/helpers/session.dart';
-import 'package:Freight4u/models/employeemodels/roadassessment.model.dart';
+import 'package:Freight4u/models/employeemodels/driverassessment.model.dart';
 
 class DriverAssessmentController {
-  final Session _session = Session();
+  final Session session = Session();
   int userId = 0;
 
-  // Signature
   File? signatureFile;
 
-  // Text controllers for personal info
   final fullNameController = TextEditingController();
-  final lastNameController = TextEditingController();
   final dateController = TextEditingController();
   final licenceNumberController = TextEditingController();
   final expiryDateController = TextEditingController();
   final stateOfValidationController = TextEditingController();
 
-  // Address
   final streetAddressController = TextEditingController();
   final streetAddress2Controller = TextEditingController();
   final cityController = TextEditingController();
   final stateOrProvinceController = TextEditingController();
   final postalCodeController = TextEditingController();
 
-  // Assessment info
   final buddyAssessorNameController = TextEditingController();
   final buddyAssessorDateController = TextEditingController();
   final vehicleTypeController = TextEditingController();
   final gearboxTypeController = TextEditingController();
   final licenceRestrictionsController = TextEditingController();
 
-  // Driving behavior fields
-  final preTripInspectionController = TextEditingController();
-  final uncouplingCouplingTrailerController = TextEditingController();
-  final loadSecuringController = TextEditingController();
-  final engineIdleTimeController = TextEditingController();
-  final mirrorUseController = TextEditingController();
-  final clutchUseController = TextEditingController();
-  final gearSelectionController = TextEditingController();
-  final revRangeController = TextEditingController();
-  final engineBrakeRetarderUseController = TextEditingController();
-  final checkIntersectionsController = TextEditingController();
-  final courtesyToOthersController = TextEditingController();
-  final observationPlanningController = TextEditingController();
-  final overtakingController = TextEditingController();
-  final speedForEnvironmentController = TextEditingController();
-  final hangBackDistanceController = TextEditingController();
-  final roadLawController = TextEditingController();
-  final corneringController = TextEditingController();
-  final roundaboutController = TextEditingController();
-  final reversingController = TextEditingController();
-  final last100MetresController = TextEditingController();
-  final atDestinationController = TextEditingController();
-  final paperWorkController = TextEditingController();
-
-  // Group the vehicle check fields for easy iteration in the view
-  Map<String, TextEditingController> get vehicleCheckFields => {
-        'Pre-trip Inspection': preTripInspectionController,
-        'Uncoupling/Coupling Trailer': uncouplingCouplingTrailerController,
-        'Load Securing': loadSecuringController,
-        'Engine Idle Time': engineIdleTimeController,
-        'Mirror Use': mirrorUseController,
-        'Clutch Use': clutchUseController,
-        'Gear Selection': gearSelectionController,
-        'Rev Range': revRangeController,
-        'Engine Brake/Retarder Use': engineBrakeRetarderUseController,
-        'Check Intersections': checkIntersectionsController,
-        'Courtesy to Others': courtesyToOthersController,
-        'Observation/Planning': observationPlanningController,
-        'Overtaking': overtakingController,
-        'Speed for Environment': speedForEnvironmentController,
-        'Hang Back Distance': hangBackDistanceController,
-        'Road Law': roadLawController,
-        'Cornering': corneringController,
-        'Roundabout': roundaboutController,
-        'Reversing': reversingController,
-        'Last 100 Metres': last100MetresController,
-        'At Destination': atDestinationController,
-        'Paper Work': paperWorkController,
-      };
+  final Map<String, TextEditingController> vehicleCheckFields = {
+    'Pre-trip Inspection': TextEditingController(),
+    'Uncoupling/Coupling Trailer': TextEditingController(),
+    'Load Securing': TextEditingController(),
+    'Engine Idle Time': TextEditingController(),
+    'Mirror Use': TextEditingController(),
+    'Clutch Use': TextEditingController(),
+    'Gear Selection': TextEditingController(),
+    'Rev Range': TextEditingController(),
+    'Engine Brake/Retarder Use': TextEditingController(),
+    'Check Intersections': TextEditingController(),
+    'Courtesy to Others': TextEditingController(),
+    'Observation/Planning': TextEditingController(),
+    'Overtaking': TextEditingController(),
+    'Speed for Environment': TextEditingController(),
+    'Hang Back Distance': TextEditingController(),
+    'Road Law': TextEditingController(),
+    'Cornering': TextEditingController(),
+    'Roundabout': TextEditingController(),
+    'Reversing': TextEditingController(),
+    'Last 100 Metres': TextEditingController(),
+    'At Destination': TextEditingController(),
+    'Paper Work': TextEditingController(),
+  };
 
   Future<void> init() async {
-    final userIdStr = await _session.getSession("userId");
+    final userIdStr = await session.getSession("userId");
     userId = int.tryParse(userIdStr ?? "") ?? 0;
+    // populateDummyData();
   }
 
+  DateTime parseDate(String dateStr) {
+    try {
+      return DateTime.parse(dateStr);
+    } catch (e) {
+      print(
+          'Warning: Failed to parse date "$dateStr". Using DateTime.now() instead.');
+      return DateTime.now();
+    }
+  }
+
+  // void populateDummyData() {
+  //   fullNameController.text = "John Doe";
+  //   dateController.text = "2025-06-01T12:00:00";
+  //   licenceNumberController.text = "AB123456";
+  //   expiryDateController.text = "2027-06-01T12:00:00";
+  //   stateOfValidationController.text = "Valid";
+
+  //   streetAddressController.text = "123 Main St";
+  //   streetAddress2Controller.text = "Apt 4B";
+  //   cityController.text = "Metropolis";
+  //   stateOrProvinceController.text = "NY";
+  //   postalCodeController.text = "10001";
+
+  //   buddyAssessorNameController.text = "Jane Smith";
+  //   buddyAssessorDateController.text = "2025-05-28T10:00:00";
+  //   vehicleTypeController.text = "Truck";
+  //   gearboxTypeController.text = "Manual";
+  //   licenceRestrictionsController.text = "None";
+
+  //   vehicleCheckFields.forEach((key, controller) {
+  //     controller.text = "P";
+  //   });
+  // }
+
   Future<void> populateFromSession() async {
-    final userJson = await _session.getSession('loggedInUser');
+    final userJson = await session.getSession('loggedInUser');
     if (userJson == null) return;
 
     final Map<String, dynamic> userData = jsonDecode(userJson);
-    fullNameController.text = userData['firstName'] ?? '';
-    lastNameController.text = userData['lastName'] ?? '';
+
+    fullNameController.text = userData["name"] ?? "";
+    licenceNumberController.text =
+        userData["licence_number"] ?? userData["license_number"] ?? "";
+
+    // Use ISO 8601 format for consistency with model
     dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
   }
 
-  Future<void> submitForm(BuildContext context) async {
-    if (signatureFile == null ||
-        fullNameController.text.trim().isEmpty ||
-        lastNameController.text.trim().isEmpty) {
-      _showDialog(
-        context,
-        "Missing Fields",
-        "Please fill out required fields and sign.",
-      );
-      return;
+  Future<void> setSignature(Uint8List signatureBytes) async {
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/signature.png');
+    await file.writeAsBytes(signatureBytes);
+    signatureFile = file;
+  }
+
+  bool validateFields() {
+    if (signatureFile == null) {
+      print('Signature is required.');
+      return false;
     }
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => const Center(child: CircularProgressIndicator()),
-    );
+    if (fullNameController.text.trim().isEmpty ||
+        dateController.text.trim().isEmpty ||
+        licenceNumberController.text.trim().isEmpty ||
+        expiryDateController.text.trim().isEmpty) {
+      print('Please fill in all required fields.');
+      return false;
+    }
+
+    try {
+      parseDate(dateController.text.trim());
+      parseDate(expiryDateController.text.trim());
+      parseDate(buddyAssessorDateController.text.trim());
+    } catch (e) {
+      print('Invalid date format.');
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> submitForm() async {
+    if (!validateFields()) {
+      return false;
+    }
 
     final model = DriverAssessmentModel(
       name: fullNameController.text.trim(),
-      date: dateController.text.trim(),
+      date: parseDate(dateController.text.trim()),
       licenceNumber: licenceNumberController.text.trim(),
-      expiryDate: expiryDateController.text.trim(),
+      expiryDate: parseDate(expiryDateController.text.trim()),
       stateOfValidation: stateOfValidationController.text.trim(),
       streetAddress: streetAddressController.text.trim(),
       streetAddress2: streetAddress2Controller.text.trim(),
@@ -129,108 +160,77 @@ class DriverAssessmentController {
       stateOrProvince: stateOrProvinceController.text.trim(),
       postalCode: postalCodeController.text.trim(),
       buddyAssessorName: buddyAssessorNameController.text.trim(),
-      buddyAssessorDate: buddyAssessorDateController.text.trim(),
+      buddyAssessorDate: parseDate(buddyAssessorDateController.text.trim()),
       vehicleType: vehicleTypeController.text.trim(),
       gearboxType: gearboxTypeController.text.trim(),
       licenceRestrictions: licenceRestrictionsController.text.trim(),
-      signature: signatureFile!,
-      preTripInspection: preTripInspectionController.text.trim(),
+      signature: signatureFile,
+      preTripInspection:
+          vehicleCheckFields['Pre-trip Inspection']?.text.trim() ?? 'N/A',
       uncouplingCouplingTrailer:
-          uncouplingCouplingTrailerController.text.trim(),
-      loadSecuring: loadSecuringController.text.trim(),
-      engineIdleTime: engineIdleTimeController.text.trim(),
-      mirrorUse: mirrorUseController.text.trim(),
-      clutchUse: clutchUseController.text.trim(),
-      gearSelection: gearSelectionController.text.trim(),
-      revRange: revRangeController.text.trim(),
-      engineBrakeRetarderUse: engineBrakeRetarderUseController.text.trim(),
-      checkIntersections: checkIntersectionsController.text.trim(),
-      courtesyToOthers: courtesyToOthersController.text.trim(),
-      observationPlanning: observationPlanningController.text.trim(),
-      overtaking: overtakingController.text.trim(),
-      speedForEnvironment: speedForEnvironmentController.text.trim(),
-      hangBackDistance: hangBackDistanceController.text.trim(),
-      roadLaw: roadLawController.text.trim(),
-      cornering: corneringController.text.trim(),
-      roundabout: roundaboutController.text.trim(),
-      reversing: reversingController.text.trim(),
-      last100Metres: last100MetresController.text.trim(),
-      atDestination: atDestinationController.text.trim(),
-      paperWork: paperWorkController.text.trim(),
+          vehicleCheckFields['Uncoupling/Coupling Trailer']?.text.trim() ??
+              'N/A',
+      loadSecuring: vehicleCheckFields['Load Securing']?.text.trim() ?? 'N/A',
+      engineIdleTime:
+          vehicleCheckFields['Engine Idle Time']?.text.trim() ?? 'N/A',
+      mirrorUse: vehicleCheckFields['Mirror Use']?.text.trim() ?? 'N/A',
+      clutchUse: vehicleCheckFields['Clutch Use']?.text.trim() ?? 'N/A',
+      gearSelection: vehicleCheckFields['Gear Selection']?.text.trim() ?? 'N/A',
+      revRange: vehicleCheckFields['Rev Range']?.text.trim() ?? 'N/A',
+      engineBrakeRetarderUse:
+          vehicleCheckFields['Engine Brake/Retarder Use']?.text.trim() ?? 'N/A',
+      checkIntersections:
+          vehicleCheckFields['Check Intersections']?.text.trim() ?? 'N/A',
+      courtesyToOthers:
+          vehicleCheckFields['Courtesy to Others']?.text.trim() ?? 'N/A',
+      observationPlanning:
+          vehicleCheckFields['Observation/Planning']?.text.trim() ?? 'N/A',
+      overtaking: vehicleCheckFields['Overtaking']?.text.trim() ?? 'N/A',
+      speedForEnvironment:
+          vehicleCheckFields['Speed for Environment']?.text.trim() ?? 'N/A',
+      hangBackDistance:
+          vehicleCheckFields['Hang Back Distance']?.text.trim() ?? 'N/A',
+      roadLaw: vehicleCheckFields['Road Law']?.text.trim() ?? 'N/A',
+      cornering: vehicleCheckFields['Cornering']?.text.trim() ?? 'N/A',
+      roundabout: vehicleCheckFields['Roundabout']?.text.trim() ?? 'N/A',
+      reversing: vehicleCheckFields['Reversing']?.text.trim() ?? 'N/A',
+      last100Metres:
+          vehicleCheckFields['Last 100 Metres']?.text.trim() ?? 'N/A',
+      atDestination: vehicleCheckFields['At Destination']?.text.trim() ?? 'N/A',
+      paperWork: vehicleCheckFields['Paper Work']?.text.trim() ?? 'N/A',
       isActive: true,
-      createdOn: DateTime.now().toIso8601String(),
+      createdOn: DateTime.now(),
       createdBy: userId,
     );
 
     final success = await DriverAssessmentModel.submitForm(model);
-    Navigator.pop(context); // Close loading dialog
 
-    if (success) {
-      _showDialog(context, "Success", "Form submitted successfully.",
-          onOk: () => Navigator.pop(context));
-    } else {
-      _showDialog(context, "Error", "Form submission failed.");
+    if (!success) {
+      print('Failed to submit form.');
     }
-  }
 
-  void _showDialog(BuildContext context, String title, String message,
-      {VoidCallback? onOk}) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              onOk?.call();
-            },
-            child: const Text("OK"),
-          ),
-        ],
-      ),
-    );
+    return success;
   }
 
   void dispose() {
     fullNameController.dispose();
-    lastNameController.dispose();
     dateController.dispose();
     licenceNumberController.dispose();
     expiryDateController.dispose();
     stateOfValidationController.dispose();
+
     streetAddressController.dispose();
     streetAddress2Controller.dispose();
     cityController.dispose();
     stateOrProvinceController.dispose();
     postalCodeController.dispose();
+
     buddyAssessorNameController.dispose();
     buddyAssessorDateController.dispose();
     vehicleTypeController.dispose();
     gearboxTypeController.dispose();
     licenceRestrictionsController.dispose();
-    preTripInspectionController.dispose();
-    uncouplingCouplingTrailerController.dispose();
-    loadSecuringController.dispose();
-    engineIdleTimeController.dispose();
-    mirrorUseController.dispose();
-    clutchUseController.dispose();
-    gearSelectionController.dispose();
-    revRangeController.dispose();
-    engineBrakeRetarderUseController.dispose();
-    checkIntersectionsController.dispose();
-    courtesyToOthersController.dispose();
-    observationPlanningController.dispose();
-    overtakingController.dispose();
-    speedForEnvironmentController.dispose();
-    hangBackDistanceController.dispose();
-    roadLawController.dispose();
-    corneringController.dispose();
-    roundaboutController.dispose();
-    reversingController.dispose();
-    last100MetresController.dispose();
-    atDestinationController.dispose();
-    paperWorkController.dispose();
+
+    vehicleCheckFields.forEach((_, controller) => controller.dispose());
   }
 }

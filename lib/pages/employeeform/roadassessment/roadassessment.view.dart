@@ -29,10 +29,18 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
       penStrokeWidth: 3,
       exportBackgroundColor: Colors.white,
     );
-    _formController.init().then((_) async {
-      await _formController.populateFromSession();
-      if (mounted) setState(() => isLoading = false);
-    });
+
+    _initializeForm();
+  }
+
+  Future<void> _initializeForm() async {
+    await _formController.init();
+    await _formController.populateFromSession();
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -78,7 +86,9 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
           hintText: label,
           dropdownTypes: ['N/A', 'P', 'F'],
           selectedValue: controller.text,
-          onChanged: (val) => setState(() => controller.text = val ?? ''),
+          onChanged: (val) => setState(() {
+            controller.text = val ?? '';
+          }),
         ),
         const SizedBox(height: 15),
       ],
@@ -110,6 +120,8 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
             children: [
               textH1("Driver Road Assessment Form"),
               const SizedBox(height: 20),
+
+              // Form Fields
               calendarDateField(
                 context: context,
                 label: "Assessment Date",
@@ -128,9 +140,30 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
                 controller: _formController.expiryDateController,
               ),
               const SizedBox(height: 15),
-              textField("State of Licence",
-                  controller: _formController.stateOfValidationController),
-              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text: "State / Province",
+                hintText: "State / Province",
+                dropdownTypes: [
+                  'NSW',
+                  'QLD',
+                  'NT',
+                  'VIC',
+                  'WA',
+                  'SA',
+                  'TAS',
+                  'ACT',
+                ],
+                selectedValue: _formController.stateOfValidationController.text,
+                onChanged: (val) {
+                  setState(() {
+                    _formController.stateOfValidationController.text =
+                        val ?? '';
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+
               textField("Street Address",
                   controller: _formController.streetAddressController),
               const SizedBox(height: 15),
@@ -139,28 +172,10 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
               const SizedBox(height: 15),
               textField("City", controller: _formController.cityController),
               const SizedBox(height: 15),
-              customTypeSelector(
-                context: context,
-                text: "State / Province",
-                hintText: "State / Province",
-                dropdownTypes: [
-                  'NSW', // New South Wales
-                  'QLD', // Queensland
-                  'NT', // Northern Territory
-                  'VIC', // Victoria
-                  'WA', // Western Australia
-                  'SA', // South Australia
-                  'ACT', // Australian Capital Territory
-                  'TAS', // Tasmania
-                ],
-                selectedValue: _formController.stateOrProvinceController.text,
-                onChanged: (val) => setState(() =>
-                    _formController.stateOrProvinceController.text = val ?? ''),
-              ),
-              const SizedBox(height: 15),
               textField("Postal Code",
                   controller: _formController.postalCodeController),
               const SizedBox(height: 15),
+
               textField("Buddy Assessor Name",
                   controller: _formController.buddyAssessorNameController),
               const SizedBox(height: 15),
@@ -170,6 +185,7 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
                 controller: _formController.buddyAssessorDateController,
               ),
               const SizedBox(height: 15),
+
               textField("Vehicle Type",
                   controller: _formController.vehicleTypeController),
               const SizedBox(height: 15),
@@ -178,25 +194,30 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
               const SizedBox(height: 15),
               textField("Licence Restrictions",
                   controller: _formController.licenceRestrictionsController),
-              const SizedBox(height: 30),
-              textH2("Vehicle Check:"),
-              Divider(),
+              const SizedBox(height: 20),
+
+              const Divider(),
+              textH2("Driving Behaviour"),
               const SizedBox(height: 15),
-              ..._formController.vehicleCheckFields.entries
-                  .map((entry) => _vehicleCheckField(entry.key, entry.value)),
+
+              // Driving Behaviour Fields
+              ..._formController.vehicleCheckFields.entries.map(
+                (entry) => _vehicleCheckField(entry.key, entry.value),
+              ),
+
               const SizedBox(height: 15),
-              textH3("Signature :"),
-              const SizedBox(height: 5),
+              textH3("Signature:"),
               Container(
-                decoration:
-                    BoxDecoration(border: Border.all(color: Colors.grey)),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black, width: 1),
+                ),
                 child: Signature(
                   controller: _signatureController,
                   height: 200,
                   backgroundColor: Colors.white,
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
               Align(
                 alignment: Alignment.centerRight,
                 child: SizedBox(
@@ -209,7 +230,9 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 80),
+
+              const SizedBox(height: 25),
+
               SizedBox(
                 height: 45,
                 width: double.infinity,
@@ -217,17 +240,34 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
                   buttonText("Submit", color: whiteColor),
                   primary: primaryColor,
                   onPressed: () async {
-                    final success = await _formController.submitForm(context);
-                    // if (!success) {
-                    //   await _showErrorDialog(
-                    //       "Please fill in all fields and sign the form.");
-                    // } else {
-                    //   await _showSuccessDialog("Form submitted successfully!");
-                    // }
+                    if (_signatureController.isEmpty) {
+                      await _showErrorDialog('Please provide your signature.');
+                      return;
+                    }
+
+                    final bytes = await _signatureController.toPngBytes();
+                    if (bytes != null) {
+                      final tempFile = File(
+                        '${Directory.systemTemp.path}/signature_${DateTime.now().millisecondsSinceEpoch}.png',
+                      );
+                      await tempFile.writeAsBytes(bytes);
+
+                      _formController.signatureFile = tempFile;
+
+                      final success = await _formController.submitForm();
+                      if (success) {
+                        await _showSuccessDialog(
+                            "Form submitted successfully.");
+                        Navigator.pop(context);
+                      } else {
+                        await _showErrorDialog("Failed to submit the form.");
+                      }
+                    } else {
+                      await _showErrorDialog('Failed to capture signature.');
+                    }
                   },
                 ),
               ),
-              const SizedBox(height: 30),
             ],
           ),
         ),

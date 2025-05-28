@@ -5,7 +5,6 @@ import 'package:Freight4u/helpers/values.dart';
 
 class DriverAssessmentModel {
   final String name;
-  final String lastName;
   final DateTime date;
   final String licenceNumber;
   final DateTime expiryDate;
@@ -53,7 +52,6 @@ class DriverAssessmentModel {
 
   DriverAssessmentModel({
     required this.name,
-    required this.lastName,
     required this.date,
     required this.licenceNumber,
     required this.expiryDate,
@@ -99,7 +97,6 @@ class DriverAssessmentModel {
   Map<String, dynamic> toMultipartFields() {
     final fields = {
       "name": name,
-      "last_name": lastName,
       "date": date.toIso8601String().split('T').first,
       "licence_number": licenceNumber,
       "expiry_date": expiryDate.toIso8601String().split('T').first,
@@ -175,7 +172,6 @@ class DriverAssessmentModel {
 
     return DriverAssessmentModel(
       name: json['name'] ?? '',
-      lastName: json['last_name'] ?? '',
       date: parseDate(json['date']),
       licenceNumber: json['licence_number'] ?? '',
       expiryDate: parseDate(json['expiry_date']),

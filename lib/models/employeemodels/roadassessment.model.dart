@@ -46,7 +46,7 @@ class DriverAssessmentModel {
   final String paperWork;
 
   final bool isActive;
-  final String createdOn;
+  final String createdOn; // Ideally DateTime but keeping string for now
   final int createdBy;
 
   DriverAssessmentModel({
@@ -132,16 +132,27 @@ class DriverAssessmentModel {
       "last_100_metres": last100Metres,
       "at_destination": atDestination,
       "paper_work": paperWork,
-      "is_active": isActive.toString(),
-      "created_on": createdOn.split('T').first,
+      // Convert bool to '1'/'0' string as many APIs expect
+      "is_active": isActive ? '1' : '0',
+      "created_on": _formatDate(createdOn),
       "created_by": createdBy.toString(),
     };
 
+    // Handle the signature file properly — ensure your API client expects file here
     if (signature != null) {
-      fields["signature"] = signature;
+      fields["signature"] = signature!;
     }
 
     return fields;
+  }
+
+  static String _formatDate(String isoString) {
+    try {
+      final dt = DateTime.parse(isoString);
+      return dt.toIso8601String().split('T').first;
+    } catch (e) {
+      return isoString; // fallback to original if parsing fails
+    }
   }
 
   factory DriverAssessmentModel.fromJson(Map<String, dynamic> json) {
@@ -161,7 +172,7 @@ class DriverAssessmentModel {
       vehicleType: json['vehicle_type'] ?? '',
       gearboxType: json['gearbox_type'] ?? '',
       licenceRestrictions: json['licence_restrictions'] ?? '',
-      signature: null,
+      signature: null, // cannot deserialize File from JSON directly
       preTripInspection: json['pre_trip_inspection'] ?? 'N/A',
       uncouplingCouplingTrailer: json['uncoupling_coupling_trailer'] ?? 'N/A',
       loadSecuring: json['load_securing'] ?? 'N/A',
@@ -184,14 +195,31 @@ class DriverAssessmentModel {
       last100Metres: json['last_100_metres'] ?? 'N/A',
       atDestination: json['at_destination'] ?? 'N/A',
       paperWork: json['paper_work'] ?? 'N/A',
-      isActive: json['is_active'] ?? true,
+      isActive: _parseBool(json['is_active'], defaultValue: true),
       createdOn: json['created_on'] ?? '',
-      createdBy: json['created_by'] ?? 0,
+      createdBy: _parseInt(json['created_by'], defaultValue: 0),
     );
+  }
+
+  static bool _parseBool(dynamic value, {bool defaultValue = false}) {
+    if (value is bool) return value;
+    if (value is String) {
+      final v = value.toLowerCase();
+      return v == 'true' || v == '1';
+    }
+    if (value is int) return value == 1;
+    return defaultValue;
+  }
+
+  static int _parseInt(dynamic value, {int defaultValue = 0}) {
+    if (value is int) return value;
+    if (value is String) return int.tryParse(value) ?? defaultValue;
+    return defaultValue;
   }
 
   static Future<bool> submitForm(DriverAssessmentModel model) async {
     final api = Api();
+    // Assuming api_url is defined somewhere in your project, import or declare it accordingly.
     final url = '$api_url/employee/driver-assessment/';
     final fields = model.toMultipartFields();
 
