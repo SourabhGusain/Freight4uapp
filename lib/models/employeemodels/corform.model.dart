@@ -1,11 +1,10 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:Freight4u/helpers/api.dart';
 import 'package:Freight4u/helpers/values.dart';
 
 class CoRFormModel {
   final String name;
-  final File? signature;
+  final File? signature; // Initial signature
   final String driverResponsibilities;
   final String corIssueSteps;
   final String primaryDutyHolder;

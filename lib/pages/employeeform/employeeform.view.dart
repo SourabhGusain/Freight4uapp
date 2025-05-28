@@ -14,6 +14,8 @@ import 'package:Freight4u/pages/employeeform/fitnesschecklist/fitnesschecklist.v
 import 'package:Freight4u/pages/employeeform/pitbulldocking/pitbulldocking.view.dart';
 import 'package:Freight4u/pages/employeeform/palletoperation/palletoperation.view.dart';
 import 'package:Freight4u/pages/employeeform/fatigueriskform/fatigueriskform.view.dart';
+import 'package:Freight4u/pages/employeeform/corform/corform.view.dart';
+import 'package:Freight4u/pages/employeeform/roadassessment/roadassessment.view.dart';
 
 class EmployeePage extends StatefulWidget {
   final Session session;
@@ -127,15 +129,15 @@ class _EmployeePageState extends State<EmployeePage> {
                       subtext:
                           "Chain of Responsibility assessment to meet legal obligations.",
                       onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                          context, () => CoRFormPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(
                       text: "Road Assessment Buddy Training",
                       subtext:
                           "Evaluate driver performance with a training buddy.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => RoadAssessmentFormPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(
