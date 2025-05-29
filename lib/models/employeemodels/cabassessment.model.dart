@@ -237,7 +237,8 @@ class InCabAssessmentModel {
 
   static Future<bool> submitForm(InCabAssessmentModel model) async {
     final api = Api();
-    final url = '$api_url/employee/incab-assessment/';
+    final url = '$api_url/employee/in-cab-assessment/';
+    print(url);
     final fields = model.toMultipartFields();
 
     final result = await api.multipartOrJsonPostCall(
@@ -245,6 +246,7 @@ class InCabAssessmentModel {
       fields,
       isMultipart: model.signature != null,
     );
+    print(result);
 
     return result["ok"] == 1;
   }

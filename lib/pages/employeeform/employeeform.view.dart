@@ -18,6 +18,7 @@ import 'package:Freight4u/pages/employeeform/corform/corform.view.dart';
 import 'package:Freight4u/pages/employeeform/roadassessment/roadassessment.view.dart';
 import 'package:Freight4u/pages/employeeform/cabassessment/cabassessment.view.dart';
 import 'package:Freight4u/pages/employeeform/yellowbookassessment/yellowbookassessment.view.dart';
+import 'package:Freight4u/pages/employeeform/safetyquestionnaire/safetyquestionnaire.view.dart';
 
 class EmployeePage extends StatefulWidget {
   final Session session;
@@ -163,7 +164,9 @@ class _EmployeePageState extends State<EmployeePage> {
                       subtext:
                           "Assess your understanding of workplace safety policies.",
                       onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                          context,
+                          () => WorkHealthSafetyQuestionnairePage(
+                              session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(

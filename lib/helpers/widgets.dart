@@ -235,6 +235,7 @@ Widget customTypeSelector({
   required String selectedValue,
   required Function(String) onChanged,
   String? hintText,
+  double dropdownfontsize = 16.0,
 }) {
   return GestureDetector(
     onTap: () {
@@ -295,17 +296,19 @@ Widget customTypeSelector({
                           ],
                         ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            textH3(
-                              dropdownType,
-                              font_size: 16,
-                              font_weight: isSelected
-                                  ? FontWeight.w500
-                                  : FontWeight.w400,
-                              color: isSelected
-                                  ? const Color.fromARGB(255, 0, 123, 255)
-                                  : Colors.black87,
+                            Expanded(
+                              child: textH3(
+                                dropdownType,
+                                font_size: dropdownfontsize,
+                                font_weight: isSelected
+                                    ? FontWeight.w500
+                                    : FontWeight.w400,
+                                color: isSelected
+                                    ? const Color.fromARGB(255, 0, 123, 255)
+                                    : Colors.black87,
+                                overflow: TextOverflow.clip,
+                              ),
                             ),
                             if (isSelected)
                               const Icon(

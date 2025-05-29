@@ -128,7 +128,6 @@ class _YellowBookAssessmentFormPageState
 
               const SizedBox(height: 20),
 
-              // Date Picker Field (with controller passed)
               calendarDateField(
                   context: context, label: "Date", controller: _dateController),
               const SizedBox(height: 20),
@@ -136,6 +135,7 @@ class _YellowBookAssessmentFormPageState
                 context: context,
                 text: "What is Yellow Book?",
                 hintText: "What is Yellow Book?",
+                dropdownfontsize: 14.0,
                 dropdownTypes: yellowBookChoices.entries
                     .map((e) => "${e.key}. ${e.value}")
                     .toList(),
