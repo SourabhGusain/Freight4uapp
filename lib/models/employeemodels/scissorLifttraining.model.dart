@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:Freight4u/helpers/api.dart';
 import 'package:Freight4u/helpers/values.dart';
 
@@ -22,7 +23,7 @@ class ScissorLiftTrainingModel {
     this.createdBy,
   });
 
-  Map<String, dynamic> toMultipartFields() {
+  Map<String, String> toMultipartFields() {
     final fields = {
       "trainee_organization": traineeOrganization,
       "name": name,
@@ -39,14 +40,28 @@ class ScissorLiftTrainingModel {
       ScissorLiftTrainingModel model) async {
     final url = "$api_url/employee/scissor-lift-training/";
     print("Submitting Scissor Lift Training to $url");
+
     final api = Api();
-    final fields = model.toMultipartFields();
+
+    // Build multipart FormData
+    final Map<String, String> fields = model.toMultipartFields();
+    final formData = FormData.fromMap(fields);
+
+    if (model.signature != null && await model.signature!.exists()) {
+      String fileName = model.signature!.path.split('/').last;
+      formData.files.add(MapEntry(
+        "signature",
+        await MultipartFile.fromFile(model.signature!.path, filename: fileName),
+      ));
+    }
 
     final result = await api.multipartOrJsonPostCall(
       url,
-      fields,
-      isMultipart: model.signature != null,
+      formData,
+      isMultipart: true,
     );
+
+    print(result);
 
     if (result["ok"] == 1) {
       print("Scissor Lift Training submitted successfully.");

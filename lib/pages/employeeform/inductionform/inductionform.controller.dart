@@ -88,7 +88,7 @@ class InductionFormController {
         "Success",
         "Induction form submitted successfully.",
         onOk: () {
-          Navigator.of(context).pop(); // Close the form screen
+          Navigator.of(context).pop();
         },
       );
     } else {

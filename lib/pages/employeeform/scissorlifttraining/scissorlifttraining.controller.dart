@@ -2,12 +2,12 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/models/employeemodels/scissorlifttraining.model.dart';
 
 class ScissorLiftTrainingController {
   final nameController = TextEditingController();
+  final traineeOrganizationnameController = TextEditingController();
   final dateController = TextEditingController();
 
   File? signatureFile;
@@ -38,18 +38,6 @@ class ScissorLiftTrainingController {
     }
   }
 
-  Future<void> pickSignatureFile() async {
-    final result = await FilePicker.platform.pickFiles();
-    if (result != null && result.files.isNotEmpty) {
-      final pickedFile = result.files.first;
-      if (pickedFile.path != null) {
-        signatureFile = File(pickedFile.path!);
-        signatureFileName =
-            "${pickedFile.name} (${(pickedFile.size / 1024).toStringAsFixed(1)} KB)";
-      }
-    }
-  }
-
   Future<void> submitForm(BuildContext context) async {
     if (nameController.text.trim().isEmpty ||
         dateController.text.trim().isEmpty) {
@@ -60,7 +48,7 @@ class ScissorLiftTrainingController {
 
     if (signatureFile == null) {
       _showDialog(context, "Missing Signature",
-          "Please upload or sign your signature before submitting.");
+          "Please upload your signature before submitting.");
       return;
     }
 
@@ -71,28 +59,29 @@ class ScissorLiftTrainingController {
     );
 
     final model = ScissorLiftTrainingModel(
+      traineeOrganization: traineeOrganizationnameController.text.trim(),
       name: nameController.text.trim(),
-      date: dateController.text.trim(),
-      signature: signatureFile!,
+      date: DateTime.parse(dateController.text.trim()),
+      signature: signatureFile,
       createdBy: userId,
-      createdOn: DateTime.now().toIso8601String(),
-      traineeOrganization: "Freight4You", // fixed value
+      createdOn: DateTime.now(),
     );
 
-    bool success = await ScissorLiftTrainingModel.submitForm(model);
+    bool success = await ScissorLiftTrainingModel.submitInductionForm(model);
 
     Navigator.pop(context); // close loading
-
     if (success) {
       _showDialog(
         context,
         "Success",
-        "Scissor Lift Training form submitted successfully.",
-        onOk: () => Navigator.of(context).pop(),
+        "Induction form submitted successfully.",
+        onOk: () {
+          Navigator.of(context).pop();
+        },
       );
     } else {
       _showDialog(context, "Error",
-          "Failed to submit Scissor Lift form. Please try again.");
+          "Failed to submit induction form. Please try again.");
     }
   }
 

@@ -90,13 +90,20 @@ class _ScissorLiftTrainingPageState extends State<ScissorLiftTrainingPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               textH1("Scissor Lift Training Form"),
+              const SizedBox(height: 20),
+              textField(
+                "Trainee Organisation",
+                controller: _formcontroller.traineeOrganizationnameController,
+              ),
               const SizedBox(height: 15),
               textField(
                 "Trainee Name",
                 controller: _formcontroller.nameController,
               ),
+              const SizedBox(height: 15),
               _dateField("Training Date", _formcontroller.dateController),
               textH3("Signature:", font_size: 17, font_weight: FontWeight.w400),
+              const SizedBox(height: 15),
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black, width: 1),
@@ -158,7 +165,7 @@ class _ScissorLiftTrainingPageState extends State<ScissorLiftTrainingPage> {
 
                       _formcontroller.signatureFile = file;
 
-                      await _formcontroller.submitInductionForm(context);
+                      await _formcontroller.submitForm(context);
                       print(
                           'Signature file: ${_formcontroller.signatureFile?.path}');
                     } else {
