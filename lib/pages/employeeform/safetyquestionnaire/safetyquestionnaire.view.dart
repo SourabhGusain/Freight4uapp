@@ -1,16 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
-import 'package:Freight4u/widgets/form.dart';
-import 'safetyquestionnaire.controller.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/helpers/values.dart';
-import 'dart:typed_data';
+import 'package:Freight4u/widgets/form.dart';
+import 'safetyquestionnaire.controller.dart';
 
 class WorkHealthSafetyQuestionnairePage extends StatefulWidget {
-  Session session = Session();
-  WorkHealthSafetyQuestionnairePage({super.key, required this.session});
+  final Session session;
+  const WorkHealthSafetyQuestionnairePage({super.key, required this.session});
 
   @override
   State<WorkHealthSafetyQuestionnairePage> createState() =>
@@ -21,68 +20,25 @@ class _WorkHealthSafetyQuestionnairePageState
     extends State<WorkHealthSafetyQuestionnairePage> {
   final WorkHealthSafetyQuestionnaireController controller =
       WorkHealthSafetyQuestionnaireController();
-  final SignatureController signatureController =
-      SignatureController(penStrokeWidth: 2, penColor: Colors.black);
+  late SignatureController _signatureController;
 
   @override
   void initState() {
     super.initState();
     controller.init();
+    controller.populateFromSession();
+    _signatureController = SignatureController(
+      penStrokeWidth: 2,
+      penColor: Colors.black,
+      exportBackgroundColor: Colors.white,
+    );
   }
 
   @override
   void dispose() {
     controller.dispose();
-    signatureController.dispose();
+    _signatureController.dispose();
     super.dispose();
-  }
-
-  Future<void> handleSubmit() async {
-    if (signatureController.isNotEmpty) {
-      final Uint8List? signature = await signatureController.toPngBytes();
-      if (signature != null) {
-        await controller.setSignature(signature);
-      }
-    }
-
-    final success = await controller.submitForm();
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Form submitted successfully!")));
-    } else {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Failed to submit the form.")));
-    }
-  }
-
-  Widget buildDropdown(String label, String currentValue,
-      Function(String?) onChanged, List<String> items) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: DropdownButtonFormField<String>(
-        value: currentValue.isEmpty ? null : currentValue,
-        onChanged: onChanged,
-        decoration:
-            InputDecoration(labelText: label, border: OutlineInputBorder()),
-        items: items
-            .map((val) => DropdownMenuItem(value: val, child: Text(val)))
-            .toList(),
-      ),
-    );
-  }
-
-  Widget buildTextField(TextEditingController controller, String label,
-      {bool readOnly = false, VoidCallback? onTap}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        controller: controller,
-        decoration:
-            InputDecoration(labelText: label, border: OutlineInputBorder()),
-        readOnly: readOnly,
-        onTap: onTap,
-      ),
-    );
   }
 
   Future<void> selectDate() async {
@@ -93,132 +49,371 @@ class _WorkHealthSafetyQuestionnairePageState
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      controller.dateController.text =
-          picked.toIso8601String().split('T').first;
+      setState(() {
+        controller.dateController.text =
+            picked.toIso8601String().split('T').first;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final dropdownOptions = ["Yes", "No", "Unsure"];
-
-    return Scaffold(
-      appBar: AppBar(title: Text("Work Health Safety Questionnaire")),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            buildTextField(controller.fullNameController, "Full Name"),
-            buildTextField(controller.dateController, "Date",
-                readOnly: true, onTap: selectDate),
-            buildTextField(controller.locationController, "Location"),
-            buildDropdown(
-                "Are you a worker under WHS Act?", controller.workerDefinition,
-                (val) {
-              setState(() => controller.workerDefinition = val ?? '');
-            }, dropdownOptions),
-            buildDropdown(
-                "Are you a PCBU under WHS Act?", controller.pcbuDefinition,
-                (val) {
-              setState(() => controller.pcbuDefinition = val ?? '');
-            }, dropdownOptions),
-            buildDropdown(
-                "Do you understand your duties?", controller.workerDuty, (val) {
-              setState(() => controller.workerDuty = val ?? '');
-            }, dropdownOptions),
-            buildDropdown("Would failure to assess risk cause harm?",
-                controller.failureRiskAssessment, (val) {
-              setState(() => controller.failureRiskAssessment = val ?? '');
-            }, dropdownOptions),
-            buildDropdown("What would you do in a mechanical fault?",
-                controller.mechanicalFaultAction, (val) {
-              setState(() => controller.mechanicalFaultAction = val ?? '');
-            }, [
-              "Stop work",
-              "Notify supervisor",
-              "Ignore",
-              "Try fix yourself"
-            ]),
-            buildDropdown("Consequences of non-compliance?",
-                controller.nonComplianceConsequences, (val) {
-              setState(() => controller.nonComplianceConsequences = val ?? '');
-            }, ["Disciplinary action", "Termination", "Legal action"]),
-            buildDropdown(
-                "What is PCBU's duty of care?", controller.pcbuDutyOfCare,
-                (val) {
-              setState(() => controller.pcbuDutyOfCare = val ?? '');
-            }, [
-              "Provide safe work environment",
-              "Provide training",
-              "All of the above"
-            ]),
-            buildDropdown("Failing to assess hazards could result in?",
-                controller.failingHazardRiskAssessment, (val) {
-              setState(
-                  () => controller.failingHazardRiskAssessment = val ?? '');
-            }, dropdownOptions),
-            buildDropdown("Failing to report risks may lead to?",
-                controller.failingReportRisks, (val) {
-              setState(() => controller.failingReportRisks = val ?? '');
-            }, dropdownOptions),
-            buildDropdown("Do you use hierarchy of control?",
-                controller.hierarchyOfControlUsed, (val) {
-              setState(() => controller.hierarchyOfControlUsed = val ?? '');
-            }, dropdownOptions),
-            buildDropdown("Is elimination the strongest control?",
-                controller.eliminationRiskStrength, (val) {
-              setState(() => controller.eliminationRiskStrength = val ?? '');
-            }, dropdownOptions),
-            buildDropdown("Is a colleague affected by alcohol a risk?",
-                controller.colleagueAffectedAlcohol, (val) {
-              setState(() => controller.colleagueAffectedAlcohol = val ?? '');
-            }, dropdownOptions),
-            buildDropdown("Who to contact for safety advice?",
-                controller.safeWorkAdviceContact, (val) {
-              setState(() => controller.safeWorkAdviceContact = val ?? '');
-            }, ["Supervisor", "Safety Rep", "Union", "All of the above"]),
-            buildDropdown("Non-compliance with Linfox policies?",
-                controller.nonComplianceLinfox, (val) {
-              setState(() => controller.nonComplianceLinfox = val ?? '');
-            }, dropdownOptions),
-            buildDropdown(
-                "Non-compliance with WHS Act?", controller.nonComplianceWHSAct,
-                (val) {
-              setState(() => controller.nonComplianceWHSAct = val ?? '');
-            }, dropdownOptions),
-            buildDropdown(
-                "Would you stop unsafe work?", controller.stopUnsafeWork,
-                (val) {
-              setState(() => controller.stopUnsafeWork = val ?? '');
-            }, dropdownOptions),
-            const SizedBox(height: 20),
-            Text("Signature",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              height: 150,
-              decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-              child: Signature(
-                  controller: signatureController,
-                  backgroundColor: Colors.white),
-            ),
-            Row(
-              children: [
-                ElevatedButton(
-                    onPressed: () => signatureController.clear(),
-                    child: Text("Clear Signature")),
-              ],
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: handleSubmit,
-              child: Text("Submit Form"),
-              style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50)),
-            ),
-          ],
+    return SafeArea(
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(65),
+          child: secondaryNavBar(
+            context,
+            "Work Health Safety Questionnaire",
+            onBack: () => Navigator.pop(context),
+          ),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              textH1("Work Health Safety Questionnaire Form :"),
+              const SizedBox(height: 20),
+              textField("Full Name", controller: controller.fullNameController),
+              const SizedBox(height: 15),
+              textField(
+                "Date",
+                controller: controller.dateController,
+                readOnly: true,
+                onTap: selectDate,
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text: 'A "worker" under the work, health and safety act is:',
+                hintText: 'A "worker" under the work, health and safety act',
+                dropdownTypes: [
+                  "Only full time staff",
+                  "Only casual staff",
+                  "All employees, contractors, sub-contractors and apprentices",
+                  "Anyone who is not a contractor"
+                ],
+                selectedValue: controller.workerDefinition ?? '',
+                onChanged: (val) =>
+                    setState(() => controller.workerDefinition = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text: 'Who is a person conducting a business or undertaking?',
+                hintText:
+                    'Who is a person conducting a business or undertaking?',
+                dropdownTypes: [
+                  "Canteen staff",
+                  "PCBU or employer",
+                  "Your work mates",
+                  "No such thing exists"
+                ],
+                selectedValue: controller.pcbuDefinition ?? '',
+                onChanged: (val) =>
+                    setState(() => controller.pcbuDefinition = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text: 'Duty of a worker includes?',
+                hintText: 'Duty of a worker includes?',
+                dropdownTypes: [
+                  "Ensuring health and safety themselves",
+                  "Ensuring acts and commissions to not present risks to others",
+                  "Complying with any instruction or policy of the work place",
+                  "All of the above"
+                ],
+                selectedValue: controller.workerDuty ?? '',
+                onChanged: (val) =>
+                    setState(() => controller.workerDuty = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text:
+                    'Failing to complete risk assessments, maintenance reports and reporting defective equipment is?',
+                hintText:
+                    'Failing to complete risk assessments, maintenance reports and reporting defective equipment is?',
+                dropdownTypes: [
+                  "Creating risk to other in the work place",
+                  "Normal practise at Linfox",
+                  "Not my problem",
+                  "None of these"
+                ],
+                selectedValue: controller.failureRiskAssessment ?? '',
+                onChanged: (val) => setState(
+                    () => controller.failureRiskAssessment = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text:
+                    'At the end of my shift, I detect mechanical faults with my vehicle, I should:',
+                hintText:
+                    'At the end of my shift, I detect mechanical faults with my vehicle, I should:',
+                dropdownTypes: [
+                  "Not my problem",
+                  "Make sure no one sees the trouble",
+                  "Not report it to stay out of trouble",
+                  "Report it as required as a worker under WHS law"
+                ],
+                selectedValue: controller.mechanicalFaultAction ?? '',
+                onChanged: (val) => setState(
+                    () => controller.mechanicalFaultAction = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text:
+                    'Non compliance with Work Health and Safety laws can result in:',
+                hintText:
+                    'Non compliance with Work Health and Safety laws can result in:',
+                dropdownTypes: [
+                  "Dismissal of a worker in a workplace",
+                  "Penalties and fines to workers from Safework NSW",
+                  "Performance management with HR",
+                  "All of the above."
+                ],
+                selectedValue: controller.nonComplianceConsequences ?? '',
+                onChanged: (val) => setState(
+                    () => controller.nonComplianceConsequences = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text: 'A PCBU must provide a primary duty of care for:',
+                hintText: 'A PCBU must provide a primary duty of care for:',
+                dropdownTypes: [
+                  "Managers only",
+                  "All workers and other persons at the work place",
+                  "Full time employees only",
+                  "Company directors only"
+                ],
+                selectedValue: controller.pcbuDutyOfCare ?? '',
+                onChanged: (val) =>
+                    setState(() => controller.pcbuDutyOfCare = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text:
+                    'If I am failing to complete hazard and risk assessments as required by Linfox I am?',
+                hintText:
+                    'If I am failing to complete hazard and risk assessments as required by Linfox I am?',
+                dropdownTypes: [
+                  "Not complying with Work Health and Safety Laws",
+                  "Placing other workers at risk of injury and even",
+                  "All of the above"
+                ],
+                selectedValue: controller.failingHazardRiskAssessment ?? '',
+                onChanged: (val) => setState(
+                    () => controller.failingHazardRiskAssessment = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text:
+                    'By failing to report known risks and hazards in the workplace is:',
+                hintText:
+                    'By failing to report known risks and hazards in the workplace is:',
+                dropdownTypes: [
+                  "Placing the community at risk",
+                  "Placing my job at risk",
+                  "Placing workers at risk",
+                  "All of the above"
+                ],
+                selectedValue: controller.failingReportRisks ?? '',
+                onChanged: (val) =>
+                    setState(() => controller.failingReportRisks = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text: 'The "Hierarchy of control" is used:',
+                hintText: 'The "Hierarchy of control" is used:',
+                dropdownTypes: [
+                  "Only in textbooks",
+                  "At every opportunity when risk has been identified",
+                  "Only on training days",
+                  "Only if a manager tells me to"
+                ],
+                selectedValue: controller.hierarchyOfControlUsed ?? '',
+                onChanged: (val) => setState(
+                    () => controller.hierarchyOfControlUsed = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text: 'Elimination of identified risks at work is:',
+                hintText: 'Elimination of identified risks at work is:',
+                dropdownTypes: [
+                  "The strongest control measure",
+                  "The 2nd strongest control measure",
+                  "The 4th strongest control measure",
+                  "Not required"
+                ],
+                selectedValue: controller.eliminationRiskStrength ?? '',
+                onChanged: (val) => setState(
+                    () => controller.eliminationRiskStrength = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text:
+                    'A work colleague comes to work affected by alcohol, failing to report this is:',
+                hintText:
+                    'A work colleague comes to work affected by alcohol, failing to report this is:',
+                dropdownTypes: [
+                  "Accepting this as acceptable work practices",
+                  "Placing others at work at risk of injury",
+                  "Failing to comply with Work Health and Safety Laws",
+                  "All of the above"
+                ],
+                selectedValue: controller.colleagueAffectedAlcohol ?? '',
+                onChanged: (val) => setState(
+                    () => controller.colleagueAffectedAlcohol = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text:
+                    'For information on safe work practices, who can I call for advice?',
+                hintText:
+                    'For information on safe work practices, who can I call for advice?',
+                dropdownTypes: [
+                  "Emergency services on 000",
+                  "Poisons Information Centre 131 126",
+                  "Pizza Hut 131 166",
+                  "Safework NSW 131 050"
+                ],
+                selectedValue: controller.safeWorkAdviceContact ?? '',
+                onChanged: (val) => setState(
+                    () => controller.safeWorkAdviceContact = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text:
+                    'Non-compliance with any safety policies and procedures at Linfox are:',
+                hintText:
+                    'Non-compliance with any safety policies and procedures at Linfox are:',
+                dropdownTypes: [
+                  "Not worth worrying about",
+                  "Only HR to deal with",
+                  "Can be a dangerous incident and reported to Safe Work NSW",
+                  "Only between management and the worker"
+                ],
+                selectedValue: controller.nonComplianceLinfox ?? '',
+                onChanged: (val) =>
+                    setState(() => controller.nonComplianceLinfox = val ?? ''),
+              ),
+              const SizedBox(height: 15),
+              customTypeSelector(
+                context: context,
+                text:
+                    'Which of these can be deemed as non-compliance with WHS Act and Regulation:',
+                hintText:
+                    'Which of these can be deemed as non-compliance with WHS Act and Regulation:',
+                dropdownTypes: [
+                  "Failing to complete and submit risk assessments and reports",
+                  "Not reporting damaged plant and equipment to supervisors",
+                  "Reporting false information on WHS reports and assessments",
+                  "All of the above"
+                ],
+                selectedValue: controller.nonComplianceWHSAct ?? '',
+                onChanged: (val) =>
+                    setState(() => controller.nonComplianceWHSAct = val ?? ''),
+              ),
+              const SizedBox(height: 20),
+              textH3("Signature:"),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black),
+                ),
+                child: Signature(
+                  controller: _signatureController,
+                  height: 200,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: SizedBox(
+                  height: 25,
+                  width: 75,
+                  child: darkButton(
+                    buttonText("Clear", color: whiteColor, font_size: 10),
+                    primary: primaryColor,
+                    onPressed: () => _signatureController.clear(),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                height: 45,
+                child: darkButton(
+                  buttonText("Submit", color: whiteColor),
+                  primary: primaryColor,
+                  onPressed: () async {
+                    if (_signatureController.isEmpty) {
+                      await _showErrorDialog('Please provide your signature.');
+                      return;
+                    }
+                    final bytes = await _signatureController.toPngBytes();
+                    if (bytes != null) {
+                      final tempFile = File(
+                          '${Directory.systemTemp.path}/signature_${DateTime.now().millisecondsSinceEpoch}.png');
+                      await tempFile.writeAsBytes(bytes);
+                      controller.signatureFile = tempFile;
+                      final success = await controller.submitForm();
+                      if (success) {
+                        await _showSuccessDialog(
+                            "Form submitted successfully.");
+                        Navigator.pop(context);
+                      } else {
+                        await _showErrorDialog("Failed to submit the form.");
+                      }
+                    } else {
+                      await _showErrorDialog('Failed to capture signature.');
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Future<void> _showMessageDialog(String title, String message) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () => Navigator.of(dialogContext).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showErrorDialog(String message) async {
+    await _showMessageDialog("Error", message);
+  }
+
+  Future<void> _showSuccessDialog(String message) async {
+    await _showMessageDialog("Success", message);
   }
 }

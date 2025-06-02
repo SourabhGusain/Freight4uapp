@@ -19,6 +19,7 @@ import 'package:Freight4u/pages/employeeform/roadassessment/roadassessment.view.
 import 'package:Freight4u/pages/employeeform/cabassessment/cabassessment.view.dart';
 import 'package:Freight4u/pages/employeeform/yellowbookassessment/yellowbookassessment.view.dart';
 import 'package:Freight4u/pages/employeeform/safetyquestionnaire/safetyquestionnaire.view.dart';
+import 'package:Freight4u/pages/employeeform/scissorlifttraining/scissorlifttraining.view.dart';
 
 class EmployeePage extends StatefulWidget {
   final Session session;
@@ -222,8 +223,8 @@ class _EmployeePageState extends State<EmployeePage> {
                       text: "Scissor Lift",
                       subtext:
                           "Evaluate your understanding of safe scissor lift operation.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => ScissorLiftTrainingPage(session: session)),
                     ),
                   ],
                 ),

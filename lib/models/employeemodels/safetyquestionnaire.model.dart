@@ -72,7 +72,7 @@ class WorkHealthSafetyQuestionnaireModel {
       "safe_work_advice_contact": safeWorkAdviceContact,
       "non_compliance_linfox": nonComplianceLinfox,
       "non_compliance_whs_act": nonComplianceWHSAct,
-      "is_active": isActive ? '1' : '0',
+      "is_active": isActive ? true : false,
       "created_on": _formatDate(createdOn),
     };
 
@@ -116,8 +116,8 @@ class WorkHealthSafetyQuestionnaireModel {
       safeWorkAdviceContact: json['safe_work_advice_contact'] ?? '',
       nonComplianceLinfox: json['non_compliance_linfox'] ?? '',
       nonComplianceWHSAct: json['non_compliance_whs_act'] ?? '',
-      signature: null, // can't deserialize File from JSON directly
-      isActive: _parseBool(json['is_active'], defaultValue: true),
+      signature: null,
+      isActive: json['is_active'] ?? true,
       createdOn: json['created_on'] ?? '',
       createdBy: _parseInt(json['created_by']),
     );
@@ -144,6 +144,7 @@ class WorkHealthSafetyQuestionnaireModel {
       WorkHealthSafetyQuestionnaireModel model) async {
     final api = Api();
     final url = '$api_url/employee/work-health-safety-questionnaire/';
+    print(url);
     final fields = model.toMultipartFields();
 
     final result = await api.multipartOrJsonPostCall(
@@ -151,6 +152,7 @@ class WorkHealthSafetyQuestionnaireModel {
       fields,
       isMultipart: model.signature != null,
     );
+    print(result);
 
     return result["ok"] == 1;
   }
