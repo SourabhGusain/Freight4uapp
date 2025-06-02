@@ -20,6 +20,7 @@ import 'package:Freight4u/pages/employeeform/cabassessment/cabassessment.view.da
 import 'package:Freight4u/pages/employeeform/yellowbookassessment/yellowbookassessment.view.dart';
 import 'package:Freight4u/pages/employeeform/safetyquestionnaire/safetyquestionnaire.view.dart';
 import 'package:Freight4u/pages/employeeform/scissorlifttraining/scissorlifttraining.view.dart';
+import 'package:Freight4u/pages/employeeform/dangerousgoods/dangerousgoods.view.dart';
 
 class EmployeePage extends StatefulWidget {
   final Session session;
@@ -207,8 +208,8 @@ class _EmployeePageState extends State<EmployeePage> {
                       text: "Dangerous Goods Competency Questionnaire",
                       subtext:
                           "Ensure you are qualified to handle hazardous materials.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => DangerousGoodsCompetencyPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(
