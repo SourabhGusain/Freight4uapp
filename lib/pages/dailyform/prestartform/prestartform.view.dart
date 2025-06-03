@@ -144,8 +144,78 @@ class _PrestartformPageState extends State<PrestartformPage> {
                 },
               ),
               const SizedBox(height: 20),
+              textH3("Upload photo here", font_weight: FontWeight.w400),
 
-              // Fit for Duty Declaration Section
+              GestureDetector(
+                onTap: () async {
+                  setState(() => _formController.isUploadingPhoto = true);
+                  await _formController.pickUploadPhotoFile();
+                  setState(() => _formController.isUploadingPhoto = false);
+                },
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 1),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white,
+                  ),
+                  child: Center(
+                    child: _formController.isUploadingPhoto
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: primaryColor,
+                            ),
+                          )
+                        : textH3(
+                            _formController.photoFileName ?? "Browse File Here",
+                            color: blackColor,
+                            font_size: 15,
+                            font_weight: FontWeight.w500,
+                          ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              textH3("Upload Videos here", font_weight: FontWeight.w400),
+
+              GestureDetector(
+                onTap: () async {
+                  setState(() => _formController.isUploadingVideo = true);
+                  await _formController.pickUploadVideoFile();
+                  setState(() => _formController.isUploadingVideo = false);
+                },
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black, width: 1),
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white,
+                  ),
+                  child: Center(
+                    child: _formController.isUploadingVideo
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: primaryColor,
+                            ),
+                          )
+                        : textH3(
+                            _formController.videoFileName ?? "Browse File Here",
+                            color: blackColor,
+                            font_size: 15,
+                            font_weight: FontWeight.w500,
+                          ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
               Row(
                 children: [
                   textH1("FIT FOR DUTY DECLARATION:",
@@ -158,7 +228,6 @@ class _PrestartformPageState extends State<PrestartformPage> {
               ),
               const SizedBox(height: 20),
 
-              // Declaration Checkboxes
               _declaration(
                   "I have a current and valid\nlicense to operate this\nvehicle.",
                   _formController.hasValidLicense,

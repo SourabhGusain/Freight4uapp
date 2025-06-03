@@ -152,14 +152,14 @@ class _EmployeePageState extends State<EmployeePage> {
                       onTap: () => _showLoadingAndNavigate(context,
                           () => InCabAssessmentFormPage(session: session)),
                     ),
-                    const SizedBox(height: 10),
-                    customBox(
-                      text: "LINFOX Yellow Book Assessment",
-                      subtext:
-                          "Confirm knowledge of the LINFOX safety procedures.",
-                      onTap: () => _showLoadingAndNavigate(context,
-                          () => YellowBookAssessmentFormPage(session: session)),
-                    ),
+                    // const SizedBox(height: 10),
+                    // customBox(
+                    //   text: "LINFOX Yellow Book Assessment",
+                    //   subtext:
+                    //       "Confirm knowledge of the LINFOX safety procedures.",
+                    //   onTap: () => _showLoadingAndNavigate(context,
+                    //       () => YellowBookAssessmentFormPage(session: session)),
+                    // ),
                     const SizedBox(height: 10),
                     customBox(
                       text: "Work Health and Safety Questionnaire",

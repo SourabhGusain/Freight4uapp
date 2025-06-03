@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 import 'package:Freight4u/helpers/widgets.dart';
@@ -28,6 +28,7 @@ class _DangerousGoodsCompetencyPageState
     _controller.init().then((_) {
       setState(() => isLoading = false);
     });
+    _controller.loadUploadDocuments();
   }
 
   @override
@@ -77,6 +78,36 @@ class _DangerousGoodsCompetencyPageState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               textH1("Dangerous Goods Competency Form"),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  launchUrl(
+                      Uri.parse('https://yourdomain.com/cor-document.pdf'));
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    border: Border.all(color: blackColor),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.picture_as_pdf, color: Colors.red),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: textH3(
+                          "Read the Chain of Responsibility PDF before filling the form",
+                          text_border: TextDecoration.underline,
+                          color: primaryColor,
+                          font_weight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
               SizedBox(
                 height: 50,

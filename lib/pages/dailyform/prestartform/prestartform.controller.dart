@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:Freight4u/helpers/values.dart';
@@ -26,6 +28,15 @@ class PrestartFormController {
   bool? noInfringements;
   bool? fitForTaskRepeat;
 
+  File? selectedPhoto;
+  File? selectedVideo;
+
+  String? photoFileName;
+  String? videoFileName;
+
+  bool isUploadingPhoto = false;
+  bool isUploadingVideo = false;
+
   SettingsModel? settings;
   int userId = 0;
 
@@ -34,11 +45,19 @@ class PrestartFormController {
   Future<void> init() async {
     try {
       settings = await fetchSettingsData();
-      String? userId = await session.getSession("userId");
-      print(userId);
+      String? id = await session.getSession("userId");
+      userId = int.tryParse(id ?? '0') ?? 0;
     } catch (e) {
       print('Failed to load settings: $e');
     }
+    await populateFromSession();
+  }
+
+  Future<void> populateFromSession() async {
+    final userJson = await session.getSession('loggedInUser');
+    if (userJson == null) return;
+    final Map<String, dynamic> userData = jsonDecode(userJson);
+    fullNameController.text = userData["name"] ?? "";
   }
 
   List<String> get contractorNames =>
@@ -63,8 +82,46 @@ class PrestartFormController {
     return shape?.id ?? 0;
   }
 
+  Future<void> pickUploadPhotoFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result != null && result.files.isNotEmpty) {
+      final pickedFile = result.files.first;
+      selectedPhoto = File(pickedFile.path!);
+      photoFileName =
+          "${pickedFile.name} (${(pickedFile.size / 1024).toStringAsFixed(1)} KB)";
+    }
+  }
+
+  Future<void> pickUploadVideoFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result != null && result.files.isNotEmpty) {
+      final pickedFile = result.files.first;
+      selectedVideo = File(pickedFile.path!);
+      videoFileName =
+          "${pickedFile.name} (${(pickedFile.size / 1024).toStringAsFixed(1)} KB)";
+    }
+  }
+
   Future<void> submitPrestartForm(BuildContext context) async {
-    // Validate required fields first
+    print("=== Prestart Form Data ===");
+    print("Full Name: ${fullNameController.text}");
+    print("Rego Name: ${regoNameController.text}");
+    print("Date: ${dateController.text}");
+    print("Time: ${timeController.text}");
+    print("Contractor: $selectedContractor");
+    print("Shape: $selectedShape");
+    print("Valid License: $hasValidLicense");
+    print("Fit For Task: $isFitForTask");
+    print("No Medical Condition: $noMedicalCondition");
+    print("Had 24Hr Rest: $had24HrRest");
+    print("Had 10Hr Break: $had10HrBreak");
+    print("No Substance Use: $noSubstanceUse");
+    print("No Infringements: $noInfringements");
+    print("Fit For Task Repeat: $fitForTaskRepeat");
+    print("Photo File: ${photoFileName ?? 'No file selected'}");
+    print("Video File: ${videoFileName ?? 'No file selected'}");
+    print("=========================");
+
     if (fullNameController.text.trim().isEmpty ||
         regoNameController.text.trim().isEmpty ||
         dateController.text.trim().isEmpty ||
@@ -113,6 +170,8 @@ class PrestartFormController {
       rego: regoNameController.text,
       contract: _getContractIdFromName(selectedContractor),
       shape: _getShapeIdFromName(selectedShape),
+      photoUploads: selectedPhoto,
+      videoUploads: selectedVideo,
       validLicense: hasValidLicense == true ? 'yes' : 'no',
       fitForTask: isFitForTask == true ? 'yes' : 'no',
       notFatigued: noMedicalCondition == true ? 'yes' : 'no',
@@ -125,8 +184,11 @@ class PrestartFormController {
       createdOn: DateTime.now().toIso8601String(),
       createdBy: userId,
     );
+    print("Prestart Model:");
+    print("Date: ${prestartModel.photoUploads}");
+    print(prestartModel);
 
-    bool success = await PrestartModel.preStartForm(prestartModel);
+    bool success = await PrestartModel.submitForm(prestartModel);
 
     Navigator.pop(context);
 
@@ -184,6 +246,12 @@ class PrestartFormController {
     noSubstanceUse = null;
     noInfringements = null;
     fitForTaskRepeat = null;
+
+    selectedPhoto = null;
+    selectedVideo = null;
+
+    photoFileName = null;
+    videoFileName = null;
   }
 
   void dispose() {

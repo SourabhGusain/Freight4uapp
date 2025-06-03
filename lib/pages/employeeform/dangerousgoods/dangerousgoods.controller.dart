@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:signature/signature.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/models/employeemodels/dangerousgoods.model.dart';
+import 'package:Freight4u/models/documents.model.dart';
 
 class DangerousGoodsController {
   final TextEditingController nameController = TextEditingController();
@@ -38,8 +39,27 @@ class DangerousGoodsController {
   int userId = 0;
   DateTime traineeDate = DateTime.now();
 
-  // Make this public so your view can access it
   File? signatureFile;
+
+  List<UploadDocument>? uploadDocuments;
+
+  Future<void> loadUploadDocuments() async {
+    uploadDocuments = await fetchUploadDocuments();
+    if (uploadDocuments == null) {
+      print("No upload documents found or failed to load.");
+    } else {
+      final filteredDocs = uploadDocuments!
+          .where((doc) => doc.name == "Dangerous Goods Competency")
+          .toList();
+
+      if (filteredDocs.isNotEmpty) {
+        final documentLink = filteredDocs.first.documentUrl;
+        print("Document link: $documentLink");
+      } else {
+        print("No documents found with name 'Dangerous Goods Competency'.");
+      }
+    }
+  }
 
   Future<void> init() async {
     try {
@@ -83,7 +103,6 @@ class DangerousGoodsController {
     return hasName && hasSignature;
   }
 
-  /// Added [BuildContext] param so you can show dialogs or navigate after submission
   Future<bool> submitForm(BuildContext context) async {
     if (!validateInputs()) {
       _showErrorDialog(
