@@ -55,7 +55,7 @@ class WorkHealthSafetyQuestionnaireController {
 
   WorkHealthSafetyQuestionnaireController() {
     _loadChoices();
-    _setDefaultSelections();
+    // _setDefaultSelections();
   }
 
   void _loadChoices() {
@@ -160,24 +160,24 @@ class WorkHealthSafetyQuestionnaireController {
     };
   }
 
-  void _setDefaultSelections() {
-    // Set defaults to the first keys (labels) of each map
-    workerDefinition = workerDefinitionOptions.keys.first;
-    pcbuDefinition = pcbuDefinitionOptions.keys.first;
-    workerDuty = workerDutyOptions.keys.first;
-    failureRiskAssessment = failureRiskAssessmentOptions.keys.first;
-    mechanicalFaultAction = mechanicalFaultActionOptions.keys.first;
-    nonComplianceConsequences = nonComplianceConsequencesOptions.keys.first;
-    pcbuDutyOfCare = pcbuDutyOfCareOptions.keys.first;
-    failingHazardRiskAssessment = failingHazardRiskAssessmentOptions.keys.first;
-    failingReportRisks = failingReportRisksOptions.keys.first;
-    hierarchyOfControlUsed = hierarchyOfControlUsedOptions.keys.first;
-    eliminationRiskStrength = eliminationRiskStrengthOptions.keys.first;
-    colleagueAffectedAlcohol = colleagueAffectedAlcoholOptions.keys.first;
-    safeWorkAdviceContact = safeWorkAdviceContactOptions.keys.first;
-    nonComplianceLinfox = nonComplianceLinfoxOptions.keys.first;
-    nonComplianceWHSAct = nonComplianceWHSActOptions.keys.first;
-  }
+  // void _setDefaultSelections() {
+  //   // Set defaults to the first keys (labels) of each map
+  //   workerDefinition = workerDefinitionOptions.keys.first;
+  //   pcbuDefinition = pcbuDefinitionOptions.keys.first;
+  //   workerDuty = workerDutyOptions.keys.first;
+  //   failureRiskAssessment = failureRiskAssessmentOptions.keys.first;
+  //   mechanicalFaultAction = mechanicalFaultActionOptions.keys.first;
+  //   nonComplianceConsequences = nonComplianceConsequencesOptions.keys.first;
+  //   pcbuDutyOfCare = pcbuDutyOfCareOptions.keys.first;
+  //   failingHazardRiskAssessment = failingHazardRiskAssessmentOptions.keys.first;
+  //   failingReportRisks = failingReportRisksOptions.keys.first;
+  //   hierarchyOfControlUsed = hierarchyOfControlUsedOptions.keys.first;
+  //   eliminationRiskStrength = eliminationRiskStrengthOptions.keys.first;
+  //   colleagueAffectedAlcohol = colleagueAffectedAlcoholOptions.keys.first;
+  //   safeWorkAdviceContact = safeWorkAdviceContactOptions.keys.first;
+  //   nonComplianceLinfox = nonComplianceLinfoxOptions.keys.first;
+  //   nonComplianceWHSAct = nonComplianceWHSActOptions.keys.first;
+  // }
 
   Future<void> init() async {
     final userIdStr = await session.getSession("userId");
@@ -301,7 +301,7 @@ class WorkHealthSafetyQuestionnaireController {
 
     signatureFile = null;
 
-    _setDefaultSelections();
+    // _setDefaultSelections();
   }
 
   void dispose() {

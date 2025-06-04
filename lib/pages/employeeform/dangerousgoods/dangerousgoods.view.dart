@@ -26,9 +26,10 @@ class _DangerousGoodsCompetencyPageState
   void initState() {
     super.initState();
     _controller.init().then((_) {
-      setState(() => isLoading = false);
+      _controller.loadUploadDocuments().then((_) {
+        setState(() => isLoading = false);
+      });
     });
-    _controller.loadUploadDocuments();
   }
 
   @override
@@ -56,6 +57,85 @@ class _DangerousGoodsCompetencyPageState
     );
   }
 
+  Widget _buildDangerousGoodsDocumentLink() {
+    if (_controller.uploadDocuments == null) {
+      return const Text("Loading documents...");
+    }
+
+    final docs = _controller.uploadDocuments!
+        .where((doc) => doc.name == "Dangerous Goods Competency")
+        .toList();
+
+    if (docs.isEmpty) {
+      return const Text("No Dangerous Goods Competency document found.");
+    }
+
+    final doc = docs.first;
+    final fullUrl = 'https://freight4you.com.au${doc.documentUrl}';
+
+    return Container(
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: whiteColor,
+        border: Border.all(color: blackColor),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.picture_as_pdf, color: Colors.red),
+          const SizedBox(width: 10),
+          Expanded(
+            child: isLoading
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      color: primaryColor,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : GestureDetector(
+                    onTap: () async {
+                      setState(() => isLoading = true);
+
+                      final uri = Uri.parse(fullUrl);
+
+                      try {
+                        final launched = await launchUrl(
+                          uri,
+                          mode: LaunchMode.externalApplication,
+                        );
+
+                        await Future.delayed(const Duration(seconds: 2));
+
+                        if (!launched) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Failed to open document.")),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Error: $e")),
+                        );
+                      }
+
+                      setState(() => isLoading = false);
+                    },
+                    child: textH3(
+                      "Read the Dangerous Goods Competency PDF before filling the form",
+                      text_border: TextDecoration.underline,
+                      color: primaryColor,
+                      font_weight: FontWeight.w500,
+                    ),
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -77,38 +157,9 @@ class _DangerousGoodsCompetencyPageState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              textH1("Dangerous Goods Competency Form"),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  launchUrl(
-                      Uri.parse('https://yourdomain.com/cor-document.pdf'));
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    color: whiteColor,
-                    border: Border.all(color: blackColor),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.picture_as_pdf, color: Colors.red),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: textH3(
-                          "Read the Chain of Responsibility PDF before filling the form",
-                          text_border: TextDecoration.underline,
-                          color: primaryColor,
-                          font_weight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
+              textH1("Dangerous Goods Competency Form:"),
+              _buildDangerousGoodsDocumentLink(),
+              const SizedBox(height: 15),
               SizedBox(
                 height: 50,
                 child: textField(
@@ -116,13 +167,13 @@ class _DangerousGoodsCompetencyPageState
                   controller: _controller.nameController,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 25),
               calendarDateField(
                 context: context,
                 label: "Date",
                 controller: _controller.dateController,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 15),
               _buildTextField("1. Classification basis",
                   _controller.classificationBasisController),
               _buildTextField(

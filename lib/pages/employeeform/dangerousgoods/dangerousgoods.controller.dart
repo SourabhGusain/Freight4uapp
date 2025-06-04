@@ -45,19 +45,21 @@ class DangerousGoodsController {
 
   Future<void> loadUploadDocuments() async {
     uploadDocuments = await fetchUploadDocuments();
-    if (uploadDocuments == null) {
-      print("No upload documents found or failed to load.");
-    } else {
-      final filteredDocs = uploadDocuments!
-          .where((doc) => doc.name == "Dangerous Goods Competency")
-          .toList();
 
-      if (filteredDocs.isNotEmpty) {
-        final documentLink = filteredDocs.first.documentUrl;
-        print("Document link: $documentLink");
-      } else {
-        print("No documents found with name 'Dangerous Goods Competency'.");
-      }
+    if (uploadDocuments == null || uploadDocuments!.isEmpty) {
+      print("No upload documents found or failed to load.");
+      return;
+    }
+
+    final filteredDocs = uploadDocuments!
+        .where((doc) => doc.name == "Dangerous Goods Competency")
+        .toList();
+
+    if (filteredDocs.isNotEmpty) {
+      final documentLink = filteredDocs.first.documentUrl;
+      print("Found 'Dangerous Goods Competency' document: $documentLink");
+    } else {
+      print("No documents found with name 'Dangerous Goods Competency'.");
     }
   }
 

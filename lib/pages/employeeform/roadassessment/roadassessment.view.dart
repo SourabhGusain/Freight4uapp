@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
+import 'package:markdown_widget/markdown_widget.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/widgets/form.dart';
@@ -118,6 +119,44 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              MarkdownWidget(
+                data: """
+**Road assessment training in NSW**\n\n encompasses various courses, including those for occupational therapists becoming driving assessors, Safe System Assessments, and those focusing on road safety risk assessments. These programs equip individuals with the knowledge and skills to evaluate road safety, driving ability, and implement improvements.
+
+---
+
+**Specific training options include:**
+
+- **Occupational Therapy Driving Assessor Courses**  
+  These courses train occupational therapists to conduct on-road and off-road driving assessments, including evaluating the need for vehicle modifications and assessing driving skills. The Institute of Driver Health offers online and blended courses for this.
+
+- **Safe System Assessment Framework (SSAF) Training**  
+  This training focuses on the Austroads Safe System approach, which aims to eliminate death and serious injury on roads by addressing all aspects of the road system. NTRO Training offers a course on this.
+
+- **Assessing Road Safety Risk on Road Networks**  
+  This training provides an overview of infrastructure risk assessments, including the Australian Risk Assessment Program (AusRAP), Australian National Risk Assessment Model (ANRAM), and Austroads Network Design for Road Safety. NTRO Training offers a course on this.
+
+- **AusRAP (Australian Road Assessment Program)**  
+  This program, managed by Austroads, provides tools and support to local governments and jurisdictions to improve road safety.
+
+- **Commercial Vehicle Driver Assessment & Rehabilitation Course**  
+  This course focuses on assessing and rehabilitating commercial vehicle drivers, often in a 100% online format. The Institute of Driver Health offers a course on this.
+""",
+                shrinkWrap: true,
+                selectable: true,
+                config: MarkdownConfig(configs: [
+                  const PConfig(textStyle: TextStyle(fontSize: 15)),
+                  const H1Config(
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const H2Config(
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ]),
+              ),
+
+              const SizedBox(height: 20),
+
               textH1("Driver Road Assessment Form"),
               const SizedBox(height: 20),
 
@@ -200,7 +239,6 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
               textH2("Driving Behaviour"),
               const SizedBox(height: 15),
 
-              // Driving Behaviour Fields
               ..._formController.vehicleCheckFields.entries.map(
                 (entry) => _vehicleCheckField(entry.key, entry.value),
               ),
@@ -232,7 +270,6 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
               ),
 
               const SizedBox(height: 25),
-
               SizedBox(
                 height: 45,
                 width: double.infinity,

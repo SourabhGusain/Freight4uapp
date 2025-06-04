@@ -17,10 +17,11 @@ import 'package:Freight4u/pages/employeeform/fatigueriskform/fatigueriskform.vie
 import 'package:Freight4u/pages/employeeform/corform/corform.view.dart';
 import 'package:Freight4u/pages/employeeform/roadassessment/roadassessment.view.dart';
 import 'package:Freight4u/pages/employeeform/cabassessment/cabassessment.view.dart';
-import 'package:Freight4u/pages/employeeform/yellowbookassessment/yellowbookassessment.view.dart';
+// import 'package:Freight4u/pages/employeeform/yellowbookassessment/yellowbookassessment.view.dart';
 import 'package:Freight4u/pages/employeeform/safetyquestionnaire/safetyquestionnaire.view.dart';
 import 'package:Freight4u/pages/employeeform/scissorlifttraining/scissorlifttraining.view.dart';
 import 'package:Freight4u/pages/employeeform/dangerousgoods/dangerousgoods.view.dart';
+import 'package:Freight4u/pages/employeeform/coupling&uncoupling/coupling&uncoupling.view.dart';
 
 class EmployeePage extends StatefulWidget {
   final Session session;
@@ -176,8 +177,8 @@ class _EmployeePageState extends State<EmployeePage> {
                           "Coupling/Uncoupling: Prime Mover Trailer and B Double",
                       subtext:
                           "Demonstrate correct procedures for coupling/uncoupling.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => CouplingUncouplingFormPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(

@@ -67,28 +67,23 @@ Future<List<UploadDocument>?> fetchUploadDocuments() async {
   Api api = Api();
   final url = "$api_url/settings/uploaded-documents/";
 
-  final result = await api.getCalling(
-    url,
-    (data) => UploadDocumentsResponse.fromJson(data),
-  );
+  try {
+    final result = await api.getCalling(
+      url,
+      (data) => UploadDocumentsResponse.fromJson({"ok": 1, "data": data}),
+    );
 
-  if (result['ok'] == 1) {
-    return result['data'];
-  } else {
-    print("Failed to load upload documents: ${result['error']}");
-    return null;
-  }
-}
+    print("Fetch Upload Documents Result: $result");
 
-void loadAndPrintUploadDocuments() async {
-  final documents = await fetchUploadDocuments();
-
-  if (documents != null) {
-    print("== Upload Documents ==");
-    for (var doc in documents) {
-      print(doc);
+    if (result["ok"] == 1) {
+      final UploadDocumentsResponse response = result["data"];
+      return response.data;
+    } else {
+      print("Failed to load upload documents: ${result['error']}");
+      return null;
     }
-  } else {
-    print("No documents found or failed to load.");
+  } catch (e) {
+    print("Exception while loading upload documents: $e");
+    return null;
   }
 }

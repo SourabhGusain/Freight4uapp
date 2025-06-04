@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
-import 'package:Freight4u/helpers/widgets.dart';
-import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/widgets/form.dart';
+import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/session.dart';
+import 'package:Freight4u/helpers/widgets.dart';
+import 'package:markdown_widget/markdown_widget.dart';
 import 'package:Freight4u/pages/employeeform/cabassessment/cabassessment.controller.dart';
 
 class InCabAssessmentFormPage extends StatefulWidget {
@@ -121,6 +122,57 @@ class _InCabAssessmentFormPageState extends State<InCabAssessmentFormPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              MarkdownWidget(
+                data: """
+**In-cab Assessment for Heavy Vehicle Licensing in NSW**
+
+An **"in-cab assessment"** in the context of heavy vehicle licensing in NSW (and likely other jurisdictions) refers to a practical, competency-based assessment conducted within the driver's cab while operating a heavy vehicle. This assessment ensures drivers demonstrate the core skills needed for safe and competent operation of their vehicle type.
+
+---
+
+### Purpose:
+- To verify that the driver has the necessary skills to safely operate the heavy vehicle, as learned during prior training.  
+- To assess the driver's ability to perform various tasks while inside the vehicle, such as pre-drive checks, vehicle operation, and safe driving practices.
+
+---
+
+### Key Aspects:
+
+**Pre-Drive Checks:**  
+The assessment will likely include checking gauges, instruments, and ensuring the vehicle is in safe working order before starting.
+
+**Vehicle Control and Operation:**  
+This involves demonstrating skills like starting, moving off, shutting down, and securing the vehicle, as well as demonstrating proper control of the vehicle while driving.
+
+**Safe Driving Practices:**  
+The assessor will evaluate the driver's ability to maintain crash avoidance space, adhere to road rules, and demonstrate appropriate risk management.
+
+---
+
+### Final Competency Assessment (FCA):  
+The in-cab assessment is part of the Final Competency Assessment, which must be conducted by a separate assessor after training.
+
+---
+
+### How to Arrange an Assessment:
+- Contact a Transport for NSW accredited Registered Training Organisation (RTO).  
+- Arrange the appointment, duration, and fees with the assessor.  
+- Training and assessment can sometimes be combined during a session if learning with an assessor, but time spent training must be deducted from the minimum assessment time.
+""",
+                shrinkWrap: true,
+                selectable: true,
+                config: MarkdownConfig(configs: [
+                  const PConfig(textStyle: TextStyle(fontSize: 15)),
+                  const H1Config(
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const H2Config(
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                ]),
+              ),
+
+              const SizedBox(height: 20),
               textH1("In-Cab Assessment Form:"),
               const SizedBox(height: 20),
 

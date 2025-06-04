@@ -31,14 +31,10 @@ class Api {
       print(api);
 
       var response = await dio.get(api);
-      print(response);
 
       if (response.statusCode == 200) {
         if (response.data['ok'] > 0) {
           if (response.data['data'] != null) {
-            print(
-                "................................................fromJson(response.data['data'])");
-            print(fromJson(response.data['data']));
             returnObj["data"] = fromJson(response.data['data']);
           }
           returnObj["message"] = response.data['message'];
@@ -58,7 +54,6 @@ class Api {
     } catch (error) {
       returnObj["error"] = "Something went wrong $error";
     } finally {
-      // ignore: control_flow_in_finally
       return returnObj;
     }
   }
