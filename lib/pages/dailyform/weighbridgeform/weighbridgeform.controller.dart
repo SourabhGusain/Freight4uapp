@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
@@ -13,7 +14,7 @@ import 'package:Freight4u/widgets/form.dart';
 class WeighbridgeController extends BaseViewModel {
   final nameController = TextEditingController();
   final dateController = TextEditingController();
-  final regoController = TextEditingController();
+  final driverNameController = TextEditingController();
 
   String selectedDepot = '';
   SettingsModel? settings;
@@ -47,6 +48,13 @@ class WeighbridgeController extends BaseViewModel {
     return depot?.id ?? 0;
   }
 
+  Future<void> populateFromSession() async {
+    final userJson = await session.getSession('loggedInUser');
+    if (userJson == null) return;
+    final Map<String, dynamic> userData = jsonDecode(userJson);
+    driverNameController.text = userData["name"] ?? "";
+  }
+
   Future<void> pickWeighbridgeFile() async {
     await _pickFile(isWeighbridge: true);
   }
@@ -77,7 +85,7 @@ class WeighbridgeController extends BaseViewModel {
   bool isFormValid() {
     return nameController.text.trim().isNotEmpty &&
         dateController.text.trim().isNotEmpty &&
-        regoController.text.trim().isNotEmpty &&
+        driverNameController.text.trim().isNotEmpty &&
         selectedDepot.trim().isNotEmpty &&
         weighbridgeFile != null &&
         loadPicFile != null;
@@ -101,7 +109,7 @@ class WeighbridgeController extends BaseViewModel {
       final model = WeighbridgeModel(
         date: dateController.text.trim(),
         name: nameController.text.trim(),
-        rego: regoController.text.trim(),
+        rego: driverNameController.text.trim(),
         depot: depotId.toString(), // Pass depot ID as string
         weighbridgeDocketFile: weighbridgeFile,
         loadPicAndSheetFile: loadPicFile,
@@ -137,7 +145,7 @@ class WeighbridgeController extends BaseViewModel {
   void reset() {
     nameController.clear();
     dateController.clear();
-    regoController.clear();
+    driverNameController.clear();
     selectedDepot = '';
     weighbridgeFile = null;
     weighbridgeFileName = null;
@@ -202,7 +210,7 @@ class WeighbridgeController extends BaseViewModel {
   void dispose() {
     nameController.dispose();
     dateController.dispose();
-    regoController.dispose();
+    driverNameController.dispose();
     super.dispose();
   }
 }

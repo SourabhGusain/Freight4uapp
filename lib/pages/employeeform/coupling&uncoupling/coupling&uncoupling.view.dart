@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
-import 'package:Freight4u/helpers/session.dart';
-import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:Freight4u/helpers/values.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:Freight4u/helpers/session.dart';
+import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/pages/employeeform/coupling&uncoupling/coupling&uncoupling.controller.dart';
 
 class CouplingUncouplingFormPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class _CouplingUncouplingFormPageState
   final CouplingUncouplingController _formController =
       CouplingUncouplingController();
   bool isLoading = true;
+  late SignatureController _signatureController;
 
   final List<String> uncouplingSequenceOptions = ['A', 'B', 'C', 'D'];
   final List<String> couplingSequenceOptions = ['A', 'B', 'C', 'D'];
@@ -28,6 +30,11 @@ class _CouplingUncouplingFormPageState
   @override
   void initState() {
     super.initState();
+    _signatureController = SignatureController(
+      penColor: Colors.black,
+      penStrokeWidth: 3,
+      exportBackgroundColor: Colors.white,
+    );
     _initializeForm();
   }
 
@@ -69,7 +76,8 @@ class _CouplingUncouplingFormPageState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        textH3(label, font_size: 13, font_weight: FontWeight.w400),
+        textH3(label, font_size: 12, font_weight: FontWeight.w400),
+        const SizedBox(height: 10),
         buildCommentTextField(
           controller: controller,
           hintText: "Write here...",
@@ -79,7 +87,7 @@ class _CouplingUncouplingFormPageState
           borderColor: Colors.grey,
           focusedBorderColor: Colors.black,
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 20),
       ],
     );
   }
@@ -111,7 +119,7 @@ class _CouplingUncouplingFormPageState
                 const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
           ),
         ),
-        const SizedBox(height: 15),
+        const SizedBox(height: 25),
       ],
     );
   }
@@ -139,43 +147,107 @@ class _CouplingUncouplingFormPageState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              textH1("Coupling/Uncoupling Questionnaire"),
-              const SizedBox(height: 20),
-              _buildTextField("Risks Identified",
+              textH1("Coupling/Uncoupling Questionnaire form :", font_size: 19),
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
+                  launchUrl(Uri.parse(
+                      'https://youtu.be/IMvEtqDsSH8?si=rGmZS9maSy_PBv9D'));
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    border: Border.all(color: blackColor),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.picture_as_pdf, color: Colors.red),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: textH3(
+                          "Read the Coupling and decoupling trailers PDF before filling the form",
+                          color: primaryColor,
+                          font_weight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+              _buildTextField(
+                  "Identify four (4) risks that are associated with Coupling/Uncoupling a Prime Mover to a trailer.",
                   _formController.risksIdentifiedController),
               _buildTextField(
-                  "Safety Controls", _formController.safetyControlsController),
+                  "Name four (4) safety controls that can reduce the risks of Coupling/Uncoupling a Prime Mover to a trailer.",
+                  _formController.safetyControlsController),
               _buildTextField(
-                  "Fault Action", _formController.faultActionController),
-              _dropdownField(
-                "Uncoupling Sequence (A, B, C, D)",
-                _formController.uncouplingSequenceController.text,
-                uncouplingSequenceOptions,
-                (val) => setState(() {
-                  _formController.uncouplingSequenceController.text = val ?? '';
-                }),
+                  "What must you do if you find a fault with the coupling mechanism as part of your pre-operational check?",
+                  _formController.faultActionController),
+              customTypeSelector(
+                context: context,
+                text:
+                    "In what sequence do you perform the UNCOUPLING operation in?",
+                hintText:
+                    "In what sequence do you perform the UNCOUPLING operation in?",
+                dropdownTypes: [
+                  'Legs - Pin - Air',
+                  'Pin - Air - Legs',
+                  'Air - Legs - Pin',
+                  'Pin - Legs - Air',
+                ],
+                selectedValue:
+                    _formController.uncouplingSequenceController.text,
+                onChanged: (value) {
+                  setState(() {
+                    _formController.uncouplingSequenceController.text =
+                        value ?? "";
+                  });
+                },
               ),
-              _buildTextField("Post Unpin Action",
+              const SizedBox(height: 20),
+              _buildTextField(
+                  "Once uncoupled from the pin and before completely clearing the trailer, what must you do?",
                   _formController.postUnpinActionController),
-              _dropdownField(
-                "Coupling Sequence (A, B, C, D)",
-                _formController.couplingSequenceController.text,
-                couplingSequenceOptions,
-                (val) => setState(() {
-                  _formController.couplingSequenceController.text = val ?? '';
-                }),
+              customTypeSelector(
+                context: context,
+                text:
+                    "In what sequence do you perform the COUPLING operation in?",
+                hintText:
+                    "In what sequence do you perform the COUPLING operation in?",
+                dropdownTypes: [
+                  'Air - Legs - Pin',
+                  'Pin - Legs - Pin',
+                  'Legs - Air - Pin',
+                  'Pin - Air - Legs',
+                ],
+                selectedValue: _formController.couplingSequenceController.text,
+                onChanged: (value) {
+                  setState(() {
+                    _formController.couplingSequenceController.text =
+                        value ?? "";
+                  });
+                },
               ),
+              const SizedBox(height: 20),
               _buildTextField(
-                  "Air Leads Twist", _formController.airLeadsTwistController),
+                  "When you attach the air leads, how far do you twist the connection tabs?",
+                  _formController.airLeadsTwistController),
               _buildTextField(
-                  "Tug Tests Count", _formController.tugTestsCountController),
-              _buildTextField("Distraction Action",
+                  "How many tug tests do you perform throughout the coupling operation?",
+                  _formController.tugTestsCountController),
+              _buildTextField(
+                  "Whilst conducting coupling or uncoupling, what action must you do if you get distracted?",
                   _formController.distractionActionController),
               _buildTextField(
-                  "Climbing Safety", _formController.climbingSafetyController),
-              _buildTextField("First Name", _formController.nameController),
-              _buildTextField("Last Name", _formController.lastNameController),
-              const SizedBox(height: 10),
+                  "What must you maintain when climbing up or down behind the cab or getting in or out of the cab?",
+                  _formController.climbingSafetyController),
+              textField("Full Name",
+                  controller: _formController.nameController),
+              const SizedBox(height: 25),
               calendarDateField(
                 context: context,
                 label: "Acknowledgment Date",
@@ -188,7 +260,7 @@ class _CouplingUncouplingFormPageState
                   border: Border.all(color: Colors.black, width: 1),
                 ),
                 child: Signature(
-                  controller: _formController.signatureController,
+                  controller: _signatureController,
                   height: 200,
                   backgroundColor: Colors.white,
                 ),
@@ -203,7 +275,7 @@ class _CouplingUncouplingFormPageState
                     buttonText("Clear", color: whiteColor, font_size: 10),
                     primary: primaryColor,
                     onPressed: () => setState(() {
-                      _formController.signatureController.clear();
+                      _signatureController.clear();
                     }),
                   ),
                 ),
@@ -216,17 +288,30 @@ class _CouplingUncouplingFormPageState
                   buttonText("Submit", color: whiteColor),
                   primary: primaryColor,
                   onPressed: () async {
-                    if (_formController.signatureController.isEmpty) {
+                    if (_signatureController.isEmpty) {
                       await _showErrorDialog('Please provide your signature.');
                       return;
                     }
 
-                    final success = await _formController.submitForm(context);
-                    if (success) {
-                      await _showSuccessDialog("Form submitted successfully.");
-                      Navigator.pop(context);
+                    final bytes = await _signatureController.toPngBytes();
+                    if (bytes != null) {
+                      final tempFile = File(
+                        '${Directory.systemTemp.path}/signature_${DateTime.now().millisecondsSinceEpoch}.png',
+                      );
+                      await tempFile.writeAsBytes(bytes);
+
+                      _formController.signatureFile = tempFile;
+
+                      final success = await _formController.submitForm(context);
+                      if (success) {
+                        await _showSuccessDialog(
+                            "Form submitted successfully.");
+                        Navigator.pop(context);
+                      } else {
+                        await _showErrorDialog("Failed to submit the form.");
+                      }
                     } else {
-                      await _showErrorDialog("Failed to submit the form.");
+                      await _showErrorDialog('Failed to capture signature.');
                     }
                   },
                 ),

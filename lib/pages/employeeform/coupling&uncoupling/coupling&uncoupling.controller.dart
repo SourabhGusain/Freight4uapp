@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:signature/signature.dart';
+import 'package:flutter/material.dart';
 import 'package:Freight4u/helpers/session.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:Freight4u/models/employeemodels/coupling&uncoupling.model.dart';
 
 class CouplingUncouplingController {
@@ -22,28 +22,30 @@ class CouplingUncouplingController {
   final TextEditingController climbingSafetyController =
       TextEditingController();
   final TextEditingController nameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-
-  // IMPORTANT: For dropdowns, you used TextEditingControllers in the form,
-  // so keep them here for consistency.
   final TextEditingController uncouplingSequenceController =
       TextEditingController();
   final TextEditingController couplingSequenceController =
       TextEditingController();
-
   final TextEditingController acknowledgmentDateController =
       TextEditingController();
 
-  final SignatureController signatureController = SignatureController(
-    penColor: Colors.black,
-    penStrokeWidth: 3,
-    exportBackgroundColor: Colors.white,
-  );
-
   final Session session = Session();
   int userId = 0;
-
   File? signatureFile;
+
+  final Map<String, String> uncouplingMap = {
+    'Legs - Pin - Air': 'A',
+    'Pin - Air - Legs': 'B',
+    'Air - Legs - Pin': 'C',
+    'Pin - Legs - Air': 'D',
+  };
+
+  final Map<String, String> couplingMap = {
+    'Air - Legs - Pin': 'A',
+    'Pin - Legs - Pin': 'B',
+    'Legs - Air - Pin': 'C',
+    'Pin - Air - Legs': 'D',
+  };
 
   Future<void> init() async {
     try {
@@ -54,19 +56,10 @@ class CouplingUncouplingController {
       if (userJson != null) {
         final user = jsonDecode(userJson) as Map<String, dynamic>;
         nameController.text = user["name"] ?? "";
-        lastNameController.text = user["lastName"] ?? "";
       }
 
       acknowledgmentDateController.text =
           DateFormat('yyyy-MM-dd').format(DateTime.now());
-
-      // Set default dropdown selections if empty
-      if (uncouplingSequenceController.text.isEmpty) {
-        uncouplingSequenceController.text = 'A';
-      }
-      if (couplingSequenceController.text.isEmpty) {
-        couplingSequenceController.text = 'A';
-      }
     } catch (e) {
       print("Init error: $e");
     }
@@ -82,31 +75,38 @@ class CouplingUncouplingController {
     distractionActionController.dispose();
     climbingSafetyController.dispose();
     nameController.dispose();
-    lastNameController.dispose();
     uncouplingSequenceController.dispose();
     couplingSequenceController.dispose();
     acknowledgmentDateController.dispose();
-    signatureController.dispose();
   }
 
   bool validateInputs() {
     final hasName = nameController.text.trim().isNotEmpty;
-    final hasLastName = lastNameController.text.trim().isNotEmpty;
     final hasDate = acknowledgmentDateController.text.trim().isNotEmpty;
-    final hasSignature = !signatureController.isEmpty;
+    final hasSignature = signatureFile != null && signatureFile!.existsSync();
 
-    if (!hasName || !hasLastName || !hasDate || !hasSignature) {
-      print(
-          "Validation failed. Name: $hasName, LastName: $hasLastName, Date: $hasDate, Signature: $hasSignature");
+    if (!hasName || !hasDate || !hasSignature) {
+      print("Validation failed:");
+      print(" - Name: $hasName");
+      print(" - Date: $hasDate");
+      print(" - Signature Exists: $hasSignature");
     }
 
-    return hasName && hasLastName && hasDate && hasSignature;
+    return hasName && hasDate && hasSignature;
+  }
+
+  Future<void> setSignature(Uint8List signatureBytes) async {
+    final tempDir = await getTemporaryDirectory();
+    final file = File('${tempDir.path}/signature.png');
+    await file.writeAsBytes(signatureBytes);
+    signatureFile = file;
+    print('Signature saved to ${signatureFile?.path}');
   }
 
   Future<bool> submitForm(BuildContext context) async {
     if (!validateInputs()) {
-      _showErrorDialog(
-          context, 'Validation failed. Please fill all required fields.');
+      _showErrorDialog(context,
+          'Validation failed. Please fill all required fields and provide a signature.');
       return false;
     }
 
@@ -114,41 +114,31 @@ class CouplingUncouplingController {
       final acknowledgmentDate =
           DateFormat('yyyy-MM-dd').parse(acknowledgmentDateController.text);
 
-      final Uint8List? signatureBytes = await signatureController.toPngBytes();
-
-      if (signatureBytes == null || signatureBytes.isEmpty) {
-        _showErrorDialog(
-            context, 'Signature data is empty. Please sign the form.');
-        return false;
-      }
-
-      final tempFile = File(
-          '${Directory.systemTemp.path}/signature_${DateTime.now().millisecondsSinceEpoch}.png');
-      await tempFile.writeAsBytes(signatureBytes);
-      signatureFile = tempFile;
+      final uncouplingCode =
+          uncouplingMap[uncouplingSequenceController.text.trim()] ?? '';
+      final couplingCode =
+          couplingMap[couplingSequenceController.text.trim()] ?? '';
 
       final model = CouplingUncouplingQuestionnaireModel(
         risksIdentified: risksIdentifiedController.text.trim(),
         safetyControls: safetyControlsController.text.trim(),
         faultAction: faultActionController.text.trim(),
-        uncouplingSequence: uncouplingSequenceController.text.trim(),
+        uncouplingSequence: uncouplingCode,
         postUnpinAction: postUnpinActionController.text.trim(),
-        couplingSequence: couplingSequenceController.text.trim(),
+        couplingSequence: couplingCode,
         airLeadsTwist: airLeadsTwistController.text.trim(),
         tugTestsCount: tugTestsCountController.text.trim(),
         distractionAction: distractionActionController.text.trim(),
         climbingSafety: climbingSafetyController.text.trim(),
         name: nameController.text.trim(),
-        lastName: lastNameController.text.trim(),
         acknowledgmentDate: acknowledgmentDate,
         signature: signatureFile,
         createdBy: userId,
         createdOn: DateTime.now(),
       );
 
-      print("Submitting Coupling/Uncoupling Questionnaire Form...");
-      print(
-          "Signature file path: ${model.signature?.path ?? 'No signature file'}");
+      print("Submitting form...");
+      print("Signature file: ${signatureFile?.path}");
 
       final success =
           await CouplingUncouplingQuestionnaireModel.submitForm(model);
@@ -159,9 +149,9 @@ class CouplingUncouplingController {
       }
 
       return success;
-    } catch (e, stacktrace) {
+    } catch (e, stack) {
       print("Submit error: $e");
-      print(stacktrace);
+      print(stack);
       _showErrorDialog(
           context, 'An unexpected error occurred. Please try again later.');
       return false;

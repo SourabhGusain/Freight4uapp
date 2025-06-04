@@ -22,6 +22,7 @@ import 'package:Freight4u/pages/employeeform/safetyquestionnaire/safetyquestionn
 import 'package:Freight4u/pages/employeeform/scissorlifttraining/scissorlifttraining.view.dart';
 import 'package:Freight4u/pages/employeeform/dangerousgoods/dangerousgoods.view.dart';
 import 'package:Freight4u/pages/employeeform/coupling&uncoupling/coupling&uncoupling.view.dart';
+import 'package:Freight4u/pages/employeeform/covidquestionnaire/covidquestionnaire.view.dart';
 
 class EmployeePage extends StatefulWidget {
   final Session session;
@@ -217,8 +218,8 @@ class _EmployeePageState extends State<EmployeePage> {
                       text: "COVID-19 Multiple Choice Questionnaire",
                       subtext:
                           "Confirm awareness of COVID-19 safety procedures.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => CovidQuestionnairePage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(

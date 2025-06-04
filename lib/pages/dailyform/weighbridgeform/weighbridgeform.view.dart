@@ -25,11 +25,13 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
   @override
   void initState() {
     super.initState();
+
     _formController.init().then((_) {
       _formController.dateController.text =
           DateFormat('yyyy-MM-dd').format(DateTime.now());
       setState(() {});
     });
+    _formController.populateFromSession();
   }
 
   @override
@@ -96,7 +98,7 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
 
                   // Driver Name
                   _buildTextField(
-                      "Driver Name", _formController.regoController),
+                      "Driver Name", _formController.driverNameController),
 
                   const SizedBox(height: 15),
 

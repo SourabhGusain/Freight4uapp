@@ -72,30 +72,6 @@ class DriverAssessmentController {
     }
   }
 
-  // void populateDummyData() {
-  //   fullNameController.text = "John Doe";
-  //   dateController.text = "2025-06-01T12:00:00";
-  //   licenceNumberController.text = "AB123456";
-  //   expiryDateController.text = "2027-06-01T12:00:00";
-  //   stateOfValidationController.text = "Valid";
-
-  //   streetAddressController.text = "123 Main St";
-  //   streetAddress2Controller.text = "Apt 4B";
-  //   cityController.text = "Metropolis";
-  //   stateOrProvinceController.text = "NY";
-  //   postalCodeController.text = "10001";
-
-  //   buddyAssessorNameController.text = "Jane Smith";
-  //   buddyAssessorDateController.text = "2025-05-28T10:00:00";
-  //   vehicleTypeController.text = "Truck";
-  //   gearboxTypeController.text = "Manual";
-  //   licenceRestrictionsController.text = "None";
-
-  //   vehicleCheckFields.forEach((key, controller) {
-  //     controller.text = "P";
-  //   });
-  // }
-
   Future<void> populateFromSession() async {
     final userJson = await session.getSession('loggedInUser');
     if (userJson == null) return;

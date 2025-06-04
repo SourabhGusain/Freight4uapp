@@ -86,50 +86,38 @@ class _DangerousGoodsCompetencyPageState
           const Icon(Icons.picture_as_pdf, color: Colors.red),
           const SizedBox(width: 10),
           Expanded(
-            child: isLoading
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      color: primaryColor,
-                      strokeWidth: 2,
-                    ),
-                  )
-                : GestureDetector(
-                    onTap: () async {
-                      setState(() => isLoading = true);
+            child: GestureDetector(
+              onTap: () async {
+                setState(() => isLoading = true);
 
-                      final uri = Uri.parse(fullUrl);
+                final uri = Uri.parse(fullUrl);
 
-                      try {
-                        final launched = await launchUrl(
-                          uri,
-                          mode: LaunchMode.externalApplication,
-                        );
+                try {
+                  final launched = await launchUrl(
+                    uri,
+                    mode: LaunchMode.externalApplication,
+                  );
 
-                        await Future.delayed(const Duration(seconds: 2));
+                  if (!launched) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Failed to open document.")),
+                    );
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Error: $e")),
+                  );
+                }
 
-                        if (!launched) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text("Failed to open document.")),
-                          );
-                        }
-                      } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Error: $e")),
-                        );
-                      }
-
-                      setState(() => isLoading = false);
-                    },
-                    child: textH3(
-                      "Read the Dangerous Goods Competency PDF before filling the form",
-                      text_border: TextDecoration.underline,
-                      color: primaryColor,
-                      font_weight: FontWeight.w500,
-                    ),
-                  ),
+                setState(() => isLoading = false);
+              },
+              child: textH3(
+                "Read the Dangerous Goods Competency PDF before filling the form",
+                text_border: TextDecoration.underline,
+                color: primaryColor,
+                font_weight: FontWeight.w500,
+              ),
+            ),
           ),
         ],
       ),

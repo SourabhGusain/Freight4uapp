@@ -15,8 +15,8 @@ class WorkHealthSafetyQuestionnaireController {
 
   File? signatureFile;
 
-  // Text controllers for user inputs
   final fullNameController = TextEditingController();
+
   final dateController = TextEditingController(
     text: DateFormat('yyyy-MM-dd').format(DateTime.now()),
   );
@@ -55,11 +55,9 @@ class WorkHealthSafetyQuestionnaireController {
 
   WorkHealthSafetyQuestionnaireController() {
     _loadChoices();
-    // _setDefaultSelections();
   }
 
   void _loadChoices() {
-    // Corrected key = label, value = id for all maps
     workerDefinitionOptions = {
       "Only full time staff": "full_time",
       "Only casual staff": "casual",
@@ -159,25 +157,6 @@ class WorkHealthSafetyQuestionnaireController {
       "All of the above": "all_of_above_whs",
     };
   }
-
-  // void _setDefaultSelections() {
-  //   // Set defaults to the first keys (labels) of each map
-  //   workerDefinition = workerDefinitionOptions.keys.first;
-  //   pcbuDefinition = pcbuDefinitionOptions.keys.first;
-  //   workerDuty = workerDutyOptions.keys.first;
-  //   failureRiskAssessment = failureRiskAssessmentOptions.keys.first;
-  //   mechanicalFaultAction = mechanicalFaultActionOptions.keys.first;
-  //   nonComplianceConsequences = nonComplianceConsequencesOptions.keys.first;
-  //   pcbuDutyOfCare = pcbuDutyOfCareOptions.keys.first;
-  //   failingHazardRiskAssessment = failingHazardRiskAssessmentOptions.keys.first;
-  //   failingReportRisks = failingReportRisksOptions.keys.first;
-  //   hierarchyOfControlUsed = hierarchyOfControlUsedOptions.keys.first;
-  //   eliminationRiskStrength = eliminationRiskStrengthOptions.keys.first;
-  //   colleagueAffectedAlcohol = colleagueAffectedAlcoholOptions.keys.first;
-  //   safeWorkAdviceContact = safeWorkAdviceContactOptions.keys.first;
-  //   nonComplianceLinfox = nonComplianceLinfoxOptions.keys.first;
-  //   nonComplianceWHSAct = nonComplianceWHSActOptions.keys.first;
-  // }
 
   Future<void> init() async {
     final userIdStr = await session.getSession("userId");
@@ -300,8 +279,6 @@ class WorkHealthSafetyQuestionnaireController {
     dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     signatureFile = null;
-
-    // _setDefaultSelections();
   }
 
   void dispose() {

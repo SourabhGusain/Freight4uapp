@@ -228,6 +228,61 @@ Widget customBox({
   );
 }
 
+// Widget customBox({
+//   required String text,
+//   required String subtext,
+//   required VoidCallback onTap,
+// }) {
+//   return GestureDetector(
+//     onTap: onTap,
+//     child: Container(
+//       // margin: const EdgeInsets.symmetric(vertical: 6),
+//       padding: const EdgeInsets.all(16),
+//       decoration: BoxDecoration(
+//         color: whiteColor,
+//         borderRadius: BorderRadius.circular(12),
+//         border: Border.all(
+//           color: primaryColor.withOpacity(0.4),
+//           width: 1,
+//         ),
+//         boxShadow: [
+//           BoxShadow(
+//             color: Colors.black.withOpacity(0.04),
+//             blurRadius: 8,
+//             offset: const Offset(0, 2),
+//           ),
+//         ],
+//       ),
+//       child: Row(
+//         children: [
+//           const Icon(Icons.assignment_outlined, color: primaryColor, size: 32),
+//           const SizedBox(width: 10),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 textH2(
+//                   text,
+//                   font_size: 14.0,
+//                   font_weight: FontWeight.w600,
+//                 ),
+//                 const SizedBox(height: 4),
+//                 textH2(
+//                   subtext,
+//                   font_size: 11.0,
+//                   font_weight: FontWeight.w400,
+//                   color: const Color(0xFF666666),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           const Icon(Icons.chevron_right_rounded, color: Colors.grey),
+//         ],
+//       ),
+//     ),
+//   );
+// }
+
 Widget customTypeSelector({
   required BuildContext context,
   required String text,

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:Freight4u/helpers/session.dart';
@@ -27,6 +28,13 @@ class FuelReceiptFormController {
     } catch (e) {
       print('Failed to load settings: $e');
     }
+  }
+
+  Future<void> populateFromSession() async {
+    final userJson = await session.getSession('loggedInUser');
+    if (userJson == null) return;
+    final Map<String, dynamic> userData = jsonDecode(userJson);
+    nameController.text = userData["name"] ?? "";
   }
 
   Future<void> pickFuelReceiptFile() async {

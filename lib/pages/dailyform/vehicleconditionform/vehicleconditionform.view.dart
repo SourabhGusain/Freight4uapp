@@ -29,6 +29,7 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
   @override
   void initState() {
     super.initState();
+    _formController.populateFromSession();
     _signatureController = SignatureController(
       penColor: Colors.black,
       penStrokeWidth: 3,

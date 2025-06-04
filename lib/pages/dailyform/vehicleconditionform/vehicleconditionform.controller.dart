@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:file_picker/file_picker.dart';
@@ -52,6 +53,13 @@ class VehicleConditionFormController {
       orElse: () => Site(id: 0, name: '', isActive: false, createdOn: ''),
     );
     return site?.id ?? 0;
+  }
+
+  Future<void> populateFromSession() async {
+    final userJson = await session.getSession('loggedInUser');
+    if (userJson == null) return;
+    final Map<String, dynamic> userData = jsonDecode(userJson);
+    driverNameController.text = userData["name"] ?? "";
   }
 
   Future<void> pickUploadPhotoFile() async {

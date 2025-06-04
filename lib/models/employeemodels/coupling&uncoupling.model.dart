@@ -6,15 +6,15 @@ class CouplingUncouplingQuestionnaireModel {
   final String risksIdentified;
   final String safetyControls;
   final String faultAction;
-  final String uncouplingSequence; // Char, one of A, B, C, D
+  final String uncouplingSequence;
   final String postUnpinAction;
-  final String couplingSequence; // Char, one of A, B, C, D
+  final String couplingSequence;
   final String airLeadsTwist;
   final String tugTestsCount;
   final String distractionAction;
   final String climbingSafety;
   final String name;
-  final String lastName;
+
   final DateTime acknowledgmentDate;
   final File? signature;
 
@@ -34,7 +34,6 @@ class CouplingUncouplingQuestionnaireModel {
     required this.distractionAction,
     required this.climbingSafety,
     required this.name,
-    required this.lastName,
     required this.acknowledgmentDate,
     this.signature,
     this.isActive = true,
@@ -42,9 +41,8 @@ class CouplingUncouplingQuestionnaireModel {
     this.createdBy,
   });
 
-  /// Map string fields for multipart form (excluding file)
-  Map<String, String> toMultipartFields() {
-    return {
+  Map<String, dynamic> toMultipartFields() {
+    final fields = <String, dynamic>{
       "risks_identified": risksIdentified,
       "safety_controls": safetyControls,
       "fault_action": faultAction,
@@ -56,20 +54,43 @@ class CouplingUncouplingQuestionnaireModel {
       "distraction_action": distractionAction,
       "climbing_safety": climbingSafety,
       "name": name,
-      "last_name": lastName,
       "acknowledgment_date":
           acknowledgmentDate.toIso8601String().split('T').first,
       "is_active": isActive.toString(),
       "created_on": createdOn.toIso8601String().split('T').first,
       if (createdBy != null) "created_by": createdBy.toString(),
     };
+    print(signature);
+    if (signature != null) fields["signature"] = signature;
+    if (createdBy != null) fields["created_by"] = createdBy.toString();
+    return fields;
   }
+
+  // Map<String, String> toMultipartFields() {
+  //   return {
+  //     "risks_identified": risksIdentified,
+  //     "safety_controls": safetyControls,
+  //     "fault_action": faultAction,
+  //     "uncoupling_sequence": uncouplingSequence,
+  //     "post_unpin_action": postUnpinAction,
+  //     "coupling_sequence": couplingSequence,
+  //     "air_leads_twist": airLeadsTwist,
+  //     "tug_tests_count": tugTestsCount,
+  //     "distraction_action": distractionAction,
+  //     "climbing_safety": climbingSafety,
+  //     "name": name,
+  //     "acknowledgment_date":
+  //         acknowledgmentDate.toIso8601String().split('T').first,
+  //     "is_active": isActive.toString(),
+  //     "created_on": createdOn.toIso8601String().split('T').first,
+  //     if (createdBy != null) "created_by": createdBy.toString(),
+  //   };
+  // }
 
   static Future<bool> submitForm(
       CouplingUncouplingQuestionnaireModel model) async {
-    final url = "$api_url/employee/cor-form/";
-    print('Submitting CoRForm to $url');
     final api = Api();
+    final url = "$api_url/employee/coupling-uncoupling-questionnaire/";
     final fields = model.toMultipartFields();
 
     final result = await api.multipartOrJsonPostCall(
@@ -82,7 +103,8 @@ class CouplingUncouplingQuestionnaireModel {
       print("CoR Form submitted successfully.");
       return true;
     } else {
-      print("Failed to submit CoR Form: ${result["error"]}");
+      print(
+          "Failed to submit coupling-uncoupling-questionnaire Form: ${result["error"]}");
       return false;
     }
   }

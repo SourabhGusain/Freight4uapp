@@ -22,6 +22,7 @@ class _FuelReceiptPageState extends State<FuelReceiptPage> {
   @override
   void initState() {
     super.initState();
+    _formController.populateFromSession();
     _formController.dateController.text =
         DateFormat('yyyy-MM-dd').format(DateTime.now());
     _formController.init().then((_) {

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:Freight4u/widgets/form.dart';
 import 'package:file_picker/file_picker.dart';
@@ -75,6 +76,14 @@ class RunsheetFormController {
       breakStartControllers.add(TextEditingController());
       breakEndControllers.add(TextEditingController());
     }
+  }
+
+  Future<void> populateFromSession() async {
+    final userJson = await session.getSession('loggedInUser');
+    if (userJson == null) return;
+    final Map<String, dynamic> userData = jsonDecode(userJson);
+    driverNameController.text = userData["name"] ?? "";
+    emailController.text = userData["email"] ?? "";
   }
 
   Future<void> pickFile() async {
