@@ -23,6 +23,9 @@ import 'package:Freight4u/pages/employeeform/scissorlifttraining/scissorlifttrai
 import 'package:Freight4u/pages/employeeform/dangerousgoods/dangerousgoods.view.dart';
 import 'package:Freight4u/pages/employeeform/coupling&uncoupling/coupling&uncoupling.view.dart';
 import 'package:Freight4u/pages/employeeform/covidquestionnaire/covidquestionnaire.view.dart';
+import 'package:Freight4u/pages/employeeform/manualhandlingcompetency/manualhandlingcompetency.view.dart';
+import 'package:Freight4u/pages/employeeform/tailgateunloadoperation/tailgateunloadoperation.view.dart';
+import 'package:Freight4u/pages/employeeform/massLoadquestionnaire/massLoadquestionnaire.view.dart';
 
 class EmployeePage extends StatefulWidget {
   final Session session;
@@ -187,23 +190,27 @@ class _EmployeePageState extends State<EmployeePage> {
                       subtext:
                           "Follow safe unloading practices and report any issues.",
                       onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                        context,
+                        () => TailgateUnloadOperationFormPage(session: session),
+                      ),
                     ),
                     const SizedBox(height: 10),
                     customBox(
-                      text: "EPJ/MPJ",
+                      text: "Manual Handling Competency",
                       subtext:
                           "Complete manual handling competency requirements.",
                       onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                          context,
+                          () => ManualHandlingCompetencyFormPage(
+                              session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(
                       text: "Mass & Load Restraint Competency Questionnaire",
                       subtext:
                           "Test your understanding of load safety and regulations.",
-                      onTap: () => _showLoadingAndNavigate(
-                          context, () => const PrestartformPage()),
+                      onTap: () => _showLoadingAndNavigate(context,
+                          () => MassLoadRestraintFormPage(session: session)),
                     ),
                     const SizedBox(height: 10),
                     customBox(

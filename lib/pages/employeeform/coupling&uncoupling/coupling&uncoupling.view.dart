@@ -168,7 +168,7 @@ class _CouplingUncouplingFormPageState
                       const SizedBox(width: 10),
                       Expanded(
                         child: textH3(
-                          "Read the Coupling and decoupling trailers PDF before filling the form",
+                          "Watch the Coupling and decoupling trailers before filling the form",
                           color: primaryColor,
                           font_weight: FontWeight.w500,
                         ),
