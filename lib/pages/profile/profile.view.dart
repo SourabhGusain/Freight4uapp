@@ -160,7 +160,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           ? FileImage(_selectedImage!)
                           : null,
                       child: _selectedImage == null
-                          ? Icon(Icons.person, size: 48, color: primaryColor)
+                          ? const Icon(Icons.person,
+                              size: 48, color: primaryColor)
                           : null,
                     ),
                   ),
@@ -189,9 +190,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      onPressed: () {
-                        _showCustomerDetailsDialog(context, ctrl);
-                      },
+                      onPressed: () =>
+                          _showCustomerDetailsDialog(context, ctrl),
                       icon: const Icon(Icons.info_outline,
                           color: Colors.white, size: 22),
                     ),
@@ -219,11 +219,9 @@ class _ProfilePageState extends State<ProfilePage> {
           text: "Documents",
           subtext: "View & Download Training Files",
           icon: Icons.download_outlined,
-          onTap: () =>
-              // _showLoadingAndNavigate(
-              (
+          onTap: () => _showLoadingAndNavigate(
             context,
-            (() => DownloaddocumnetsPages(session: session),),
+            () => DownloadDocumentsPage(session: widget.session),
           ),
         ),
         const SizedBox(height: 12),
@@ -301,16 +299,13 @@ class _ProfilePageState extends State<ProfilePage> {
                       : null,
                 ),
                 const SizedBox(height: 16),
-                // if (_selectedImage != null)
                 TextButton.icon(
                   onPressed: _pickImage,
                   icon: const Icon(Icons.upload, color: primaryColor),
                   label: const Text(
                     "Add/Change Profile Image",
                     style: TextStyle(
-                      color: primaryColor,
-                      fontWeight: FontWeight.w600,
-                    ),
+                        color: primaryColor, fontWeight: FontWeight.w600),
                   ),
                   style: TextButton.styleFrom(
                     padding: EdgeInsets.zero,
@@ -398,11 +393,9 @@ class _ProfilePageState extends State<ProfilePage> {
             child: textH2("Log Out", color: primaryColor),
             onPressed: () async {
               await widget.session.clearAll();
-
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
-                  builder: (context) => LoginPage(session: widget.session),
-                ),
+                    builder: (context) => LoginPage(session: widget.session)),
                 (Route<dynamic> route) => false,
               );
             },
@@ -431,7 +424,7 @@ Widget customProfileBox({
           BoxShadow(
             color: Colors.black12,
             blurRadius: 6,
-            offset: const Offset(0, 3),
+            offset: Offset(0, 3),
           ),
         ],
       ),
@@ -465,7 +458,6 @@ Widget customProfileBox({
 
 void _showLoadingAndNavigate(
     BuildContext context, Widget Function() pageBuilder) async {
-  // Show loading dialog with primary color spinner
   showDialog(
     context: context,
     barrierDismissible: false,
@@ -474,5 +466,13 @@ void _showLoadingAndNavigate(
         color: primaryColor,
       ),
     ),
+  );
+
+  await Future.delayed(const Duration(seconds: 1));
+
+  Navigator.of(context).pop(); // Close loading
+
+  Navigator.of(context).push(
+    MaterialPageRoute(builder: (_) => pageBuilder()),
   );
 }

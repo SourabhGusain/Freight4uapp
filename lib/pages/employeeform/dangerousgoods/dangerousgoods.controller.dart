@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
 import 'package:Freight4u/helpers/session.dart';
-import 'package:Freight4u/models/employeemodels/dangerousgoods.model.dart';
 import 'package:Freight4u/models/documents.model.dart';
+import 'package:Freight4u/models/employeemodels/dangerousgoods.model.dart';
 
 class DangerousGoodsController {
   final TextEditingController nameController = TextEditingController();

@@ -1,82 +1,171 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:signature/signature.dart';
-import 'package:Freight4u/widgets/ui.dart';
+import 'downloaddocumnets.controller.dart';
 import 'package:Freight4u/widgets/form.dart';
-
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/helpers/session.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class DownloaddocumnetsPages extends StatefulWidget {
+class DownloadDocumentsPage extends StatefulWidget {
   final Session session;
-  const DownloaddocumnetsPages({super.key, required this.session});
+  const DownloadDocumentsPage({super.key, required this.session});
 
   @override
-  State<DownloaddocumnetsPages> createState() => _DownloaddocumnetsPagesState();
+  State<DownloadDocumentsPage> createState() => _DownloadDocumentsPageState();
 }
 
-class _DownloaddocumnetsPagesState extends State<DownloaddocumnetsPages> {
-  late SignatureController _signatureController;
-
-  bool isBackLoading = false;
-  bool isLoading = true;
+class _DownloadDocumentsPageState extends State<DownloadDocumentsPage> {
+  late final DownloadDocumentsController controller;
 
   @override
   void initState() {
     super.initState();
-    _signatureController = SignatureController(
-      penColor: Colors.black,
-      penStrokeWidth: 3,
-      exportBackgroundColor: Colors.transparent,
+    controller = DownloadDocumentsController();
+    _initDocuments();
+  }
+
+  Future<void> _initDocuments() async {
+    await controller.loadUploadDocuments();
+    setState(() {});
+  }
+
+  Widget buildDocumentTile(String name, String url) {
+    final isDownloading = controller.isDownloadingMap[url] ?? false;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: whiteColor,
+        border: Border.all(color: blackColor),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.picture_as_pdf, color: Colors.red),
+          const SizedBox(width: 10),
+          Expanded(
+            child: GestureDetector(
+              onTap: () async {
+                final uri = Uri.parse(url);
+                try {
+                  final launched = await launchUrl(
+                    uri,
+                    mode: LaunchMode.externalApplication,
+                  );
+                  if (!launched) {
+                    _showSnack("Failed to open document.");
+                  }
+                } catch (e) {
+                  _showSnack("Error: $e");
+                }
+              },
+              child: textH3(
+                "Download and review the $name PDF.",
+                color: primaryColor,
+                font_weight: FontWeight.w500,
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.download, color: primaryColor),
+            tooltip: isDownloading ? "Downloading..." : "Download PDF",
+            onPressed: isDownloading
+                ? null
+                : () async {
+                    final granted = await _checkPermissions();
+                    if (!granted) return;
+
+                    setState(() {
+                      controller.isDownloadingMap[url] = true;
+                    });
+
+                    await controller.downloadDocument(context, url);
+
+                    setState(() {
+                      controller.isDownloadingMap[url] = false;
+                    });
+                  },
+          ),
+        ],
+      ),
     );
   }
 
-  @override
-  void dispose() {
-    _signatureController.dispose();
-    super.dispose();
+  Future<bool> _checkPermissions() async {
+    if (await Permission.storage.isGranted) return true;
+
+    final result = await Permission.storage.request();
+    if (result.isGranted) return true;
+
+    _showSnack("Storage permission denied. Please enable it in settings.");
+    openAppSettings();
+    return false;
   }
 
-  Future<void> _handleBack() async {
-    setState(() => isBackLoading = true);
-    await Future.delayed(const Duration(milliseconds: 400));
-    if (mounted) Navigator.of(context).pop();
-  }
-
-  Widget _dateField(String label, TextEditingController controller) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
-      child: calendarDateField(
-        context: context,
-        label: label,
-        controller: controller,
-      ),
+  void _showSnack(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+    const guideUrl =
+        "https://www.ntc.gov.au/sites/default/files/assets/files/Load-Restraint-Guide-2018.pdf";
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 252, 253, 255),
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(65),
-          child: secondaryNavBar(context, "Scissor Lift Training",
-              onBack: _handleBack),
+          child: secondaryNavBar(
+            context,
+            "Download Documents",
+            onBack: () => Navigator.of(context).pop(),
+          ),
         ),
-        body: SingleChildScrollView(
+        body: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              textH1("Scissor Lift Training Form"),
-              const SizedBox(height: 20),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                textH1("Review & Download Documents Here:"),
+                const SizedBox(height: 15),
+                textH3("Load Restaints Guide Document:",
+                    font_size: 14, font_weight: FontWeight.w500),
+                const SizedBox(height: 5),
+                buildDocumentTile("Load Restraint Guide", guideUrl),
+                const SizedBox(height: 15),
+                if (controller.uploadDocuments == null)
+                  const Center(child: CircularProgressIndicator())
+                else if (controller.uploadDocuments!.isEmpty)
+                  const Center(child: Text("No documents found."))
+                else
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller.uploadDocuments!.length,
+                    itemBuilder: (context, index) {
+                      final doc = controller.uploadDocuments![index];
+                      final fullUrl =
+                          'https://freight4you.com.au${doc.documentUrl}';
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          textH3("${doc.name} Document:",
+                              font_size: 14, font_weight: FontWeight.w500),
+                          const SizedBox(height: 5),
+                          buildDocumentTile(doc.name, fullUrl),
+                        ],
+                      );
+                    },
+                  ),
+              ],
+            ),
           ),
         ),
       ),
