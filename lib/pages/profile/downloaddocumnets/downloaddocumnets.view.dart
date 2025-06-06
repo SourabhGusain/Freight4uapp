@@ -5,7 +5,6 @@ import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class DownloadDocumentsPage extends StatefulWidget {
   final Session session;
@@ -58,7 +57,7 @@ class _DownloadDocumentsPageState extends State<DownloadDocumentsPage> {
                     _showSnack("Failed to open document.");
                   }
                 } catch (e) {
-                  _showSnack("Error: $e");
+                  _showSnack("Error opening document: $e");
                 }
               },
               child: textH3(
@@ -69,39 +68,25 @@ class _DownloadDocumentsPageState extends State<DownloadDocumentsPage> {
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.download, color: primaryColor),
+            icon: isDownloading
+                ? const SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.download, color: primaryColor),
             tooltip: isDownloading ? "Downloading..." : "Download PDF",
             onPressed: isDownloading
                 ? null
                 : () async {
-                    final granted = await _checkPermissions();
-                    if (!granted) return;
-
-                    setState(() {
-                      controller.isDownloadingMap[url] = true;
-                    });
-
+                    // Start download, update UI after complete
                     await controller.downloadDocument(context, url);
-
-                    setState(() {
-                      controller.isDownloadingMap[url] = false;
-                    });
+                    setState(() {});
                   },
           ),
         ],
       ),
     );
-  }
-
-  Future<bool> _checkPermissions() async {
-    if (await Permission.storage.isGranted) return true;
-
-    final result = await Permission.storage.request();
-    if (result.isGranted) return true;
-
-    _showSnack("Storage permission denied. Please enable it in settings.");
-    openAppSettings();
-    return false;
   }
 
   void _showSnack(String message) {
@@ -134,7 +119,7 @@ class _DownloadDocumentsPageState extends State<DownloadDocumentsPage> {
               children: [
                 textH1("Review & Download Documents Here:"),
                 const SizedBox(height: 15),
-                textH3("Load Restaints Guide Document:",
+                textH3("Load Restraint Guide Document:",
                     font_size: 14, font_weight: FontWeight.w500),
                 const SizedBox(height: 5),
                 buildDocumentTile("Load Restraint Guide", guideUrl),

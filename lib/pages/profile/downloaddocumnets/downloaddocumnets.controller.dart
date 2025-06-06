@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:Freight4u/models/documents.model.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class DownloadDocumentsController {
   List<UploadDocument>? uploadDocuments;
@@ -26,12 +25,6 @@ class DownloadDocumentsController {
   }
 
   Future<void> downloadDocument(BuildContext context, String docUrl) async {
-    final status = await Permission.storage.request();
-    if (!status.isGranted) {
-      _showSnackbar(context, "Storage permission denied");
-      return;
-    }
-
     if (isDownloadingMap[docUrl] == true) {
       _showSnackbar(context, "Already downloading this document");
       return;
@@ -40,7 +33,8 @@ class DownloadDocumentsController {
     try {
       isDownloadingMap[docUrl] = true;
 
-      final dir = await getExternalStorageDirectory();
+      final dir = await getApplicationDocumentsDirectory();
+
       if (dir == null) {
         _showSnackbar(context, "Could not access storage directory");
         return;

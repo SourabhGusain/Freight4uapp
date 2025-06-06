@@ -7,10 +7,12 @@ import 'package:Freight4u/helpers/values.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/helpers/widgets.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/profile/profile.controller.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Freight4u/pages/notification/notification.view.dart';
 import 'package:Freight4u/pages/profile/downloaddocumnets/downloaddocumnets.view.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -226,10 +228,13 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         const SizedBox(height: 12),
         customProfileBox(
-          text: "Change Password",
-          subtext: "Update your account password.",
-          icon: Icons.lock_outline,
-          onTap: () => print("Go to Change Password"),
+          text: "Visit Website",
+          subtext: "Go to our official website.",
+          icon: Icons.language, // globe icon typically used for websites
+          onTap: () async {
+            final url = Uri.parse("https://freight4you.com.au/");
+            await launchUrl(url, mode: LaunchMode.externalApplication);
+          },
         ),
         const SizedBox(height: 12),
         customProfileBox(
@@ -240,17 +245,35 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         const SizedBox(height: 12),
         customProfileBox(
-          text: "Notification Settings",
-          subtext: "Configure your notifications.",
-          icon: Icons.notifications_outlined,
-          onTap: () => print("Go to Notification Settings"),
+          text: "See Notifications",
+          subtext: "View your recent alerts and messages.",
+          icon: Icons.notifications,
+          onTap: () async {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (_) => const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                ),
+              ),
+            );
+
+            await Future.delayed(const Duration(seconds: 1));
+            Navigator.of(context).pop();
+
+            Get.to(context, () => const NotificationPage());
+          },
         ),
         const SizedBox(height: 12),
         customProfileBox(
-          text: "Privacy Policy",
-          subtext: "Read our privacy policy.",
-          icon: Icons.security_outlined,
-          onTap: () => print("Go to Privacy Policy"),
+          text: "About Us",
+          subtext: "Learn more about Freight4You and our mission.",
+          icon: Icons.info_outline,
+          onTap: () async {
+            final url = Uri.parse("https://freight4you.com.au/#about");
+            await launchUrl(url, mode: LaunchMode.externalApplication);
+          },
         ),
         const SizedBox(height: 12),
         customProfileBox(
