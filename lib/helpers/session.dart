@@ -21,6 +21,11 @@ class Session {
     return prefs.remove(key);
   }
 
+  Future<void> clearAll() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+  }
+
   Future<void> saveUserId(String userId) async {
     await setSession("userId", userId);
   }

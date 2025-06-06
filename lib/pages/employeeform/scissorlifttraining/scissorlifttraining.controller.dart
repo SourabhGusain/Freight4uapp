@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/models/employeemodels/scissorlifttraining.model.dart';
 

@@ -1238,3 +1238,29 @@ class PostProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+Widget _declaration(String text, bool? value, Function(bool?) onChanged) {
+  DeclarationAnswer? selected = switch (value) {
+    true => DeclarationAnswer.yes,
+    false => DeclarationAnswer.no,
+    null => null,
+  };
+
+  return Column(
+    children: [
+      CustomDeclarationBox(
+        text: text,
+        selectedAnswer: selected,
+        onChanged: (DeclarationAnswer? answer) {
+          bool? val = switch (answer) {
+            DeclarationAnswer.yes => true,
+            DeclarationAnswer.no => false,
+            null => null,
+          };
+          onChanged(val);
+        },
+      ),
+      const SizedBox(height: 20),
+    ],
+  );
+}

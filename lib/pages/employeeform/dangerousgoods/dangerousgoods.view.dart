@@ -113,7 +113,6 @@ class _DangerousGoodsCompetencyPageState
               },
               child: textH3(
                 "Read the Dangerous Goods Competency PDF before filling the form",
-                text_border: TextDecoration.underline,
                 color: primaryColor,
                 font_weight: FontWeight.w500,
               ),

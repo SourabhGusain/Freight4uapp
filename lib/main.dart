@@ -37,7 +37,6 @@ class MainApp extends StatelessWidget {
         primarySwatch: Colors.orange,
         scaffoldBackgroundColor: Colors.white,
       ),
-      // Conditional navigation based on login status
       home: isLoggedIn
           ? DailyformPage(session: session)
           : SplashPage(session: session),

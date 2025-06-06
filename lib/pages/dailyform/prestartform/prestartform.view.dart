@@ -119,7 +119,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
               customTypeSelector(
                 context: context,
                 text: "Select Contractor",
-                hintText: "Contractor",
+                hintText: "Select Contractor",
                 dropdownTypes: _formController.contractorNames,
                 selectedValue: _formController.selectedContractor,
                 onChanged: (value) {
@@ -134,7 +134,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
               customTypeSelector(
                 context: context,
                 text: "Select Shape",
-                hintText: "Shape",
+                hintText: "Select Shape",
                 dropdownTypes: _formController.shapeNames,
                 selectedValue: _formController.selectedShape,
                 onChanged: (value) {
@@ -266,9 +266,8 @@ class _PrestartformPageState extends State<PrestartformPage> {
                   (val) =>
                       setState(() => _formController.fitForTaskRepeat = val)),
 
-              const SizedBox(height: 40),
+              const SizedBox(height: 100),
 
-              // Save Button
               SizedBox(
                 height: 45,
                 width: double.infinity,
@@ -280,13 +279,9 @@ class _PrestartformPageState extends State<PrestartformPage> {
                   },
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
             ],
           ),
-        ),
-        bottomNavigationBar: customBottomNavigationBar(
-          context: context,
-          selectedIndex: _currentIndex,
         ),
       ),
     );

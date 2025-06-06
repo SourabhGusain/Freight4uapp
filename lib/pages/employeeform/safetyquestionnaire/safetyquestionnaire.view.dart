@@ -351,7 +351,7 @@ class _WorkHealthSafetyQuestionnairePageState
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 100),
               SizedBox(
                 width: double.infinity,
                 height: 45,
@@ -383,6 +383,7 @@ class _WorkHealthSafetyQuestionnairePageState
                   },
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

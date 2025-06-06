@@ -11,6 +11,7 @@ import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:Freight4u/pages/profile/profile.controller.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Freight4u/pages/profile/downloaddocumnets/downloaddocumnets.view.dart';
 
 class ProfilePage extends StatefulWidget {
   final Session session;
@@ -215,6 +216,18 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         const SizedBox(height: 12),
         customProfileBox(
+          text: "Documents",
+          subtext: "View & Download Training Files",
+          icon: Icons.download_outlined,
+          onTap: () =>
+              // _showLoadingAndNavigate(
+              (
+            context,
+            (() => DownloaddocumnetsPages(session: session),),
+          ),
+        ),
+        const SizedBox(height: 12),
+        customProfileBox(
           text: "Change Password",
           subtext: "Update your account password.",
           icon: Icons.lock_outline,
@@ -384,11 +397,16 @@ class _ProfilePageState extends State<ProfilePage> {
           TextButton(
             child: textH2("Log Out", color: primaryColor),
             onPressed: () async {
-              await widget.session.removeSession('loggedInUser');
-              Navigator.of(context).pop();
-              Get.to(context, () => LoginPage(session: widget.session));
+              await widget.session.clearAll();
+
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => LoginPage(session: widget.session),
+                ),
+                (Route<dynamic> route) => false,
+              );
             },
-          ),
+          )
         ],
       ),
     );
@@ -440,6 +458,20 @@ Widget customProfileBox({
           ),
           const Icon(Icons.chevron_right, color: Colors.black26),
         ],
+      ),
+    ),
+  );
+}
+
+void _showLoadingAndNavigate(
+    BuildContext context, Widget Function() pageBuilder) async {
+  // Show loading dialog with primary color spinner
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (_) => const Center(
+      child: CircularProgressIndicator(
+        color: primaryColor,
       ),
     ),
   );

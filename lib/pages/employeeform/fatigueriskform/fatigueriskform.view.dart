@@ -180,7 +180,7 @@ class _FatigueRiskManagementFormPageState
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 100),
               SizedBox(
                 height: 45,
                 width: double.infinity,
@@ -208,7 +208,7 @@ class _FatigueRiskManagementFormPageState
                   },
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
             ],
           ),
         ),

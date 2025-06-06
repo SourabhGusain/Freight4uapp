@@ -82,66 +82,32 @@ class _CovidQuestionnairePageState extends State<CovidQuestionnairePage> {
                 onTap: selectDate,
               ),
               const SizedBox(height: 15),
-              customTypeSelector(
-                context: context,
-                text:
-                    '1. Vehicles are to be disinfected before and after every load.',
-                hintText:
-                    '1. Vehicles are to be disinfected before and after every load.',
-                dropdownTypes: ['yes', 'no'],
-                selectedValue: controller.vehiclesDisinfected ?? '',
-                onChanged: (val) =>
-                    setState(() => controller.vehiclesDisinfected = val ?? ''),
+              _declaration(
+                "1. Vehicles are to be disinfected before and after every load.",
+                controller.vehiclesDisinfected,
+                (val) => setState(() => controller.vehiclesDisinfected = val),
               ),
-              const SizedBox(height: 15),
-              customTypeSelector(
-                context: context,
-                text:
-                    '2. If you suspect you are affected by or around COVID-19, continue your shift then isolate.',
-                hintText:
-                    '2. If you suspect you are affected by or around COVID-19, continue your shift then isolate.',
-                dropdownTypes: ['yes', 'no'],
-                selectedValue: controller.continueShiftThenIsolate ?? '',
-                onChanged: (val) => setState(
-                    () => controller.continueShiftThenIsolate = val ?? ''),
+              _declaration(
+                "2. If you suspect you are affected by or around COVID-19, continue your shift then isolate.",
+                controller.continueShiftThenIsolate,
+                (val) =>
+                    setState(() => controller.continueShiftThenIsolate = val),
               ),
-              const SizedBox(height: 15),
-              customTypeSelector(
-                context: context,
-                text:
-                    '3. You are only to disinfect and clean your vehicle before a load.',
-                hintText:
-                    '3. You are only to disinfect and clean your vehicle before a load.',
-                dropdownTypes: ['yes', 'no'],
-                selectedValue: controller.disinfectBeforeOnly ?? '',
-                onChanged: (val) =>
-                    setState(() => controller.disinfectBeforeOnly = val ?? ''),
+              _declaration(
+                "3. You are only to disinfect and clean your vehicle before a load.",
+                controller.disinfectBeforeOnly,
+                (val) => setState(() => controller.disinfectBeforeOnly = val),
               ),
-              const SizedBox(height: 15),
-              customTypeSelector(
-                context: context,
-                text:
-                    '4. You should eat your lunch outside rather than in the lunch room.',
-                hintText:
-                    '4. You should eat your lunch outside rather than in the lunch room.',
-                dropdownTypes: ['yes', 'no'],
-                selectedValue: controller.eatLunchOutside ?? '',
-                onChanged: (val) =>
-                    setState(() => controller.eatLunchOutside = val ?? ''),
+              _declaration(
+                "4. You should eat your lunch outside rather than in the lunch room.",
+                controller.eatLunchOutside,
+                (val) => setState(() => controller.eatLunchOutside = val),
               ),
-              const SizedBox(height: 15),
-              customTypeSelector(
-                context: context,
-                text:
-                    '5. You must not attempt a delivery if it is unsafe to do so.',
-                hintText:
-                    '5. You must not attempt a delivery if it is unsafe to do so.',
-                dropdownTypes: ['yes', 'no'],
-                selectedValue: controller.noUnsafeDelivery ?? '',
-                onChanged: (val) =>
-                    setState(() => controller.noUnsafeDelivery = val ?? ''),
+              _declaration(
+                "5. You must not attempt a delivery if it is unsafe to do so.",
+                controller.noUnsafeDelivery,
+                (val) => setState(() => controller.noUnsafeDelivery = val),
               ),
-              const SizedBox(height: 20),
               textH3("Signature:"),
               Container(
                 decoration: BoxDecoration(
@@ -166,7 +132,7 @@ class _CovidQuestionnairePageState extends State<CovidQuestionnairePage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 100),
               SizedBox(
                 width: double.infinity,
                 height: 45,
@@ -200,6 +166,7 @@ class _CovidQuestionnairePageState extends State<CovidQuestionnairePage> {
                   },
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -232,5 +199,31 @@ class _CovidQuestionnairePageState extends State<CovidQuestionnairePage> {
 
   Future<void> _showSuccessDialog(String message) async {
     await _showMessageDialog("Success", message);
+  }
+
+  Widget _declaration(String text, bool? value, Function(bool?) onChanged) {
+    DeclarationAnswer? selected = switch (value) {
+      true => DeclarationAnswer.yes,
+      false => DeclarationAnswer.no,
+      null => null,
+    };
+
+    return Column(
+      children: [
+        CustomDeclarationBox(
+          text: text,
+          selectedAnswer: selected,
+          onChanged: (DeclarationAnswer? answer) {
+            bool? val = switch (answer) {
+              DeclarationAnswer.yes => true,
+              DeclarationAnswer.no => false,
+              null => null,
+            };
+            onChanged(val);
+          },
+        ),
+        const SizedBox(height: 15),
+      ],
+    );
   }
 }

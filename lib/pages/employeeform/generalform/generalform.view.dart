@@ -238,7 +238,7 @@ class _GeneralFormPageState extends State<GeneralFormPage> {
                       "Reference Phone Number",
                       _controller.referencePhoneNumberController,
                       TextInputType.phone),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 100),
                   SizedBox(
                     height: 45,
                     width: double.infinity,
@@ -250,7 +250,7 @@ class _GeneralFormPageState extends State<GeneralFormPage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  const SizedBox(height: 20),
                 ],
               ),
             ],

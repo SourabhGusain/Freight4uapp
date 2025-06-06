@@ -1,7 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/models/employeemodels/cabassessment.model.dart';
 
@@ -13,7 +13,6 @@ class InCabAssessmentController {
 
   String selectedTruckType = "";
 
-  // Choices are Yes, No,  for most fields
   String selectedOverviewVehicle = "";
   String selectedTransmissionSuspension = "";
   String selectedRaiseBonnetChecks = "";
@@ -34,7 +33,6 @@ class InCabAssessmentController {
   String selectedPowerDividerDiffLocks = "";
   String selectedHandBrakeOperation = "";
 
-  // Assessment choices: , P, F
   String selectedEngineIdleTime = "";
   String selectedMirrorUse = "";
   String selectedClutchUse = "";
@@ -48,7 +46,6 @@ class InCabAssessmentController {
   String selectedSpeedForEnvironment = "";
   String selectedHangBackDistance = "";
 
-  // Back to Yes/No/
   String selectedCruiseControl = "";
   String selectedOperationDriverButtonsSwitches = "";
   String selectedOperationEngineRetarder = "";
@@ -62,15 +59,36 @@ class InCabAssessmentController {
   String selectedAirBagControls = "";
 
   File? signatureFile;
+  String? signatureFileName;
 
   int userId = 0;
   final Session session = Session();
+
+  final Map<String, String> truckTypeOptions = {
+    "HR": "Heavy Rigid",
+    "HC": "Heavy Combination",
+    "MC": "Multi Combination",
+    "Small Truck": "Small Truck"
+  };
+
+  final Map<String, String> yesNoNAOptions = {
+    "Yes": "Yes",
+    "No": "No",
+    "N/A": "N/A"
+  };
+
+  final Map<String, String> assessmentOptions = {
+    "N/A": "N/A",
+    "P": "Pass",
+    "F": "Fail"
+  };
 
   Future<void> init() async {
     final userIdStr = await session.getSession("userId");
     userId = int.tryParse(userIdStr ?? "") ?? 0;
     dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     await populateFromSession();
+    populateDummyData();
   }
 
   Future<void> populateFromSession() async {
@@ -79,6 +97,60 @@ class InCabAssessmentController {
     final Map<String, dynamic> userData = jsonDecode(userJson);
     driverNameController.text = userData["name"] ?? "";
     assessorNameController.text = userData["name"] ?? "";
+  }
+
+  void populateDummyData() {
+    driverNameController.text = "John Doe";
+    dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    vehicleRegoController.text = "ABC123";
+    assessorNameController.text = "Jane Smith";
+
+    selectedTruckType = "HR";
+
+    selectedOverviewVehicle = "Yes";
+    selectedTransmissionSuspension = "Yes";
+    selectedRaiseBonnetChecks = "Yes";
+    selectedMethodTiltingCabin = "Yes";
+    selectedWalkAroundTruck = "Yes";
+    selectedFuelTankCapacity = "Yes";
+    selectedIsolationSwitch = "Yes";
+    selectedTailgateOperation = "No";
+    selectedDangerTraySwing = "No";
+    selectedDangerFrontCornerOverhang = "No";
+    selectedAirTankDrainCocks = "Yes";
+    selectedCircuitBreakersLocation = "Yes";
+    selectedTrailerElectricalVolts = "Yes";
+    selectedTrailerConnectionsAirlines = "Yes";
+    selectedMethodEntryExitCabin = "Yes";
+    selectedSeatAdjustment = "Yes";
+    selectedSteeringWheelAdjustment = "Yes";
+    selectedPowerDividerDiffLocks = "Yes";
+    selectedHandBrakeOperation = "Yes";
+
+    selectedEngineIdleTime = "P";
+    selectedMirrorUse = "P";
+    selectedClutchUse = "P";
+    selectedGearSelection = "P";
+    selectedRevRange = "P";
+    selectedEngineBrakeRetarderUse = "P";
+    selectedCheckIntersections = "P";
+    selectedCourtesyToOthers = "P";
+    selectedObservationPlanning = "P";
+    selectedOvertaking = "P";
+    selectedSpeedForEnvironment = "P";
+    selectedHangBackDistance = "P";
+
+    selectedCruiseControl = "Yes";
+    selectedOperationDriverButtonsSwitches = "Yes";
+    selectedOperationEngineRetarder = "Yes";
+    selectedPreStartChecks = "Yes";
+    selectedGearboxOperation = "Yes";
+    selectedClutchOperationCheck = "Yes";
+    selectedSpeedLimiterOperation = "Yes";
+    selectedHillStartSwitchOperation = "Yes";
+    selectedAddBlueTankCapacity = "Yes";
+    selectedAdditionalFeatures = "Yes";
+    selectedAirBagControls = "Yes";
   }
 
   Future<void> submitForm(BuildContext context) async {
@@ -197,7 +269,7 @@ class InCabAssessmentController {
 
     final success = await InCabAssessmentModel.submitForm(model);
 
-    Navigator.pop(context); // close loading dialog
+    Navigator.pop(context);
 
     if (success) {
       _showDialog(context, "Success", "Form submitted successfully.",

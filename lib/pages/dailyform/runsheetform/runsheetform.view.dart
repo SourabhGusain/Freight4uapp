@@ -116,8 +116,8 @@ class _RunsheetPageState extends State<RunsheetPage> {
                               height: 50,
                               child: customTypeSelector(
                                 context: context,
-                                text: "Select Contractor",
-                                hintText: "Shift",
+                                text: "Select Shift",
+                                hintText: "Select Shift",
                                 dropdownTypes: ['Day Shift', 'Night Shift'],
                                 selectedValue: _formController.selectedShift,
                                 onChanged: (value) {
@@ -153,7 +153,7 @@ class _RunsheetPageState extends State<RunsheetPage> {
                       customTypeSelector(
                         context: context,
                         text: "Select Site",
-                        hintText: "Site",
+                        hintText: "Select Site",
                         dropdownTypes: _formController.siteNames,
                         selectedValue: _formController.selectedSite,
                         onChanged: (value) {
@@ -166,7 +166,7 @@ class _RunsheetPageState extends State<RunsheetPage> {
                       customTypeSelector(
                         context: context,
                         text: "Select Shape",
-                        hintText: "Shape",
+                        hintText: "Select Shape",
                         dropdownTypes: _formController.shapeNames,
                         selectedValue: _formController.selectedShape,
                         onChanged: (value) {
@@ -314,7 +314,7 @@ class _RunsheetPageState extends State<RunsheetPage> {
                         borderColor: Colors.grey,
                         focusedBorderColor: Colors.black,
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 100),
                       SizedBox(
                         height: 45,
                         width: double.infinity,

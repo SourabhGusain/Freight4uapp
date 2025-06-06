@@ -51,10 +51,26 @@ class _HnlpolicyPageState extends State<HnlpolicyPage> {
                                   child: customBox(
                                     text: policy.name,
                                     subtext: policy.subtext,
-                                    onTap: () => Get.to(
-                                      context,
-                                      () => PolicyPage(policy: policy),
-                                    ),
+                                    onTap: () async {
+                                      showDialog(
+                                        context: context,
+                                        barrierDismissible: false,
+                                        builder: (BuildContext context) {
+                                          return const Center(
+                                            child: CircularProgressIndicator(
+                                              color: primaryColor,
+                                            ),
+                                          );
+                                        },
+                                      );
+                                      await Future.delayed(
+                                          const Duration(seconds: 1));
+                                      Navigator.of(context).pop();
+                                      Get.to(
+                                        context,
+                                        () => PolicyPage(policy: policy),
+                                      );
+                                    },
                                   ),
                                 ),
                               ),

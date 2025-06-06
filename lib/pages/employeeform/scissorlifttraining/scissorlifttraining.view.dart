@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:signature/signature.dart';
-import 'package:Freight4u/widgets/form.dart';
 import 'package:Freight4u/widgets/ui.dart';
+import 'package:Freight4u/widgets/form.dart';
+import 'scissorlifttraining.controller.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/helpers/session.dart';
-import 'scissorlifttraining.controller.dart';
 
 class ScissorLiftTrainingPage extends StatefulWidget {
   final Session session;
@@ -129,7 +129,7 @@ class _ScissorLiftTrainingPageState extends State<ScissorLiftTrainingPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 80),
+              const SizedBox(height: 100),
               SizedBox(
                 height: 45,
                 width: double.infinity,
@@ -186,7 +186,7 @@ class _ScissorLiftTrainingPageState extends State<ScissorLiftTrainingPage> {
                   },
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
             ],
           ),
         ),

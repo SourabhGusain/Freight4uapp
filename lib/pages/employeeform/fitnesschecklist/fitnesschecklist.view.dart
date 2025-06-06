@@ -121,8 +121,8 @@ class _FitnessChecklistFormPageState extends State<FitnessChecklistFormPage> {
                 label: "Date",
                 controller: _formController.dateController,
               ),
-              const SizedBox(height: 15),
-              textH3("Basic Fitness Checklist:"),
+              const SizedBox(height: 25),
+              textH2("Basic Fitness Checklist:"),
               const SizedBox(height: 15),
               _declaration(
                 "Are you presenting yourself for duty in a physical and fit state of work?",
@@ -260,7 +260,7 @@ class _FitnessChecklistFormPageState extends State<FitnessChecklistFormPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 100),
               SizedBox(
                 height: 45,
                 width: double.infinity,
@@ -315,7 +315,7 @@ class _FitnessChecklistFormPageState extends State<FitnessChecklistFormPage> {
                   },
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
             ],
           ),
         ),

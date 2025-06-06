@@ -98,30 +98,30 @@ class _InductionFormPageState extends State<InductionFormPage> {
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(65),
           child:
-              secondaryNavBar(context, "Induction Form:", onBack: _handleBack),
+              secondaryNavBar(context, "Induction Form", onBack: _handleBack),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
-                width: double.infinity,
-                child: Image.asset(
-                  'assets/images/inductiontext1.jpg',
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: double.infinity,
-                child: Image.asset(
-                  'assets/images/inductiontext2.jpg',
-                  fit: BoxFit.cover,
-                ),
-              ),
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: Image.asset(
+              //     'assets/images/inductiontext1.jpg',
+              //     fit: BoxFit.cover,
+              //   ),
+              // ),
+              // const SizedBox(height: 10),
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: Image.asset(
+              //     'assets/images/inductiontext2.jpg',
+              //     fit: BoxFit.cover,
+              //   ),
+              // ),
               const SizedBox(height: 15),
-              textH1("Induction Form"),
+              textH1("Induction Form :"),
               const SizedBox(height: 15),
               _field("Driver Name", _formcontroller.driverNameController,
                   TextInputType.name),
@@ -154,7 +154,7 @@ class _InductionFormPageState extends State<InductionFormPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 80),
+              const SizedBox(height: 130),
               SizedBox(
                 height: 45,
                 width: double.infinity,
@@ -211,7 +211,7 @@ class _InductionFormPageState extends State<InductionFormPage> {
                   },
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
             ],
           ),
         ),

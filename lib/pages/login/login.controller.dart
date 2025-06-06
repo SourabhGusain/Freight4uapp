@@ -40,9 +40,7 @@ class LoginController extends BaseViewModel {
   }
 
   Future<bool> login(BuildContext context) async {
-    // Validate inputs first
     if (!validateInputs()) {
-      // Show dialog for errors
       String errorMsg = '';
       if (mobileError != null) errorMsg += '$mobileError\n';
       if (passwordError != null) errorMsg += '$passwordError';

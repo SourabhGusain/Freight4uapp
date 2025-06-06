@@ -128,7 +128,7 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
                     child: customTypeSelector(
                       context: context,
                       text: "Select Site",
-                      hintText: "Site",
+                      hintText: "Select Site",
                       dropdownTypes: _formController.siteNames,
                       selectedValue: _formController.selectedSite,
                       onChanged: (value) {
@@ -239,11 +239,11 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 15),
 
-                  // Signature
-                  textH3("Signature:",
-                      font_size: 17, font_weight: FontWeight.w400),
+                  textH3(
+                    "Signature:",
+                  ),
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.black, width: 1),
@@ -255,7 +255,7 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 15),
 
                   Align(
                     alignment: Alignment.centerRight,
@@ -272,9 +272,8 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 100),
 
-                  // Save Button
                   SizedBox(
                     height: 45,
                     width: double.infinity,
@@ -330,13 +329,14 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
                       },
                     ),
                   ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
-            bottomNavigationBar: customBottomNavigationBar(
-              context: context,
-              selectedIndex: _currentIndex,
-            ),
+            // bottomNavigationBar: customBottomNavigationBar(
+            //   context: context,
+            //   selectedIndex: _currentIndex,
+            // ),
           ),
         );
       },

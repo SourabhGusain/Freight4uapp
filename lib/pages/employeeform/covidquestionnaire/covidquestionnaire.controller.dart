@@ -23,11 +23,11 @@ class CovidQuestionnaireController {
 
   late Map<String, String> yesNoOptions;
 
-  String? vehiclesDisinfected;
-  String? continueShiftThenIsolate;
-  String? disinfectBeforeOnly;
-  String? eatLunchOutside;
-  String? noUnsafeDelivery;
+  bool? vehiclesDisinfected;
+  bool? continueShiftThenIsolate;
+  bool? disinfectBeforeOnly;
+  bool? eatLunchOutside;
+  bool? noUnsafeDelivery;
 
   CovidQuestionnaireController() {
     _loadChoices();
@@ -81,7 +81,7 @@ class CovidQuestionnaireController {
       noUnsafeDelivery,
     ];
 
-    if (selectionFields.any((item) => item == null || item.trim().isEmpty)) {
+    if (selectionFields.any((item) => item == null)) {
       print('Please answer all questionnaire items.');
       return false;
     }
@@ -102,11 +102,11 @@ class CovidQuestionnaireController {
     final model = CovidQuestionnaireModel(
       name: fullNameController.text.trim(),
       date: dateController.text.trim(),
-      vehiclesDisinfected: vehiclesDisinfected!,
-      continueShiftThenIsolate: continueShiftThenIsolate!,
-      disinfectBeforeOnly: disinfectBeforeOnly!,
-      eatLunchOutside: eatLunchOutside!,
-      noUnsafeDelivery: noUnsafeDelivery!,
+      vehiclesDisinfected: vehiclesDisinfected == true ? 'yes' : 'no',
+      continueShiftThenIsolate: continueShiftThenIsolate == true ? 'yes' : 'no',
+      disinfectBeforeOnly: disinfectBeforeOnly == true ? 'yes' : 'no',
+      eatLunchOutside: eatLunchOutside == true ? 'yes' : 'no',
+      noUnsafeDelivery: noUnsafeDelivery == true ? 'yes' : 'no',
       signature: signatureFile,
       isActive: true,
       createdOn: DateTime.now().toIso8601String(),

@@ -135,7 +135,7 @@ class _EmployeePageState extends State<EmployeePage> {
                     ),
                     const SizedBox(height: 10),
                     customBox(
-                      text: "CoR",
+                      text: "Chain of Responsibility Assessment",
                       subtext:
                           "Chain of Responsibility assessment to meet legal obligations.",
                       onTap: () => _showLoadingAndNavigate(

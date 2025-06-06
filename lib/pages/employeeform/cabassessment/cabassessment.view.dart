@@ -23,17 +23,6 @@ class _InCabAssessmentFormPageState extends State<InCabAssessmentFormPage> {
   bool isLoading = true;
   bool _isSubmitting = false;
 
-  static const truckTypeOptions = [
-    "HR",
-    "HC",
-    "MC",
-    "Small Truck",
-    // add more as needed
-  ];
-
-  static const yesNoNAOptions = ["Yes", "No", "N/A"];
-  static const assessmentOptions = ["N/A", "P", "F"];
-
   @override
   void initState() {
     super.initState();
@@ -66,13 +55,15 @@ class _InCabAssessmentFormPageState extends State<InCabAssessmentFormPage> {
           context: context,
           text: label,
           hintText: label,
-          dropdownTypes: yesNoNAOptions,
-          selectedValue: value ?? yesNoNAOptions.first,
-          onChanged: (val) {
-            if (val != null) {
-              onChanged(val);
-              setState(() {});
-            }
+          dropdownTypes: _formController.yesNoNAOptions.values.toList(),
+          selectedValue:
+              value == null ? "" : _formController.yesNoNAOptions[value!] ?? "",
+          onChanged: (label) {
+            setState(() {
+              value = _formController.yesNoNAOptions.entries
+                  .firstWhere((e) => e.value == label)
+                  .key;
+            });
           },
         ),
         const SizedBox(height: 15),
@@ -88,13 +79,17 @@ class _InCabAssessmentFormPageState extends State<InCabAssessmentFormPage> {
         customTypeSelector(
           context: context,
           text: label,
-          dropdownTypes: assessmentOptions,
-          selectedValue: value ?? assessmentOptions.first,
-          onChanged: (val) {
-            if (val != null) {
-              onChanged(val);
-              setState(() {});
-            }
+          hintText: label,
+          dropdownTypes: _formController.assessmentOptions.values.toList(),
+          selectedValue: value == null
+              ? ""
+              : _formController.assessmentOptions[value!] ?? "",
+          onChanged: (label) {
+            setState(() {
+              value = _formController.assessmentOptions.entries
+                  .firstWhere((e) => e.value == label)
+                  .key;
+            });
           },
         ),
         const SizedBox(height: 15),
@@ -191,24 +186,28 @@ The in-cab assessment is part of the Final Competency Assessment, which must be 
                   controller: _formController.vehicleRegoController),
               const SizedBox(height: 15),
 
-              // Truck Type dropdown
               customTypeSelector(
                 context: context,
-                text: "Truck Type",
-                dropdownTypes: truckTypeOptions,
-                selectedValue: _formController.selectedTruckType.isNotEmpty
-                    ? _formController.selectedTruckType
-                    : truckTypeOptions.first,
-                onChanged: (val) {
+                text:
+                    "Which of these can be deemed as non-compliance with WHS Act and Regulation:",
+                hintText: "Select non-compliance",
+                dropdownTypes: _formController.truckTypeOptions.values.toList(),
+                selectedValue: _formController.selectedTruckType == null
+                    ? ""
+                    : _formController.truckTypeOptions[
+                            _formController.selectedTruckType!] ??
+                        "",
+                onChanged: (label) {
                   setState(() {
-                    _formController.selectedTruckType =
-                        val ?? truckTypeOptions.first;
+                    _formController.selectedTruckType = _formController
+                        .truckTypeOptions.entries
+                        .firstWhere((e) => e.value == label)
+                        .key;
                   });
                 },
               ),
               const SizedBox(height: 20),
 
-              // YES/NO/NA selectors
               _yesNoNASelector(
                 "1. Overview of the Vehicle, HP Rating, Torque Rating",
                 _formController.selectedOverviewVehicle,
@@ -488,66 +487,91 @@ The in-cab assessment is part of the Final Competency Assessment, which must be 
                     () => _formController.selectedAirBagControls = val),
               ),
 
-              // Signature
-              const SizedBox(height: 20),
-              textH2("Signature:"),
-              const SizedBox(height: 10),
-
+              textH3("Signature:", font_size: 17, font_weight: FontWeight.w400),
+              const SizedBox(height: 15),
               Container(
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade700, width: 1.5),
-                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.black, width: 1),
                 ),
-                height: 160,
                 child: Signature(
                   controller: _signatureController,
+                  height: 200,
                   backgroundColor: Colors.white,
                 ),
               ),
-
               const SizedBox(height: 10),
-
               Align(
                 alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    _signatureController.clear();
-                  },
-                  child: const Text("Clear Signature"),
+                child: SizedBox(
+                  height: 25,
+                  width: 75,
+                  child: darkButton(
+                    buttonText("Clear", color: whiteColor, font_size: 10),
+                    primary: primaryColor,
+                    onPressed: () {
+                      _signatureController.clear();
+                    },
+                  ),
                 ),
               ),
-
-              const SizedBox(height: 30),
-
+              const SizedBox(height: 100),
               SizedBox(
                 height: 45,
                 width: double.infinity,
                 child: darkButton(
-                  buttonText("Submit", color: whiteColor),
+                  buttonText("Save", color: whiteColor),
                   primary: primaryColor,
                   onPressed: () async {
-                    // if (_signatureController.isEmpty) {
-                    //   _showErrorDialog('Please provide your signature.');
-                    //   return;
-                    // }
-
-                    final bytes = await _signatureController.toPngBytes();
-                    if (bytes != null) {
-                      final tempFile = File(
-                        '${Directory.systemTemp.path}/signature_${DateTime.now().millisecondsSinceEpoch}.png',
+                    if (_signatureController.isEmpty) {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text('Error'),
+                          content: const Text('Please provide your signature.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
                       );
-                      await tempFile.writeAsBytes(bytes);
-                      _formController.signatureFile = tempFile;
+                      return;
+                    }
+
+                    final signatureBytes =
+                        await _signatureController.toPngBytes();
+                    if (signatureBytes != null) {
+                      final tempDir = Directory.systemTemp;
+                      final tempPath =
+                          '${tempDir.path}/signature_${DateTime.now().millisecondsSinceEpoch}.png';
+                      final file = File(tempPath);
+                      await file.writeAsBytes(signatureBytes);
+
+                      _formController.signatureFile = file;
 
                       await _formController.submitForm(context);
+                      print(
+                          'Signature file: ${_formController.signatureFile?.path}');
                     } else {
-                      // _showErrorDialog('Failed to capture signature.');
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text("Error"),
+                          content: const Text("Failed to export signature."),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      );
                     }
                   },
                 ),
               ),
-
-              const SizedBox(height: 50),
+              const SizedBox(height: 20),
             ],
           ),
         ),

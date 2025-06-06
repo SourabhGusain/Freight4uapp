@@ -80,7 +80,6 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
 
                   const SizedBox(height: 15),
 
-                  // Date + Depo Row
                   Row(
                     children: [
                       Expanded(
@@ -124,9 +123,8 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
                     },
                   ),
 
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 150),
 
-                  // Save Button
                   SizedBox(
                     height: 45,
                     width: double.infinity,
@@ -139,13 +137,14 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
                       },
                     ),
                   ),
+                  const SizedBox(height: 20),
                 ],
               ),
             ),
-            bottomNavigationBar: customBottomNavigationBar(
-              context: context,
-              selectedIndex: _currentIndex,
-            ),
+            // bottomNavigationBar: customBottomNavigationBar(
+            //   context: context,
+            //   selectedIndex: _currentIndex,
+            // ),
           ),
         );
       },
@@ -175,8 +174,8 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
       height: 50,
       child: customTypeSelector(
         context: context,
-        text: "Select Depo",
-        hintText: "Depo",
+        text: "Select Depot",
+        hintText: "Select Depot",
         dropdownTypes: _formController.depotNames,
         selectedValue: _formController.selectedDepot,
         onChanged: (value) {

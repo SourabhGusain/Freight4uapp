@@ -199,7 +199,7 @@ class _PitbullDockingSWPFormPageState extends State<PitbullDockingSWPFormPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 100),
               SizedBox(
                 height: 45,
                 width: double.infinity,
@@ -248,7 +248,7 @@ class _PitbullDockingSWPFormPageState extends State<PitbullDockingSWPFormPage> {
                   },
                 ),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
             ],
           ),
         ),

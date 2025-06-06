@@ -269,7 +269,7 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
                 ),
               ),
 
-              const SizedBox(height: 25),
+              const SizedBox(height: 100),
               SizedBox(
                 height: 45,
                 width: double.infinity,
@@ -305,6 +305,7 @@ class _RoadAssessmentFormPageState extends State<RoadAssessmentFormPage> {
                   },
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

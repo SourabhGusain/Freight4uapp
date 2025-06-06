@@ -50,7 +50,6 @@ class _FuelReceiptPageState extends State<FuelReceiptPage> {
       isBackLoading = true;
     });
 
-    // Optional small delay so loading spinner is visible
     await Future.delayed(const Duration(milliseconds: 400));
 
     if (mounted) {
@@ -103,7 +102,6 @@ class _FuelReceiptPageState extends State<FuelReceiptPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // const Icon(Icons.upload_file, color: Colors.grey),
                         const SizedBox(width: 8),
                         textH3(
                           fileName ?? "Browse File Here",
@@ -116,7 +114,7 @@ class _FuelReceiptPageState extends State<FuelReceiptPage> {
                   ),
                 ),
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 170),
               SizedBox(
                 height: 45,
                 width: double.infinity,
@@ -126,6 +124,7 @@ class _FuelReceiptPageState extends State<FuelReceiptPage> {
                   onPressed: () => _formController.submitForm(context),
                 ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

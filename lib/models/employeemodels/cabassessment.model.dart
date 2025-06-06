@@ -4,9 +4,9 @@ import 'package:Freight4u/helpers/values.dart';
 
 class InCabAssessmentModel {
   final String driverName;
-  final String date; // ISO string format "YYYY-MM-DD"
+  final String date;
   final String vehicleRego;
-  final String truckType; // from TRUCK_TYPE_CHOICES
+  final String truckType;
 
   final String overviewVehicle;
   final String transmissionSuspension;
@@ -164,10 +164,12 @@ class InCabAssessmentModel {
       "speed_for_environment": speedForEnvironment,
       "hang_back_distance": hangBackDistance,
       "assessor_name": assessorName,
+      "created_on": createdOn != null
+          ? DateTime.parse(createdOn!).toIso8601String().split('T').first
+          : null,
     };
 
     if (isActive != null) fields["is_active"] = isActive.toString();
-    if (createdOn != null) fields["created_on"] = createdOn!;
     if (createdBy != null) fields["created_by"] = createdBy.toString();
     if (signature != null) fields["signature"] = signature;
 
@@ -180,7 +182,6 @@ class InCabAssessmentModel {
       date: json['date'] ?? '',
       vehicleRego: json['vehicle_rego'] ?? '',
       truckType: json['truck_type'] ?? 'HR',
-
       overviewVehicle: json['overview_vehicle'] ?? 'N/A',
       transmissionSuspension: json['transmission_suspension'] ?? 'N/A',
       raiseBonnetChecks: json['raise_bonnet_checks'] ?? 'N/A',
@@ -212,7 +213,6 @@ class InCabAssessmentModel {
       addBlueTankCapacity: json['add_blue_tank_capacity'] ?? 'N/A',
       additionalFeatures: json['additional_features'] ?? 'N/A',
       airBagControls: json['air_bag_controls'] ?? 'N/A',
-
       engineIdleTime: json['engine_idle_time'] ?? 'N/A',
       mirrorUse: json['mirror_use'] ?? 'N/A',
       clutchUse: json['clutch_use'] ?? 'N/A',
@@ -225,10 +225,8 @@ class InCabAssessmentModel {
       overtaking: json['overtaking'] ?? 'N/A',
       speedForEnvironment: json['speed_for_environment'] ?? 'N/A',
       hangBackDistance: json['hang_back_distance'] ?? 'N/A',
-
       assessorName: json['assessor_name'] ?? '',
-      signature: null, // Handle file separately on client side
-
+      signature: null,
       isActive: json['is_active'] ?? true,
       createdOn: json['created_on'],
       createdBy: json['created_by'],
