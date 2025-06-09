@@ -288,7 +288,6 @@ class _PrestartformPageState extends State<PrestartformPage> {
   }
 
   Widget _declaration(String text, bool? value, Function(bool?) onBoolChanged) {
-    // Convert bool? to DeclarationAnswer?
     DeclarationAnswer? selected = switch (value) {
       true => DeclarationAnswer.yes,
       false => DeclarationAnswer.no,

@@ -93,7 +93,6 @@ class _RunsheetPageState extends State<RunsheetPage> {
                         font_size: 15,
                       ),
                       Divider(),
-                      const SizedBox(height: 15),
                       const SizedBox(height: 40),
                       textH1("Forms:"),
                       Divider(),
@@ -136,7 +135,6 @@ class _RunsheetPageState extends State<RunsheetPage> {
                         child: textField(
                           "Driver Name",
                           controller: _formController.driverNameController,
-                          // validator removed
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -146,7 +144,6 @@ class _RunsheetPageState extends State<RunsheetPage> {
                           "Email",
                           hintText: "e.g. xyz@gmail.com",
                           controller: _formController.emailController,
-                          // validator removed
                         ),
                       ),
                       const SizedBox(height: 15),
@@ -154,14 +151,69 @@ class _RunsheetPageState extends State<RunsheetPage> {
                         context: context,
                         text: "Select Site",
                         hintText: "Select Site",
-                        dropdownTypes: _formController.siteNames,
+                        dropdownTypes: _formController.siteDetails
+                            .map((e) => e['name'] as String)
+                            .toList(),
                         selectedValue: _formController.selectedSite,
                         onChanged: (value) {
                           setState(() {
-                            _formController.selectedSite = value;
+                            _formController.selectedSite = value ?? '';
                           });
                         },
                       ),
+                      if (_formController.selectedSiteObj?['enablePointCity'] ==
+                          true) ...[
+                        Column(
+                          children: [
+                            const SizedBox(height: 15),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 50,
+                                    child: textField(
+                                      "Point 1 City Name",
+                                      hintText: "e.g. Sydney",
+                                      controller:
+                                          _formController.point1CityController,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: 50,
+                                    child: textField(
+                                      "Point 2 City Name",
+                                      hintText: "e.g. Newcastle",
+                                      controller:
+                                          _formController.point2CityController,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                      if (_formController
+                              .selectedSiteObj?['enableWaitingTime'] ==
+                          true) ...[
+                        Column(
+                          children: [
+                            const SizedBox(height: 15),
+                            SizedBox(
+                              height: 50,
+                              child: textField(
+                                "Waiting Time",
+                                hintText: "e.g. 20:13:23",
+                                controller:
+                                    _formController.waitingTimeController,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                       const SizedBox(height: 15),
                       customTypeSelector(
                         context: context,
@@ -182,7 +234,6 @@ class _RunsheetPageState extends State<RunsheetPage> {
                           "Rego",
                           hintText: "e.g. Au1233",
                           controller: _formController.regoController,
-                          // validator removed
                         ),
                       ),
                       const SizedBox(height: 20),

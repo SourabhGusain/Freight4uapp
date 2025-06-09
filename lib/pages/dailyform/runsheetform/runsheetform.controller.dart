@@ -19,6 +19,9 @@ class RunsheetFormController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController loadCountController = TextEditingController();
   final TextEditingController commentController = TextEditingController();
+  final TextEditingController point1CityController = TextEditingController();
+  final TextEditingController point2CityController = TextEditingController();
+  final TextEditingController waitingTimeController = TextEditingController();
 
   final List<TextEditingController> breakStartControllers = [];
   final List<TextEditingController> breakEndControllers = [];
@@ -38,6 +41,9 @@ class RunsheetFormController {
 
   Future<void> init() async {
     try {
+      final userIdStr = await session.getSession("userId");
+      print(userIdStr);
+      if (userIdStr != null) userId = int.tryParse(userIdStr) ?? 0;
       settings = await fetchSettingsData();
       print('Settings loaded successfully.');
     } catch (e) {
@@ -45,19 +51,39 @@ class RunsheetFormController {
     }
   }
 
-  List<String> get siteNames =>
-      settings?.sites.map((c) => c.name).toList() ?? [];
+  List<Map<String, dynamic>> get siteDetails =>
+      settings?.sites
+          .map((site) => {
+                'name': site.name,
+                'enablePointCity': site.enablePointCity,
+                'enableWaitingTime': site.enableWaitingTime,
+              })
+          .toList() ??
+      [];
+
+  Map<String, dynamic>? get selectedSiteObj {
+    if (selectedSite.isEmpty) return null;
+    try {
+      return siteDetails.firstWhere((site) => site['name'] == selectedSite);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  int? _getSiteIdFromName(String siteName) {
+    if (settings == null) return null;
+    try {
+      final site = settings!.sites.firstWhere((c) => c.name == siteName);
+      print('Found site: ${site.name} with id: ${site.id}');
+      return site.id;
+    } catch (e) {
+      print('Site not found for name: $siteName');
+      return null;
+    }
+  }
 
   List<String> get shapeNames =>
       settings?.shapes.map((s) => s.name).toList() ?? [];
-
-  int _getSiteIdFromName(String siteName) {
-    final site = settings?.sites.firstWhere(
-      (c) => c.name == siteName,
-      orElse: () => Site(id: 0, name: '', isActive: false, createdOn: ''),
-    );
-    return site?.id ?? 0;
-  }
 
   int _getShapeIdFromName(String shapeName) {
     final shape = settings?.shapes.firstWhere(
@@ -118,33 +144,69 @@ class RunsheetFormController {
         }
       }
 
-      // Return with seconds (:00) appended
       return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}:00';
     } catch (e) {
       return input;
     }
   }
 
-  void printFormData() {
-    print('--- Runsheet Form Data ---');
-    print('Date: ${dateController.text}');
-    print('Shift: $selectedShift');
-    print('Driver Name: ${driverNameController.text}');
-    print('Email: ${emailController.text}');
-    print('Site: $selectedSite (ID: ${_getSiteIdFromName(selectedSite)})');
-    print('Shape: $selectedShape (ID: ${_getShapeIdFromName(selectedShape)})');
-    print('Rego: ${regoController.text}');
-    print('Shift Start Time: ${startTimeController.text}');
-    print('Shift End Time: ${endTimeController.text}');
-    print('Loads Done: ${loadCountController.text}');
-    print('Number of Breaks: $numberOfBreaks');
-    for (int i = 0; i < breakStartControllers.length; i++) {
-      print(
-          'Break ${i + 1}: Start - ${breakStartControllers[i].text}, End - ${breakEndControllers[i].text}');
-    }
-    print('File Name: $fileName');
-    print('-------------------------');
-  }
+  // void printFormData() {
+  //   print('--- Runsheet Form Data ---');
+  //   print('API Endpoint: https://freight4you.com.au/api/dailyreport/runsheet/');
+  //   print('Token: [REDACTED OR INSERT HERE IF AVAILABLE]');
+
+  //   print('FormData fields:');
+  //   print('Field: shift_type = $selectedShift');
+  //   print('Field: shift_date = ${dateController.text}');
+  //   print('Field: name = ${driverNameController.text}');
+  //   print('Field: email = ${emailController.text}');
+  //   print('Field: rego = ${regoController.text}');
+  //   print('Field: shift_start_time = ${startTimeController.text}');
+  //   print('Field: shift_end_time = ${endTimeController.text}');
+  //   print('Field: loads_done = ${loadCountController.text}');
+  //   print('Field: breaks_taken = $numberOfBreaks');
+
+  //   if (selectedSiteObj?['enablePointCity'] == true) {
+  //     print('Field: point1_city_name = ${point1CityController.text}');
+  //     print('Field: point2_city_name = ${point2CityController.text}');
+  //   } else {
+  //     print('Field: point1_city_name = null');
+  //     print('Field: point2_city_name = null');
+  //   }
+
+  //   if (selectedSiteObj?['enableWaitingTime'] == true) {
+  //     print('Field: waiting_time = ${waitingTimeController.text}');
+  //   } else {
+  //     print('Field: waiting_time = null');
+  //   }
+
+  //   print('Field: created_on = ${DateTime.now().toIso8601String()}');
+
+  //   final breaksList = <Map<String, String>>[];
+  //   for (int i = 0; i < numberOfBreaks; i++) {
+  //     final start = breakStartControllers[i].text;
+  //     final end = breakEndControllers[i].text;
+  //     print('Field: Break ${i + 1}: Start = $start, End = $end');
+
+  //     if (start.isNotEmpty && end.isNotEmpty) {
+  //       breaksList.add({"start_time": start, "end_time": end});
+  //     }
+  //   }
+
+  //   print('Field: shift_breaks = ${jsonEncode(breaksList)}');
+  //   print('Field: site = ${_getSiteIdFromName(selectedSite)}');
+  //   print('Field: shape = ${_getShapeIdFromName(selectedShape)}');
+  //   print('Field: created_by = $userId');
+  //   print('Field: is_active = true');
+
+  //   if (fileName != null) {
+  //     print('File field: load_sheet, filename: ${fileName!.split(" ").first}');
+  //   } else {
+  //     print('File field: load_sheet = null');
+  //   }
+
+  //   print('-------------------------');
+  // }
 
   Future<void> submitRunsheetForm(BuildContext context) async {
     _showLoadingDialog(context);
@@ -209,6 +271,15 @@ class RunsheetFormController {
         name: driverNameController.text,
         email: emailController.text,
         site: _getSiteIdFromName(selectedSite),
+        point1CityName: point1CityController.text.isNotEmpty
+            ? point1CityController.text
+            : "NA",
+        point2CityName: point2CityController.text.isNotEmpty
+            ? point2CityController.text
+            : "NA",
+        waitingTime: waitingTimeController.text.isNotEmpty
+            ? waitingTimeController.text
+            : "NA",
         shape: _getShapeIdFromName(selectedShape),
         rego: regoController.text,
         shiftStartTime: startTime,
@@ -221,7 +292,7 @@ class RunsheetFormController {
         createdBy: userId,
       );
 
-      printFormData();
+      // printFormData();
 
       bool success =
           await RunsheetModel.submitRunsheet(runsheetModel, selectedFile!);
@@ -243,6 +314,9 @@ class RunsheetFormController {
     emailController.clear();
     loadCountController.clear();
     commentController.clear();
+    point1CityController.clear();
+    point2CityController.clear();
+    waitingTimeController.clear();
     fileName = null;
     selectedFile = null;
     selectedShift = '';
@@ -314,6 +388,9 @@ class RunsheetFormController {
     emailController.dispose();
     loadCountController.dispose();
     commentController.dispose();
+    point1CityController.dispose();
+    point2CityController.dispose();
+    waitingTimeController.dispose();
     for (final c in breakStartControllers) {
       c.dispose();
     }

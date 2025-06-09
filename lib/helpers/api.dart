@@ -125,6 +125,7 @@ class Api {
 
       final session = Session();
       final token = await session.getSession("loggedInUserKey");
+      print(token);
       if (token != null) {
         dio.options.headers['Authorization'] = "Token $token";
       }

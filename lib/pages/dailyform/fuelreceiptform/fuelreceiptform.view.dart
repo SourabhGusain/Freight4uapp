@@ -1,5 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+
 import 'package:Freight4u/widgets/ui.dart';
 import 'package:Freight4u/helpers/get.dart';
 import 'package:Freight4u/widgets/form.dart';
@@ -16,6 +20,8 @@ class FuelReceiptPage extends StatefulWidget {
 
 class _FuelReceiptPageState extends State<FuelReceiptPage> {
   final FuelReceiptFormController _formController = FuelReceiptFormController();
+  final ImagePicker _imagePicker = ImagePicker();
+
   String? fileName;
   bool isBackLoading = false;
 
@@ -30,19 +36,101 @@ class _FuelReceiptPageState extends State<FuelReceiptPage> {
     });
   }
 
-  Future<void> _pickFile() async {
-    await _formController.pickFuelReceiptFile();
-    if (_formController.fuelReceiptFileName != null) {
-      setState(() {
-        fileName = _formController.fuelReceiptFileName;
-      });
+  Future<void> _showFilePickerOptions() async {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Gallery'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _pickImageFromGallery();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Camera'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _pickImageFromCamera();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.insert_drive_file),
+                title: const Text('File (Documents)'),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  _pickFile();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.close),
+                title: const Text('Cancel'),
+                onTap: () => Navigator.of(context).pop(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    try {
+      final XFile? pickedImage =
+          await _imagePicker.pickImage(source: ImageSource.gallery);
+      if (pickedImage != null) {
+        setState(() {
+          _formController.fuelReceiptFile = File(pickedImage.path);
+          _formController.fuelReceiptFileName = "Image (${pickedImage.name})";
+          fileName = _formController.fuelReceiptFileName;
+        });
+      }
+    } catch (e) {
+      debugPrint("Error picking image from gallery: $e");
     }
   }
 
-  @override
-  void dispose() {
-    _formController.dispose();
-    super.dispose();
+  Future<void> _pickImageFromCamera() async {
+    try {
+      final XFile? pickedImage =
+          await _imagePicker.pickImage(source: ImageSource.camera);
+      if (pickedImage != null) {
+        setState(() {
+          _formController.fuelReceiptFile = File(pickedImage.path);
+          _formController.fuelReceiptFileName = "Image (${pickedImage.name})";
+          fileName = _formController.fuelReceiptFileName;
+        });
+      }
+    } catch (e) {
+      debugPrint("Error picking image from camera: $e");
+    }
+  }
+
+  Future<void> _pickFile() async {
+    try {
+      final result = await FilePicker.platform.pickFiles();
+      if (result != null && result.files.isNotEmpty) {
+        final pickedFile = result.files.first;
+        if (pickedFile.path != null) {
+          setState(() {
+            _formController.fuelReceiptFile = File(pickedFile.path!);
+            _formController.fuelReceiptFileName =
+                "${pickedFile.name} (${(pickedFile.size / 1024).toStringAsFixed(1)} KB)";
+            fileName = _formController.fuelReceiptFileName;
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('File picking error: $e');
+    }
   }
 
   Future<void> _handleBack() async {
@@ -55,6 +143,12 @@ class _FuelReceiptPageState extends State<FuelReceiptPage> {
     if (mounted) {
       Navigator.of(context).pop();
     }
+  }
+
+  @override
+  void dispose() {
+    _formController.dispose();
+    super.dispose();
   }
 
   @override
@@ -82,15 +176,16 @@ class _FuelReceiptPageState extends State<FuelReceiptPage> {
               _buildTextField("Rego", _formController.regoController),
               const SizedBox(height: 15),
               _declaration(
-                  "Payment made with company fuel card.",
-                  _formController.declarationAnswer,
-                  (value) => setState(
-                      () => _formController.declarationAnswer = value)),
+                "Payment made with company fuel card.",
+                _formController.declarationAnswer,
+                (value) =>
+                    setState(() => _formController.declarationAnswer = value),
+              ),
               const SizedBox(height: 15),
               textH3("Upload Fuel Receipt", font_weight: FontWeight.w400),
               const SizedBox(height: 5),
               GestureDetector(
-                onTap: _pickFile,
+                onTap: _showFilePickerOptions,
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(

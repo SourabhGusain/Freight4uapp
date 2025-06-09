@@ -28,6 +28,9 @@ class RunsheetModel {
   final String name;
   final String email;
   final int? site;
+  final String? point1CityName;
+  final String? point2CityName;
+  final String? waitingTime;
   final int? shape;
   final String rego;
   final String shiftStartTime;
@@ -45,6 +48,9 @@ class RunsheetModel {
     required this.name,
     required this.email,
     this.site,
+    this.point1CityName,
+    this.point2CityName,
+    this.waitingTime,
     this.shape,
     required this.rego,
     required this.shiftStartTime,
@@ -69,17 +75,19 @@ class RunsheetModel {
       "loads_done": loadsDone.toString(),
       "breaks_taken": breaksTaken.toString(),
       "is_active": isActive.toString(),
+      "point1_city_name": point1CityName,
+      "point2_city_name": point2CityName,
+      "waiting_time": waitingTime,
       "created_on":
           createdOn.contains('T') ? createdOn.split('T').first : createdOn,
       "shift_breaks": jsonEncode(
         shiftBreaks.map((e) => e.toMap()).toList(),
       ),
     };
-
     if (site != null) fields["site"] = site.toString();
     if (shape != null) fields["shape"] = shape.toString();
     if (createdBy != null) fields["created_by"] = createdBy.toString();
-    if (loadSheetFile != null) fields["load_sheet"] = loadSheetFile;
+    // if (loadSheetFile != null) fields["load_sheet"] = loadSheetFile;
 
     return fields;
   }
@@ -90,6 +98,11 @@ class RunsheetModel {
     final api = Api();
 
     final fields = model.toMultipartFields(loadSheetFile: loadSheetFile);
+
+    // print("______________FormData fields:______________");
+    // fields.forEach((key, value) {
+    //   print("Field: $key = $value");
+    // });
 
     final result = await api.multipartOrJsonPostCall(
       url,

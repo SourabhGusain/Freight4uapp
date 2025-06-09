@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:Freight4u/helpers/api.dart';
+import 'package:Freight4u/helpers/values.dart';
 
 class SettingsModel {
   final int ok;
@@ -85,6 +86,8 @@ class Site {
   final String name;
   final bool isActive;
   final String createdOn;
+  final bool enablePointCity;
+  final bool enableWaitingTime;
   final dynamic createdBy;
 
   Site({
@@ -92,6 +95,8 @@ class Site {
     required this.name,
     required this.isActive,
     required this.createdOn,
+    required this.enablePointCity,
+    required this.enableWaitingTime,
     this.createdBy,
   });
 
@@ -101,6 +106,8 @@ class Site {
       name: json['name'],
       isActive: json['is_active'],
       createdOn: json['created_on'],
+      enablePointCity: json['enable_point_city'] ?? false,
+      enableWaitingTime: json['enable_waiting_time'] ?? false,
       createdBy: json['created_by'],
     );
   }
@@ -138,7 +145,7 @@ Future<SettingsModel?> fetchSettingsData() async {
   SettingsModel fromJson(data) => SettingsModel.fromJson(data);
 
   final result = await api.getCalling(
-    'https://freight4you.com.au/api/settings/all/',
+    "$api_url/settings/all/",
     fromJson,
   );
 
@@ -147,34 +154,5 @@ Future<SettingsModel?> fetchSettingsData() async {
   } else {
     print("Failed to load settings: ${result['error']}");
     return null;
-  }
-}
-
-void loadAndPrintSettings() async {
-  SettingsModel? settings = await fetchSettingsData();
-
-  if (settings != null) {
-    print("== Contracts ==");
-    for (var contract in settings.contracts) {
-      print(
-          "ID: ${contract.id}, Name: ${contract.name}, Active: ${contract.isActive}");
-    }
-
-    print("\n== Shapes ==");
-    for (var shape in settings.shapes) {
-      print("ID: ${shape.id}, Name: ${shape.name}, Active: ${shape.isActive}");
-    }
-
-    print("\n== Sites ==");
-    for (var site in settings.sites) {
-      print("ID: ${site.id}, Name: ${site.name}, Active: ${site.isActive}");
-    }
-
-    print("\n== Depots ==");
-    for (var depot in settings.depots) {
-      print(depot);
-    }
-  } else {
-    print("Settings data is null.");
   }
 }

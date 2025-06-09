@@ -50,7 +50,7 @@ class VehicleConditionFormController {
   int _getSiteIdFromName(String siteName) {
     final site = settings?.sites.firstWhere(
       (c) => c.name == siteName,
-      orElse: () => Site(id: 0, name: '', isActive: false, createdOn: ''),
+      // orElse: () => Site(id: 0, name: '', isActive: false, createdOn: ''),
     );
     return site?.id ?? 0;
   }
