@@ -2,54 +2,66 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:Freight4u/models/documents.model.dart';
 
 class DownloadDocumentsController {
   List<UploadDocument>? uploadDocuments;
 
+  // Tracks downloading state per document URL
   final Map<String, bool> isDownloadingMap = {};
 
   Future<void> loadUploadDocuments() async {
-    uploadDocuments = await fetchUploadDocuments();
+    try {
+      uploadDocuments = await fetchUploadDocuments();
 
-    if (uploadDocuments == null || uploadDocuments!.isEmpty) {
-      print("No upload documents found or failed to load.");
-      return;
-    }
-
-    print("Loaded ${uploadDocuments!.length} documents:");
-    for (var doc in uploadDocuments!) {
-      print(" - ${doc.name} : ${doc.documentUrl}");
+      if (uploadDocuments == null || uploadDocuments!.isEmpty) {
+        print("No documents found or failed to load.");
+      } else {
+        print("Fetched ${uploadDocuments!.length} documents:");
+        for (var doc in uploadDocuments!) {
+          print(" - ${doc.name}: ${doc.documentUrl}");
+        }
+      }
+    } catch (e) {
+      print("Error loading documents: $e");
+      uploadDocuments = [];
     }
   }
 
   Future<void> downloadDocument(BuildContext context, String docUrl) async {
     if (isDownloadingMap[docUrl] == true) {
-      _showSnackbar(context, "Already downloading this document");
+      _showSnackbar(context, "Already downloading this document.");
       return;
     }
 
     try {
-      isDownloadingMap[docUrl] = true;
+      if (Platform.isAndroid) {
+        final status = await Permission.storage.request();
+        print("Storage permission status: $status");
+        if (!status.isGranted) {
+          _showSnackbar(context, "Storage permission is required to download.");
+          return;
+        }
+      }
 
-      final dir = await getApplicationDocumentsDirectory();
+      final selectedDirectory = await FilePicker.platform.getDirectoryPath();
 
-      if (dir == null) {
-        _showSnackbar(context, "Could not access storage directory");
+      if (selectedDirectory == null) {
+        _showSnackbar(context, "No folder selected.");
         return;
       }
 
-      final fileName = docUrl.split('/').last.isNotEmpty
-          ? docUrl.split('/').last
-          : 'downloaded_document.pdf';
+      isDownloadingMap[docUrl] = true;
 
-      final path = '${dir.path}/$fileName';
+      final fileName = _getFileNameFromUrl(docUrl);
+      final filePath = '$selectedDirectory/$fileName';
 
       final dio = Dio();
-      await dio.download(docUrl, path);
+      await dio.download(docUrl, filePath);
 
-      _showSnackbar(context, "Downloaded to $path");
+      _showSnackbar(context, "Downloaded to $filePath");
     } catch (e) {
       _showSnackbar(context, "Download failed: $e");
     } finally {
@@ -60,12 +72,19 @@ class DownloadDocumentsController {
   Future<void> viewDocument(BuildContext context, String docUrl) async {
     final uri = Uri.parse(docUrl);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      _showSnackbar(context, "Could not open document");
+      _showSnackbar(context, "Could not open document.");
     }
   }
 
   void _showSnackbar(BuildContext context, String message) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  String _getFileNameFromUrl(String url) {
+    final parts = url.split('/');
+    final name = parts.isNotEmpty ? parts.last : '';
+    return name.isNotEmpty ? name : 'downloaded_document.pdf';
   }
 }
