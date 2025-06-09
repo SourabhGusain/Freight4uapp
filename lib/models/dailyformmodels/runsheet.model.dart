@@ -87,7 +87,7 @@ class RunsheetModel {
     if (site != null) fields["site"] = site.toString();
     if (shape != null) fields["shape"] = shape.toString();
     if (createdBy != null) fields["created_by"] = createdBy.toString();
-    // if (loadSheetFile != null) fields["load_sheet"] = loadSheetFile;
+    if (loadSheetFile != null) fields["load_sheet"] = loadSheetFile;
 
     return fields;
   }

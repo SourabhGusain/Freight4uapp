@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 // import 'package:chanakyaapp/helpers/get.dart';
@@ -145,6 +146,8 @@ class Api {
             formMap[key] = value;
           }
         });
+
+        json.encode(formMap);
 
         requestData = FormData.fromMap(formMap);
 
