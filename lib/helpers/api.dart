@@ -147,8 +147,6 @@ class Api {
           }
         });
 
-        json.encode(formMap);
-
         requestData = FormData.fromMap(formMap);
 
         // Print all fields manually:
