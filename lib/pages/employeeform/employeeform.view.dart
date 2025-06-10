@@ -84,7 +84,10 @@ class _EmployeePageState extends State<EmployeePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     textH1("EMPLOYMENT PACKAGES:"),
-                    const SizedBox(height: 15),
+                    const Divider(
+                      thickness: 0.4,
+                    ),
+                    const SizedBox(height: 10),
                     customBox(
                       text: "General Form",
                       subtext:

@@ -44,7 +44,10 @@ class _HnlpolicyPageState extends State<HnlpolicyPage> {
                             children: [
                               textH1(
                                   "HUNTER & NORTHERN GROUP POLICIES (or Northern Freight Services):"),
-                              const SizedBox(height: 15),
+                              const Divider(
+                                thickness: 0.4,
+                              ),
+                              const SizedBox(height: 10),
                               ...ctrl.policies.map(
                                 (policy) => Padding(
                                   padding: const EdgeInsets.only(bottom: 10),

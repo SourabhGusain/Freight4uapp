@@ -358,9 +358,9 @@ class _ProfilePageState extends State<ProfilePage> {
                 _infoTile(Icons.phone, "Phone", ctrl.phone),
                 _infoTile(Icons.confirmation_num, "License Number",
                     ctrl.licenseNumber),
-                _infoTile(
-                    Icons.directions_car, "Vehicle Number", ctrl.vehicleNumber),
-                const SizedBox(height: 24),
+                // _infoTile(
+                //     Icons.directions_car, "Vehicle Number", ctrl.vehicleNumber),
+                // const SizedBox(height: 24),
                 SizedBox(
                   height: 40,
                   width: double.infinity,

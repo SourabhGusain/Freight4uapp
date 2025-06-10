@@ -71,7 +71,7 @@ Widget primaryNavBar(
     padding: const EdgeInsets.symmetric(horizontal: 20),
     decoration: BoxDecoration(
       color: primaryColor,
-      borderRadius: BorderRadius.circular(50),
+      borderRadius: BorderRadius.circular(30),
       boxShadow: [
         BoxShadow(
           color: Colors.black.withOpacity(0.1),
@@ -97,27 +97,49 @@ Widget primaryNavBar(
         ),
         const Spacer(),
 
-        IconButton(
-          icon:
-              const Icon(Icons.notifications_none, color: whiteColor, size: 20),
-          tooltip: 'Notifications',
-          onPressed: () async {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (_) => const Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+        Stack(
+          alignment: Alignment.topRight,
+          children: [
+            IconButton(
+              icon: const Icon(
+                Icons.notifications_none_rounded,
+                color: whiteColor,
+                size: 22,
+              ),
+              tooltip: 'Notifications',
+              onPressed: () async {
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                    ),
+                  ),
+                );
+                await Future.delayed(const Duration(seconds: 1));
+                Navigator.of(context).pop();
+                Get.to(context, () => const NotificationPage());
+              },
+            ),
+            Positioned(
+              right: 14,
+              top: 15,
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Theme.of(context).cardColor,
+                    width: 1.5,
+                  ),
                 ),
               ),
-            );
-
-            await Future.delayed(const Duration(seconds: 1));
-            Navigator.of(context).pop();
-
-            Get.to(context, () => const NotificationPage());
-          },
-        ),
+            ),
+          ],
+        )
       ],
     ),
   );
@@ -198,14 +220,29 @@ Widget customBox({
     onTap: onTap,
     child: Container(
       width: double.infinity,
+      // decoration: BoxDecoration(
+      //   color: whiteColor,
+      //   border: Border.all(
+      //     color: primaryColor,
+      //     width: 0.5,
+      //   ),
+      //   borderRadius: BorderRadius.circular(8.0),
+      // ),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       decoration: BoxDecoration(
-        color: whiteColor,
-        border: Border.all(
-          color: primaryColor,
-          width: 0.5,
-        ),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          // border: Border.all(
+          //   color: blackColor,
+          //   width: 0.1,
+          // ),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 6,
+              offset: Offset(0, 3),
+            ),
+          ]),
       child: Padding(
         padding: const EdgeInsets.all(14.0),
         child: Column(
@@ -217,7 +254,8 @@ Widget customBox({
               color: primaryColor,
               font_weight: FontWeight.bold,
             ),
-            const SizedBox(height: 3),
+            // const SizedBox(height: 2),
+            const Divider(thickness: 0.5),
             textH2(
               subtext,
               font_size: 12.0,

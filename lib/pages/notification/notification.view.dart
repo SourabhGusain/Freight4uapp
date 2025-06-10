@@ -98,20 +98,36 @@ class _NotificationPageState extends State<NotificationPage> {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 12.0),
                               child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 5),
                                 decoration: BoxDecoration(
-                                  color: notification.isRead
-                                      ? Colors.grey[200]
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(color: color, width: 0.5),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
-                                ),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    // border: Border.all(
+                                    //   color: blackColor,
+                                    //   width: 0.1,
+                                    // ),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 6,
+                                        offset: Offset(0, 3),
+                                      ),
+                                    ]),
+                                // decoration: BoxDecoration(
+                                //   color: notification.isRead
+                                //       ? Colors.grey[200]
+                                //       : Colors.white,
+                                //   borderRadius: BorderRadius.circular(12),
+                                //   border: Border.all(color: color, width: 0.5),
+                                //   boxShadow: [
+                                //     BoxShadow(
+                                //       color: Colors.black.withOpacity(0.05),
+                                //       blurRadius: 4,
+                                //       offset: const Offset(0, 2),
+                                //     ),
+                                //   ],
+                                // ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
@@ -120,9 +136,10 @@ class _NotificationPageState extends State<NotificationPage> {
                                     children: [
                                       textH1(
                                         notification.title,
-                                        color: blackColor,
+                                        // color: blackColor,
                                         font_size: 15,
                                         font_weight: FontWeight.bold,
+                                        color: color,
                                       ),
                                       const SizedBox(height: 5),
                                       const Divider(

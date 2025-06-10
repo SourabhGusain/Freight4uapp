@@ -67,7 +67,10 @@ class _DailyformPageState extends State<DailyformPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        textH1("DAILY REPORTS"),
+                        textH1("DAILY REPORTS:"),
+                        const Divider(
+                          thickness: 0.4,
+                        ),
                         const SizedBox(height: 10),
                         customBox(
                           text: "Pre-Start/Fit for Duty Declaration.",
@@ -78,7 +81,7 @@ class _DailyformPageState extends State<DailyformPage> {
                         ),
                         const SizedBox(height: 10),
                         customBox(
-                          text: "Runsheet",
+                          text: "Runsheet.",
                           subtext:
                               "To be filled out following the completion of your shift.",
                           onTap: () =>
@@ -86,7 +89,7 @@ class _DailyformPageState extends State<DailyformPage> {
                         ),
                         const SizedBox(height: 10),
                         customBox(
-                          text: "Weighbridge & Load Pic",
+                          text: "Weighbridge And Load Images.",
                           subtext: "Weekly completion is required.",
                           onTap: () =>
                               _navigateWithLoading(const WeighbridgePage()),
@@ -101,7 +104,7 @@ class _DailyformPageState extends State<DailyformPage> {
                         ),
                         const SizedBox(height: 10),
                         customBox(
-                          text: "Fuel Receipt",
+                          text: "Fuel Receipt.",
                           subtext:
                               "Attach the receipt and fill out the fuel expense form.",
                           onTap: () =>
