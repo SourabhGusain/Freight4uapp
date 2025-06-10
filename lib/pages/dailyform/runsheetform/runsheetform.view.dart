@@ -21,9 +21,9 @@ class _RunsheetPageState extends State<RunsheetPage> {
   final _formKey = GlobalKey<FormState>();
   final RunsheetFormController _formController = RunsheetFormController();
   bool isBackLoading = false;
+  String? fileName;
 
   int _currentIndex = 0;
-  bool _isPickingFile = false;
 
   @override
   void initState() {
@@ -55,15 +55,141 @@ class _RunsheetPageState extends State<RunsheetPage> {
     }
   }
 
+  Future<void> _showFilePickerOptions() async {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.white,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: textH2(
+                    "Select File Source",
+                    font_size: 16,
+                    font_weight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _buildPickerTile(
+                  icon: Icons.photo_library,
+                  label: 'Gallery',
+                  onTap: _pickImageFromGallery,
+                ),
+                _buildPickerTile(
+                  icon: Icons.camera_alt,
+                  label: 'Camera',
+                  onTap: _pickImageFromCamera,
+                ),
+                _buildPickerTile(
+                  icon: Icons.insert_drive_file,
+                  label: 'File (Documents)',
+                  onTap: _pickFile,
+                ),
+                const Divider(height: 24),
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  leading: const Icon(Icons.close, color: Colors.grey),
+                  title: textH2(
+                    'Cancel',
+                    font_size: 16,
+                    font_weight: FontWeight.w400,
+                    color: Colors.grey,
+                  ),
+                  onTap: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPickerTile({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        leading: CircleAvatar(
+          backgroundColor: primaryColor.withOpacity(0.08),
+          child: Icon(icon, color: primaryColor),
+        ),
+        title: textH2(
+          label,
+          font_size: 15,
+          font_weight: FontWeight.w500,
+        ),
+        onTap: () {
+          Navigator.of(context).pop();
+          onTap();
+        },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        hoverColor: primaryColor.withOpacity(0.05),
+        splashColor: primaryColor.withOpacity(0.1),
+      ),
+    );
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    final file = await FilePickerHelper.pickImageFromGallery();
+    if (file != null) {
+      setState(() {
+        _formController.selectedFile = file;
+        _formController.selectedfileName =
+            FilePickerHelper.getReadableFileName(file.path);
+        fileName = _formController.selectedfileName;
+      });
+    }
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    final file = await FilePickerHelper.pickImageFromCamera();
+    if (file != null) {
+      setState(() {
+        _formController.selectedFile = file;
+        _formController.selectedfileName =
+            FilePickerHelper.getReadableFileName(file.path);
+        fileName = _formController.selectedfileName;
+      });
+    }
+  }
+
   Future<void> _pickFile() async {
-    setState(() => _isPickingFile = true);
-    try {
-      await _formController.pickFile();
-      setState(() {}); // Refresh to show new file name
-    } catch (e) {
-      print("File pick error: $e");
-    } finally {
-      setState(() => _isPickingFile = false);
+    final file = await FilePickerHelper.pickDocumentFile();
+    if (file != null) {
+      final size = await file.length();
+      setState(() {
+        _formController.selectedFile = file;
+        _formController.selectedfileName =
+            FilePickerHelper.getReadableFileName(file.path, sizeBytes: size);
+        fileName = _formController.selectedfileName;
+      });
     }
   }
 
@@ -326,31 +452,23 @@ class _RunsheetPageState extends State<RunsheetPage> {
                       textH3("Upload load sheet here....",
                           font_weight: FontWeight.w400, font_size: 11),
                       GestureDetector(
-                        onTap: _isPickingFile ? null : _pickFile,
+                        onTap: _showFilePickerOptions,
                         child: Container(
                           height: 50,
+                          width: double.infinity,
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.black, width: 1),
                             borderRadius: BorderRadius.circular(5),
                             color: Colors.white,
                           ),
                           child: Center(
-                            child: _isPickingFile
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2.5,
-                                      color: primaryColor,
-                                    ),
-                                  )
-                                : textH3(
-                                    _formController.fileName ??
-                                        "Browse File Here",
-                                    color: blackColor,
-                                    font_size: 15,
-                                    font_weight: FontWeight.w500,
-                                  ),
+                            child: textH3(
+                              _formController.selectedfileName ??
+                                  "Browse File Here",
+                              color: blackColor,
+                              font_size: 15,
+                              font_weight: FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),

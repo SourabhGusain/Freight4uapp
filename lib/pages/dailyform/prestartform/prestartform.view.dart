@@ -17,6 +17,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
   final PrestartFormController _formController = PrestartFormController();
   int _currentIndex = 0;
   bool isBackLoading = false;
+  String? fileName;
 
   @override
   void initState() {
@@ -42,11 +43,184 @@ class _PrestartformPageState extends State<PrestartformPage> {
       isBackLoading = true;
     });
 
-    // Optional small delay so loading spinner is visible
     await Future.delayed(const Duration(milliseconds: 400));
 
     if (mounted) {
       Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _showFilePickerOptions({required bool isForVideo}) async {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.white,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: textH2(
+                    "Select File Source",
+                    font_size: 16,
+                    font_weight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                if (!isForVideo)
+                  _buildPickerTile(
+                      icon: Icons.photo_library,
+                      label: 'Gallery',
+                      onTap: _pickImageFromGallery),
+                if (isForVideo)
+                  _buildPickerTile(
+                    icon: Icons.photo_library,
+                    label: 'Video',
+                    onTap: () => isForVideo
+                        ? _pickVideoFromGallery()
+                        : _pickVideoFromGallery(),
+                  ),
+                _buildPickerTile(
+                  icon: Icons.camera_alt,
+                  label: 'Camera',
+                  onTap: () => isForVideo
+                      ? _pickVideoFromCamera()
+                      : _pickImageFromCamera(),
+                ),
+                if (!isForVideo)
+                  _buildPickerTile(
+                    icon: Icons.insert_drive_file,
+                    label: 'File (Documents)',
+                    onTap: _pickFile,
+                  ),
+                const Divider(),
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  leading: const Icon(Icons.close,
+                      color: Color.fromARGB(255, 71, 69, 69)),
+                  title: textH2(
+                    'Cancel',
+                    font_size: 16,
+                    font_weight: FontWeight.w400,
+                    color: blackColor.withOpacity(0.7),
+                  ),
+                  onTap: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPickerTile({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        leading: CircleAvatar(
+          backgroundColor: primaryColor.withOpacity(0.08),
+          child: Icon(icon, color: primaryColor),
+        ),
+        title: textH2(
+          label,
+          font_size: 15,
+          font_weight: FontWeight.w500,
+        ),
+        onTap: () {
+          Navigator.of(context).pop();
+          onTap();
+        },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        hoverColor: primaryColor.withOpacity(0.05),
+        splashColor: primaryColor.withOpacity(0.1),
+      ),
+    );
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    final file = await FilePickerHelper.pickImageFromGallery();
+    if (file != null) {
+      setState(() {
+        _formController.selectedPhoto = file;
+        _formController.photoFileName =
+            FilePickerHelper.getReadableFileName(file.path);
+        fileName = _formController.photoFileName;
+      });
+    }
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    final file = await FilePickerHelper.pickImageFromCamera();
+    if (file != null) {
+      setState(() {
+        _formController.selectedPhoto = file;
+        _formController.photoFileName =
+            FilePickerHelper.getReadableFileName(file.path);
+        fileName = _formController.photoFileName;
+      });
+    }
+  }
+
+  Future<void> _pickFile() async {
+    final file = await FilePickerHelper.pickDocumentFile();
+    if (file != null) {
+      final size = await file.length();
+      setState(() {
+        _formController.selectedPhoto = file;
+        _formController.photoFileName =
+            FilePickerHelper.getReadableFileName(file.path, sizeBytes: size);
+        fileName = _formController.photoFileName;
+      });
+    }
+  }
+
+  Future<void> _pickVideoFromGallery() async {
+    final file = await FilePickerHelper.pickVideoFromGallery();
+    if (file != null) {
+      setState(() {
+        _formController.selectedVideo = file;
+        _formController.videoFileName =
+            FilePickerHelper.getReadableFileName(file.path);
+        fileName = _formController.videoFileName;
+      });
+    }
+  }
+
+  Future<void> _pickVideoFromCamera() async {
+    final file = await FilePickerHelper.pickVideoFromCamera();
+    if (file != null) {
+      setState(() {
+        _formController.selectedVideo = file;
+        _formController.videoFileName =
+            FilePickerHelper.getReadableFileName(file.path);
+        fileName = _formController.videoFileName;
+      });
     }
   }
 
@@ -57,8 +231,11 @@ class _PrestartformPageState extends State<PrestartformPage> {
         backgroundColor: const Color.fromARGB(255, 252, 253, 255),
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(65),
-          child: secondaryNavBar(context, "Pre-Start/Fit for Duty Declaration.",
-              onBack: _handleBack),
+          child: secondaryNavBar(
+            context,
+            "Pre-Start/Fit for Duty Declaration.",
+            onBack: _handleBack,
+          ),
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
@@ -67,16 +244,12 @@ class _PrestartformPageState extends State<PrestartformPage> {
             children: [
               textH1("Forms:"),
               const SizedBox(height: 10),
-
-              // Full Name
               SizedBox(
                 height: 50,
                 child: textField("Full Name",
                     controller: _formController.fullNameController),
               ),
               const SizedBox(height: 10),
-
-              // Date
               SizedBox(
                 height: 50,
                 child: calendarDateField(
@@ -86,8 +259,6 @@ class _PrestartformPageState extends State<PrestartformPage> {
                 ),
               ),
               const SizedBox(height: 10),
-
-              // Time and Rego Name
               Row(
                 children: [
                   Expanded(
@@ -114,8 +285,6 @@ class _PrestartformPageState extends State<PrestartformPage> {
                 ],
               ),
               const SizedBox(height: 10),
-
-              // Contractor Dropdown
               customTypeSelector(
                 context: context,
                 text: "Select Contractor",
@@ -129,8 +298,6 @@ class _PrestartformPageState extends State<PrestartformPage> {
                 },
               ),
               const SizedBox(height: 10),
-
-              // Shape Dropdown
               customTypeSelector(
                 context: context,
                 text: "Select Shape",
@@ -145,13 +312,8 @@ class _PrestartformPageState extends State<PrestartformPage> {
               ),
               const SizedBox(height: 20),
               textH3("Upload photo here", font_weight: FontWeight.w400),
-
               GestureDetector(
-                onTap: () async {
-                  setState(() => _formController.isUploadingPhoto = true);
-                  await _formController.pickUploadPhotoFile();
-                  setState(() => _formController.isUploadingPhoto = false);
-                },
+                onTap: () => _showFilePickerOptions(isForVideo: false),
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
@@ -179,15 +341,9 @@ class _PrestartformPageState extends State<PrestartformPage> {
                 ),
               ),
               const SizedBox(height: 20),
-
               textH3("Upload Videos here", font_weight: FontWeight.w400),
-
               GestureDetector(
-                onTap: () async {
-                  setState(() => _formController.isUploadingVideo = true);
-                  await _formController.pickUploadVideoFile();
-                  setState(() => _formController.isUploadingVideo = false);
-                },
+                onTap: () => _showFilePickerOptions(isForVideo: true),
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
@@ -215,7 +371,6 @@ class _PrestartformPageState extends State<PrestartformPage> {
                 ),
               ),
               const SizedBox(height: 20),
-
               Row(
                 children: [
                   textH1("FIT FOR DUTY DECLARATION:",
@@ -227,7 +382,6 @@ class _PrestartformPageState extends State<PrestartformPage> {
                 ],
               ),
               const SizedBox(height: 20),
-
               _declaration(
                   "I have a current and valid\nlicense to operate this\nvehicle.",
                   _formController.hasValidLicense,
@@ -265,9 +419,7 @@ class _PrestartformPageState extends State<PrestartformPage> {
                   _formController.fitForTaskRepeat,
                   (val) =>
                       setState(() => _formController.fitForTaskRepeat = val)),
-
               const SizedBox(height: 100),
-
               SizedBox(
                 height: 45,
                 width: double.infinity,

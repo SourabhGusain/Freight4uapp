@@ -32,7 +32,7 @@ class RunsheetFormController {
   String selectedSite = '';
   String selectedShape = '';
 
-  String? fileName;
+  String? selectedfileName;
   File? selectedFile;
   int userId = 0;
 
@@ -117,7 +117,7 @@ class RunsheetFormController {
     if (result != null && result.files.isNotEmpty) {
       final pickedFile = result.files.first;
       selectedFile = File(pickedFile.path!);
-      fileName =
+      selectedfileName =
           "${pickedFile.name} (${(pickedFile.size / 1024).toStringAsFixed(1)} KB)";
     }
   }
@@ -317,7 +317,7 @@ class RunsheetFormController {
     point1CityController.clear();
     point2CityController.clear();
     waitingTimeController.clear();
-    fileName = null;
+    selectedfileName = null;
     selectedFile = null;
     selectedShift = '';
     selectedSite = '';

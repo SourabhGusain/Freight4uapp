@@ -23,7 +23,7 @@ class VehicleConditionFormController {
   final TextEditingController commentsController = TextEditingController();
 
   File? selectedFile;
-  String? fileName;
+  String? selectedfileName;
 
   File? signatureFile;
   String? signatureFileName;
@@ -67,7 +67,7 @@ class VehicleConditionFormController {
     if (result != null && result.files.isNotEmpty) {
       final pickedFile = result.files.first;
       selectedFile = File(pickedFile.path!);
-      fileName =
+      selectedfileName =
           "${pickedFile.name} (${(pickedFile.size / 1024).toStringAsFixed(1)} KB)";
     }
   }

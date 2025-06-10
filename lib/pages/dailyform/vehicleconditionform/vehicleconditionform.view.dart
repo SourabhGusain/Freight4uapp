@@ -25,6 +25,7 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
 
   late SignatureController _signatureController;
   bool isBackLoading = false;
+  String? fileName;
 
   @override
   void initState() {
@@ -59,6 +60,144 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
 
     if (mounted) {
       Navigator.of(context).pop();
+    }
+  }
+
+  Future<void> _showFilePickerOptions() async {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.white,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: textH2(
+                    "Select File Source",
+                    font_size: 16,
+                    font_weight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _buildPickerTile(
+                  icon: Icons.photo_library,
+                  label: 'Gallery',
+                  onTap: _pickImageFromGallery,
+                ),
+                _buildPickerTile(
+                  icon: Icons.camera_alt,
+                  label: 'Camera',
+                  onTap: _pickImageFromCamera,
+                ),
+                _buildPickerTile(
+                  icon: Icons.insert_drive_file,
+                  label: 'File (Documents)',
+                  onTap: _pickFile,
+                ),
+                const Divider(height: 24),
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  leading: const Icon(Icons.close, color: Colors.grey),
+                  title: textH2(
+                    'Cancel',
+                    font_size: 16,
+                    font_weight: FontWeight.w400,
+                    color: Colors.grey,
+                  ),
+                  onTap: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPickerTile({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        leading: CircleAvatar(
+          backgroundColor: primaryColor.withOpacity(0.08),
+          child: Icon(icon, color: primaryColor),
+        ),
+        title: textH2(
+          label,
+          font_size: 15,
+          font_weight: FontWeight.w500,
+        ),
+        onTap: () {
+          Navigator.of(context).pop();
+          onTap();
+        },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        hoverColor: primaryColor.withOpacity(0.05),
+        splashColor: primaryColor.withOpacity(0.1),
+      ),
+    );
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    final file = await FilePickerHelper.pickImageFromGallery();
+    if (file != null) {
+      setState(() {
+        _formController.selectedFile = file;
+        _formController.selectedfileName =
+            FilePickerHelper.getReadableFileName(file.path);
+        fileName = _formController.selectedfileName;
+      });
+    }
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    final file = await FilePickerHelper.pickImageFromCamera();
+    if (file != null) {
+      setState(() {
+        _formController.selectedFile = file;
+        _formController.selectedfileName =
+            FilePickerHelper.getReadableFileName(file.path);
+        fileName = _formController.selectedfileName;
+      });
+    }
+  }
+
+  Future<void> _pickFile() async {
+    final file = await FilePickerHelper.pickDocumentFile();
+    if (file != null) {
+      final size = await file.length();
+      setState(() {
+        _formController.selectedFile = file;
+        _formController.selectedfileName =
+            FilePickerHelper.getReadableFileName(file.path, sizeBytes: size);
+        fileName = _formController.selectedfileName;
+      });
     }
   }
 
@@ -217,10 +356,7 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
                   // Upload photo
                   textH3("Upload photos here", font_weight: FontWeight.w400),
                   GestureDetector(
-                    onTap: () async {
-                      await _formController.pickUploadPhotoFile();
-                      setState(() {});
-                    },
+                    onTap: _showFilePickerOptions,
                     child: Container(
                       height: 50,
                       decoration: BoxDecoration(
@@ -230,7 +366,8 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
                       ),
                       child: Center(
                         child: textH3(
-                          _formController.fileName ?? "Browse File Here",
+                          _formController.selectedfileName ??
+                              "Browse File Here",
                           color: blackColor,
                           font_size: 15,
                           font_weight: FontWeight.w500,
@@ -333,10 +470,6 @@ class _VehileconditionPageState extends State<VehileconditionPage> {
                 ],
               ),
             ),
-            // bottomNavigationBar: customBottomNavigationBar(
-            //   context: context,
-            //   selectedIndex: _currentIndex,
-            // ),
           ),
         );
       },

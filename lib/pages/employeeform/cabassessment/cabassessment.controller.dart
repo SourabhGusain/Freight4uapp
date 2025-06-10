@@ -88,7 +88,7 @@ class InCabAssessmentController {
     userId = int.tryParse(userIdStr ?? "") ?? 0;
     dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     await populateFromSession();
-    populateDummyData();
+    // populateDummyData();
   }
 
   Future<void> populateFromSession() async {
@@ -99,59 +99,59 @@ class InCabAssessmentController {
     assessorNameController.text = userData["name"] ?? "";
   }
 
-  void populateDummyData() {
-    driverNameController.text = "John Doe";
-    dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    vehicleRegoController.text = "ABC123";
-    assessorNameController.text = "Jane Smith";
+  // void populateDummyData() {
+  //   driverNameController.text = "John Doe";
+  //   dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
+  //   vehicleRegoController.text = "ABC123";
+  //   assessorNameController.text = "Jane Smith";
 
-    selectedTruckType = "HR";
+  //   selectedTruckType = "HR";
 
-    selectedOverviewVehicle = "Yes";
-    selectedTransmissionSuspension = "Yes";
-    selectedRaiseBonnetChecks = "Yes";
-    selectedMethodTiltingCabin = "Yes";
-    selectedWalkAroundTruck = "Yes";
-    selectedFuelTankCapacity = "Yes";
-    selectedIsolationSwitch = "Yes";
-    selectedTailgateOperation = "No";
-    selectedDangerTraySwing = "No";
-    selectedDangerFrontCornerOverhang = "No";
-    selectedAirTankDrainCocks = "Yes";
-    selectedCircuitBreakersLocation = "Yes";
-    selectedTrailerElectricalVolts = "Yes";
-    selectedTrailerConnectionsAirlines = "Yes";
-    selectedMethodEntryExitCabin = "Yes";
-    selectedSeatAdjustment = "Yes";
-    selectedSteeringWheelAdjustment = "Yes";
-    selectedPowerDividerDiffLocks = "Yes";
-    selectedHandBrakeOperation = "Yes";
+  //   selectedOverviewVehicle = "Yes";
+  //   selectedTransmissionSuspension = "Yes";
+  //   selectedRaiseBonnetChecks = "Yes";
+  //   selectedMethodTiltingCabin = "Yes";
+  //   selectedWalkAroundTruck = "Yes";
+  //   selectedFuelTankCapacity = "Yes";
+  //   selectedIsolationSwitch = "Yes";
+  //   selectedTailgateOperation = "No";
+  //   selectedDangerTraySwing = "No";
+  //   selectedDangerFrontCornerOverhang = "No";
+  //   selectedAirTankDrainCocks = "Yes";
+  //   selectedCircuitBreakersLocation = "Yes";
+  //   selectedTrailerElectricalVolts = "Yes";
+  //   selectedTrailerConnectionsAirlines = "Yes";
+  //   selectedMethodEntryExitCabin = "Yes";
+  //   selectedSeatAdjustment = "Yes";
+  //   selectedSteeringWheelAdjustment = "Yes";
+  //   selectedPowerDividerDiffLocks = "Yes";
+  //   selectedHandBrakeOperation = "Yes";
 
-    selectedEngineIdleTime = "P";
-    selectedMirrorUse = "P";
-    selectedClutchUse = "P";
-    selectedGearSelection = "P";
-    selectedRevRange = "P";
-    selectedEngineBrakeRetarderUse = "P";
-    selectedCheckIntersections = "P";
-    selectedCourtesyToOthers = "P";
-    selectedObservationPlanning = "P";
-    selectedOvertaking = "P";
-    selectedSpeedForEnvironment = "P";
-    selectedHangBackDistance = "P";
+  //   selectedEngineIdleTime = "P";
+  //   selectedMirrorUse = "P";
+  //   selectedClutchUse = "P";
+  //   selectedGearSelection = "P";
+  //   selectedRevRange = "P";
+  //   selectedEngineBrakeRetarderUse = "P";
+  //   selectedCheckIntersections = "P";
+  //   selectedCourtesyToOthers = "P";
+  //   selectedObservationPlanning = "P";
+  //   selectedOvertaking = "P";
+  //   selectedSpeedForEnvironment = "P";
+  //   selectedHangBackDistance = "P";
 
-    selectedCruiseControl = "Yes";
-    selectedOperationDriverButtonsSwitches = "Yes";
-    selectedOperationEngineRetarder = "Yes";
-    selectedPreStartChecks = "Yes";
-    selectedGearboxOperation = "Yes";
-    selectedClutchOperationCheck = "Yes";
-    selectedSpeedLimiterOperation = "Yes";
-    selectedHillStartSwitchOperation = "Yes";
-    selectedAddBlueTankCapacity = "Yes";
-    selectedAdditionalFeatures = "Yes";
-    selectedAirBagControls = "Yes";
-  }
+  //   selectedCruiseControl = "Yes";
+  //   selectedOperationDriverButtonsSwitches = "Yes";
+  //   selectedOperationEngineRetarder = "Yes";
+  //   selectedPreStartChecks = "Yes";
+  //   selectedGearboxOperation = "Yes";
+  //   selectedClutchOperationCheck = "Yes";
+  //   selectedSpeedLimiterOperation = "Yes";
+  //   selectedHillStartSwitchOperation = "Yes";
+  //   selectedAddBlueTankCapacity = "Yes";
+  //   selectedAdditionalFeatures = "Yes";
+  //   selectedAirBagControls = "Yes";
+  // }
 
   Future<void> submitForm(BuildContext context) async {
     if (driverNameController.text.trim().isEmpty ||

@@ -11,6 +11,8 @@ import 'package:Freight4u/helpers/session.dart';
 import 'package:flutter/material.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:Freight4u/helpers/get.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
 
 enum DeclarationAnswer { yes, no }
 
@@ -1263,4 +1265,79 @@ Widget _declaration(String text, bool? value, Function(bool?) onChanged) {
       const SizedBox(height: 20),
     ],
   );
+}
+
+class FilePickerHelper {
+  static final ImagePicker _imagePicker = ImagePicker();
+
+  /// Pick image from gallery
+  static Future<File?> pickImageFromGallery() async {
+    try {
+      final XFile? pickedImage =
+          await _imagePicker.pickImage(source: ImageSource.gallery);
+      return pickedImage != null ? File(pickedImage.path) : null;
+    } catch (e) {
+      print("Error picking image from gallery: $e");
+      return null;
+    }
+  }
+
+  /// Pick image from camera
+  static Future<File?> pickImageFromCamera() async {
+    try {
+      final XFile? pickedImage =
+          await _imagePicker.pickImage(source: ImageSource.camera);
+      return pickedImage != null ? File(pickedImage.path) : null;
+    } catch (e) {
+      print("Error picking image from camera: $e");
+      return null;
+    }
+  }
+
+  /// Pick video from gallery
+  static Future<File?> pickVideoFromGallery() async {
+    try {
+      final XFile? pickedVideo =
+          await _imagePicker.pickVideo(source: ImageSource.gallery);
+      return pickedVideo != null ? File(pickedVideo.path) : null;
+    } catch (e) {
+      print("Error picking video from gallery: $e");
+      return null;
+    }
+  }
+
+  /// Pick video from camera
+  static Future<File?> pickVideoFromCamera() async {
+    try {
+      final XFile? pickedVideo =
+          await _imagePicker.pickVideo(source: ImageSource.camera);
+      return pickedVideo != null ? File(pickedVideo.path) : null;
+    } catch (e) {
+      print("Error picking video from camera: $e");
+      return null;
+    }
+  }
+
+  /// Pick any document
+  static Future<File?> pickDocumentFile() async {
+    try {
+      final result = await FilePicker.platform.pickFiles();
+      if (result != null && result.files.isNotEmpty) {
+        final path = result.files.first.path;
+        return path != null ? File(path) : null;
+      }
+      return null;
+    } catch (e) {
+      print('File picking error: $e');
+      return null;
+    }
+  }
+
+  /// Get display name with optional file size
+  static String getReadableFileName(String path, {int? sizeBytes}) {
+    final name = path.split('/').last;
+    final sizeKb =
+        sizeBytes != null ? (sizeBytes / 1024).toStringAsFixed(1) : '';
+    return sizeKb.isNotEmpty ? "$name ($sizeKb KB)" : name;
+  }
 }

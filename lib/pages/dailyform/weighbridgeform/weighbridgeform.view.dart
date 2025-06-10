@@ -10,6 +10,8 @@ import 'package:Freight4u/helpers/widgets.dart';
 import 'package:Freight4u/pages/format/format.controller.dart';
 import 'package:Freight4u/pages/dailyform/Weighbridgeform/Weighbridgeform.controller.dart';
 
+enum FileTypeTag { weighbridge, loadPic }
+
 class WeighbridgePage extends StatefulWidget {
   const WeighbridgePage({super.key});
 
@@ -19,13 +21,12 @@ class WeighbridgePage extends StatefulWidget {
 
 class _WeighbridgePageState extends State<WeighbridgePage> {
   final WeighbridgeController _formController = WeighbridgeController();
-  int _currentIndex = 0;
+  FileTypeTag? _currentFileTag;
   bool isBackLoading = false;
 
   @override
   void initState() {
     super.initState();
-
     _formController.init().then((_) {
       _formController.dateController.text =
           DateFormat('yyyy-MM-dd').format(DateTime.now());
@@ -44,12 +45,137 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
     setState(() {
       isBackLoading = true;
     });
-
-    // Optional small delay so loading spinner is visible
     await Future.delayed(const Duration(milliseconds: 400));
+    if (mounted) Navigator.of(context).pop();
+  }
 
-    if (mounted) {
-      Navigator.of(context).pop();
+  Future<void> _showFilePickerOptions(FileTypeTag fileTag) async {
+    _currentFileTag = fileTag;
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.white,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: textH2(
+                    "Select File Source",
+                    font_size: 16,
+                    font_weight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _buildPickerTile(
+                  icon: Icons.photo_library,
+                  label: 'Gallery',
+                  onTap: _pickImageFromGallery,
+                ),
+                _buildPickerTile(
+                  icon: Icons.camera_alt,
+                  label: 'Camera',
+                  onTap: _pickImageFromCamera,
+                ),
+                const Divider(),
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  leading: const Icon(Icons.close,
+                      color: Color.fromARGB(255, 71, 69, 69)),
+                  title: textH2(
+                    'Cancel',
+                    font_size: 16,
+                    font_weight: FontWeight.w400,
+                    color: blackColor.withOpacity(0.7),
+                  ),
+                  onTap: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildPickerTile({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        leading: CircleAvatar(
+          backgroundColor: primaryColor.withOpacity(0.08),
+          child: Icon(icon, color: primaryColor),
+        ),
+        title: textH2(
+          label,
+          font_size: 15,
+          font_weight: FontWeight.w500,
+        ),
+        onTap: () {
+          Navigator.of(context).pop();
+          onTap();
+        },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        hoverColor: primaryColor.withOpacity(0.05),
+        splashColor: primaryColor.withOpacity(0.1),
+      ),
+    );
+  }
+
+  Future<void> _pickImageFromGallery() async {
+    final file = await FilePickerHelper.pickImageFromGallery();
+    if (file != null) {
+      setState(() {
+        final fileName = FilePickerHelper.getReadableFileName(file.path);
+        if (_currentFileTag == FileTypeTag.weighbridge) {
+          _formController.weighbridgeFile = file;
+          _formController.weighbridgeFileName = fileName;
+        } else if (_currentFileTag == FileTypeTag.loadPic) {
+          _formController.loadPicFile = file;
+          _formController.loadPicFileName = fileName;
+        }
+      });
+    }
+  }
+
+  Future<void> _pickImageFromCamera() async {
+    final file = await FilePickerHelper.pickImageFromCamera();
+    if (file != null) {
+      setState(() {
+        final fileName = FilePickerHelper.getReadableFileName(file.path);
+        if (_currentFileTag == FileTypeTag.weighbridge) {
+          _formController.weighbridgeFile = file;
+          _formController.weighbridgeFileName = fileName;
+        } else if (_currentFileTag == FileTypeTag.loadPic) {
+          _formController.loadPicFile = file;
+          _formController.loadPicFileName = fileName;
+        }
+      });
     }
   }
 
@@ -64,8 +190,11 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
             backgroundColor: const Color(0xFFFCFDFF),
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(65),
-              child: secondaryNavBar(context, "Weighbridge & Load Pic",
-                  onBack: _handleBack),
+              child: secondaryNavBar(
+                context,
+                "Weighbridge & Load Pic",
+                onBack: _handleBack,
+              ),
             ),
             body: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
@@ -74,12 +203,8 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
                 children: [
                   textH1("Forms:"),
                   const SizedBox(height: 15),
-
-                  // Full Name
                   _buildTextField("Full Name", _formController.nameController),
-
                   const SizedBox(height: 15),
-
                   Row(
                     children: [
                       Expanded(
@@ -87,44 +212,26 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
                             "Date", _formController.dateController),
                       ),
                       const SizedBox(width: 15),
-                      Expanded(
-                        child: _buildDepotDropdown(),
-                      ),
+                      Expanded(child: _buildDepotDropdown()),
                     ],
                   ),
-
                   const SizedBox(height: 15),
-
-                  // Driver Name
                   _buildTextField(
                       "Driver Name", _formController.driverNameController),
-
                   const SizedBox(height: 15),
-
-                  // Weighbridge Docket
                   _buildFileUploadSection(
                     label: "Weighbridge Docket - Upload here",
                     fileName: _formController.weighbridgeFileName,
-                    onTap: () async {
-                      await _formController.pickWeighbridgeFile();
-                      setState(() {});
-                    },
+                    onTap: () =>
+                        _showFilePickerOptions(FileTypeTag.weighbridge),
                   ),
-
                   const SizedBox(height: 15),
-
-                  // Load Pic Upload
                   _buildFileUploadSection(
                     label: "Load Pic & Matching Load Sheet - Upload here",
                     fileName: _formController.loadPicFileName,
-                    onTap: () async {
-                      await _formController.pickLoadPicFile();
-                      setState(() {});
-                    },
+                    onTap: () => _showFilePickerOptions(FileTypeTag.loadPic),
                   ),
-
                   const SizedBox(height: 150),
-
                   SizedBox(
                     height: 45,
                     width: double.infinity,
@@ -141,10 +248,6 @@ class _WeighbridgePageState extends State<WeighbridgePage> {
                 ],
               ),
             ),
-            // bottomNavigationBar: customBottomNavigationBar(
-            //   context: context,
-            //   selectedIndex: _currentIndex,
-            // ),
           ),
         );
       },

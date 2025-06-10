@@ -20,7 +20,6 @@ class FuelReceiptPage extends StatefulWidget {
 
 class _FuelReceiptPageState extends State<FuelReceiptPage> {
   final FuelReceiptFormController _formController = FuelReceiptFormController();
-  final ImagePicker _imagePicker = ImagePicker();
 
   String? fileName;
   bool isBackLoading = false;
@@ -40,96 +39,137 @@ class _FuelReceiptPageState extends State<FuelReceiptPage> {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
+      backgroundColor: Colors.white,
       builder: (context) {
         return SafeArea(
-          child: Wrap(
-            children: [
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('Gallery'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _pickImageFromGallery();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.camera_alt),
-                title: const Text('Camera'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _pickImageFromCamera();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.insert_drive_file),
-                title: const Text('File (Documents)'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  _pickFile();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.close),
-                title: const Text('Cancel'),
-                onTap: () => Navigator.of(context).pop(),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: textH2(
+                    "Select File Source",
+                    font_size: 16,
+                    font_weight: FontWeight.w600,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                _buildPickerTile(
+                  icon: Icons.photo_library,
+                  label: 'Gallery',
+                  onTap: _pickImageFromGallery,
+                ),
+                _buildPickerTile(
+                  icon: Icons.camera_alt,
+                  label: 'Camera',
+                  onTap: _pickImageFromCamera,
+                ),
+                _buildPickerTile(
+                  icon: Icons.insert_drive_file,
+                  label: 'File (Documents)',
+                  onTap: _pickFile,
+                ),
+                const Divider(height: 24),
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                  leading: const Icon(Icons.close, color: Colors.grey),
+                  title: textH2(
+                    'Cancel',
+                    font_size: 16,
+                    font_weight: FontWeight.w400,
+                    color: Colors.grey,
+                  ),
+                  onTap: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
 
+  Widget _buildPickerTile({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+        leading: CircleAvatar(
+          backgroundColor: primaryColor.withOpacity(0.08),
+          child: Icon(icon, color: primaryColor),
+        ),
+        title: textH2(
+          label,
+          font_size: 15,
+          font_weight: FontWeight.w500,
+        ),
+        onTap: () {
+          Navigator.of(context).pop();
+          onTap();
+        },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        hoverColor: primaryColor.withOpacity(0.05),
+        splashColor: primaryColor.withOpacity(0.1),
+      ),
+    );
+  }
+
   Future<void> _pickImageFromGallery() async {
-    try {
-      final XFile? pickedImage =
-          await _imagePicker.pickImage(source: ImageSource.gallery);
-      if (pickedImage != null) {
-        setState(() {
-          _formController.fuelReceiptFile = File(pickedImage.path);
-          _formController.fuelReceiptFileName = "Image (${pickedImage.name})";
-          fileName = _formController.fuelReceiptFileName;
-        });
-      }
-    } catch (e) {
-      debugPrint("Error picking image from gallery: $e");
+    final file = await FilePickerHelper.pickImageFromGallery();
+    if (file != null) {
+      setState(() {
+        _formController.fuelReceiptFile = file;
+        _formController.fuelReceiptFileName =
+            FilePickerHelper.getReadableFileName(file.path);
+        fileName = _formController.fuelReceiptFileName;
+      });
     }
   }
 
   Future<void> _pickImageFromCamera() async {
-    try {
-      final XFile? pickedImage =
-          await _imagePicker.pickImage(source: ImageSource.camera);
-      if (pickedImage != null) {
-        setState(() {
-          _formController.fuelReceiptFile = File(pickedImage.path);
-          _formController.fuelReceiptFileName = "Image (${pickedImage.name})";
-          fileName = _formController.fuelReceiptFileName;
-        });
-      }
-    } catch (e) {
-      debugPrint("Error picking image from camera: $e");
+    final file = await FilePickerHelper.pickImageFromCamera();
+    if (file != null) {
+      setState(() {
+        _formController.fuelReceiptFile = file;
+        _formController.fuelReceiptFileName =
+            FilePickerHelper.getReadableFileName(file.path);
+        fileName = _formController.fuelReceiptFileName;
+      });
     }
   }
 
   Future<void> _pickFile() async {
-    try {
-      final result = await FilePicker.platform.pickFiles();
-      if (result != null && result.files.isNotEmpty) {
-        final pickedFile = result.files.first;
-        if (pickedFile.path != null) {
-          setState(() {
-            _formController.fuelReceiptFile = File(pickedFile.path!);
-            _formController.fuelReceiptFileName =
-                "${pickedFile.name} (${(pickedFile.size / 1024).toStringAsFixed(1)} KB)";
-            fileName = _formController.fuelReceiptFileName;
-          });
-        }
-      }
-    } catch (e) {
-      debugPrint('File picking error: $e');
+    final file = await FilePickerHelper.pickDocumentFile();
+    if (file != null) {
+      final size = await file.length();
+      setState(() {
+        _formController.fuelReceiptFile = file;
+        _formController.fuelReceiptFileName =
+            FilePickerHelper.getReadableFileName(file.path, sizeBytes: size);
+        fileName = _formController.fuelReceiptFileName;
+      });
     }
   }
 
