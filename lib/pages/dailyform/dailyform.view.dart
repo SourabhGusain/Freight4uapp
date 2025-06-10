@@ -67,8 +67,8 @@ class _DailyformPageState extends State<DailyformPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        textH1("DAILY REPORTS:"),
-                        const SizedBox(height: 15),
+                        textH1("DAILY REPORTS"),
+                        const SizedBox(height: 10),
                         customBox(
                           text: "Pre-Start/Fit for Duty Declaration.",
                           subtext:

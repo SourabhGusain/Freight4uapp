@@ -201,7 +201,7 @@ Widget customBox({
       decoration: BoxDecoration(
         color: whiteColor,
         border: Border.all(
-          color: blackColor,
+          color: primaryColor,
           width: 0.5,
         ),
         borderRadius: BorderRadius.circular(8.0),
@@ -214,6 +214,7 @@ Widget customBox({
             textH2(
               text,
               font_size: 16.0,
+              color: primaryColor,
               font_weight: FontWeight.bold,
             ),
             const SizedBox(height: 3),

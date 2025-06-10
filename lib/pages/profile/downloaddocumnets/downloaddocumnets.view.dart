@@ -71,22 +71,25 @@ class _DownloadDocumentsPageState extends State<DownloadDocumentsPage> {
               ),
             ),
           ),
-          IconButton(
-            icon: isDownloading
-                ? const SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Icon(Icons.download, color: primaryColor),
-            tooltip: isDownloading ? "Downloading..." : "Download PDF",
-            onPressed: isDownloading
-                ? null
-                : () async {
-                    await controller.downloadDocument(context, url);
-                    setState(() {});
-                  },
+          DownloadButton(
+            fileUrl: url,
           ),
+          // IconButton(
+          //   icon: isDownloading
+          //       ? const SizedBox(
+          //           width: 24,
+          //           height: 24,
+          //           child: CircularProgressIndicator(strokeWidth: 2),
+          //         )
+          //       : const Icon(Icons.download, color: primaryColor),
+          //   tooltip: isDownloading ? "Downloading..." : "Download PDF",
+          //   onPressed: isDownloading
+          //       ? null
+          //       : () async {
+          //           await controller.downloadDocument(context, url);
+          //           // setState(() {});
+          //         },
+          // ),
         ],
       ),
     );
