@@ -101,6 +101,7 @@ class _SignupPageState extends State<SignupPage> {
                           child: textField(
                             "Enter Mobile no.",
                             prefixText: "+61",
+                            keyboardType: TextInputType.phone,
                             hintText: "e.g. 1234567890",
                             controller: formcontroller.phoneController,
                           ),
