@@ -96,6 +96,7 @@ class _LoginPageState extends State<LoginPage> {
                         textField(
                           "Enter Mobile no.",
                           hintText: "e.g. 1234567890",
+                          keyboardType: TextInputType.number,
                           controller: ctrl.mobileController,
                         ),
                         const SizedBox(height: 15),
