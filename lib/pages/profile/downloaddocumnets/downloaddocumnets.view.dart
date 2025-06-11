@@ -74,22 +74,6 @@ class _DownloadDocumentsPageState extends State<DownloadDocumentsPage> {
           DownloadButton(
             fileUrl: url,
           ),
-          // IconButton(
-          //   icon: isDownloading
-          //       ? const SizedBox(
-          //           width: 24,
-          //           height: 24,
-          //           child: CircularProgressIndicator(strokeWidth: 2),
-          //         )
-          //       : const Icon(Icons.download, color: primaryColor),
-          //   tooltip: isDownloading ? "Downloading..." : "Download PDF",
-          //   onPressed: isDownloading
-          //       ? null
-          //       : () async {
-          //           await controller.downloadDocument(context, url);
-          //           // setState(() {});
-          //         },
-          // ),
         ],
       ),
     );
@@ -103,9 +87,6 @@ class _DownloadDocumentsPageState extends State<DownloadDocumentsPage> {
 
   @override
   Widget build(BuildContext context) {
-    const guideUrl =
-        "https://www.ntc.gov.au/sites/default/files/assets/files/Load-Restraint-Guide-2018.pdf";
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: const Color.fromARGB(255, 252, 253, 255),
@@ -126,13 +107,43 @@ class _DownloadDocumentsPageState extends State<DownloadDocumentsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  textH1("Review & Download Documents Here:"),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: primaryColor,
+                        width: 1,
+                      ),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 8,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.description_outlined,
+                          size: 20,
+                          color: primaryColor,
+                        ),
+                        const SizedBox(width: 5),
+                        Expanded(
+                          child: textH2(
+                            "Review & Download Documents Here:",
+                            font_size: 15,
+                            font_weight: FontWeight.w600,
+                            color: blackColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 15),
-                  textH3("Load Restraint Guide Document:",
-                      font_size: 14, font_weight: FontWeight.w500),
-                  const SizedBox(height: 5),
-                  buildDocumentTile("Load Restraint Guide", guideUrl),
-                  const SizedBox(height: 5),
                   if (controller.uploadDocuments == null)
                     const Center(child: CircularProgressIndicator())
                   else if (controller.uploadDocuments!.isEmpty)
@@ -152,8 +163,8 @@ class _DownloadDocumentsPageState extends State<DownloadDocumentsPage> {
                           children: [
                             textH3("${doc.name} Document:",
                                 font_size: 14, font_weight: FontWeight.w500),
-                            const SizedBox(height: 5),
                             buildDocumentTile(doc.name, fullUrl),
+                            const SizedBox(height: 10),
                           ],
                         );
                       },

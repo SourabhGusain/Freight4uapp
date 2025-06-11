@@ -67,11 +67,43 @@ class _DailyformPageState extends State<DailyformPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        textH1("DAILY REPORTS:"),
-                        const Divider(
-                          thickness: 0.4,
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: primaryColor,
+                              width: 1,
+                            ),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 8,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.event_note,
+                                size: 20,
+                                color: primaryColor,
+                              ),
+                              const SizedBox(width: 5),
+                              Expanded(
+                                child: textH2(
+                                  "DAILY REPORTS :",
+                                  font_size: 15,
+                                  font_weight: FontWeight.w600,
+                                  color: blackColor,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 15),
                         customBox(
                           text: "Pre-Start/Fit for Duty Declaration.",
                           subtext:

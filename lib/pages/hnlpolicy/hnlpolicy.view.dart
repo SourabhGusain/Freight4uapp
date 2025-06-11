@@ -42,12 +42,43 @@ class _HnlpolicyPageState extends State<HnlpolicyPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              textH1(
-                                  "HUNTER & NORTHERN GROUP POLICIES (or Northern Freight Services):"),
-                              const Divider(
-                                thickness: 0.4,
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: primaryColor,
+                                    width: 1,
+                                  ),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 8,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.assignment_turned_in,
+                                      size: 20,
+                                      color: primaryColor,
+                                    ),
+                                    const SizedBox(width: 5),
+                                    Expanded(
+                                      child: textH2(
+                                        "HUNTER & NORTHERN GROUP POLICIES (or Northern Freight Services):",
+                                        font_size: 13,
+                                        font_weight: FontWeight.w600,
+                                        color: blackColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 15),
                               ...ctrl.policies.map(
                                 (policy) => Padding(
                                   padding: const EdgeInsets.only(bottom: 10),

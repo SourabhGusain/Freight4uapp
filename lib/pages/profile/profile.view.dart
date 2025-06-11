@@ -8,10 +8,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:Freight4u/helpers/session.dart';
 import 'package:Freight4u/helpers/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:Freight4u/pages/login/login.view.dart';
-import 'package:Freight4u/pages/profile/profile.controller.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:Freight4u/pages/login/login.view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Freight4u/pages/profile/profile.controller.dart';
 import 'package:Freight4u/pages/notification/notification.view.dart';
 import 'package:Freight4u/pages/profile/downloaddocumnets/downloaddocumnets.view.dart';
 
@@ -230,7 +230,7 @@ class _ProfilePageState extends State<ProfilePage> {
         customProfileBox(
           text: "Visit Website",
           subtext: "Go to our official website.",
-          icon: Icons.language, // globe icon typically used for websites
+          icon: Icons.language,
           onTap: () async {
             final url = Uri.parse("https://freight4you.com.au/");
             await launchUrl(url, mode: LaunchMode.externalApplication);
@@ -490,11 +490,8 @@ void _showLoadingAndNavigate(
       ),
     ),
   );
-
   await Future.delayed(const Duration(seconds: 1));
-
-  Navigator.of(context).pop(); // Close loading
-
+  Navigator.of(context).pop();
   Navigator.of(context).push(
     MaterialPageRoute(builder: (_) => pageBuilder()),
   );

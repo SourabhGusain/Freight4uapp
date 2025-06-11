@@ -83,11 +83,43 @@ class _EmployeePageState extends State<EmployeePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    textH1("EMPLOYMENT PACKAGES:"),
-                    const Divider(
-                      thickness: 0.4,
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: primaryColor,
+                          width: 1,
+                        ),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 8,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.assignment,
+                            size: 20,
+                            color: primaryColor,
+                          ),
+                          const SizedBox(width: 5),
+                          Expanded(
+                            child: textH2(
+                              "EMPLOYMENT PACKAGES AND FORMS:",
+                              font_size: 14,
+                              font_weight: FontWeight.w600,
+                              color: blackColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     customBox(
                       text: "General Form",
                       subtext:
