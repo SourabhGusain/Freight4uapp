@@ -117,7 +117,7 @@ class _EmployeePageState extends State<EmployeePage> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 15),
                     customBox(
                       text: "General Form",
                       subtext:
