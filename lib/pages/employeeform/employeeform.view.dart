@@ -51,10 +51,8 @@ class _EmployeePageState extends State<EmployeePage> {
       ),
     );
 
-    // Small delay to show loading spinner (optional, can remove)
     await Future.delayed(const Duration(milliseconds: 300));
 
-    // Close loading dialog
     Navigator.of(context).pop();
 
     // Navigate to target page
@@ -107,10 +105,10 @@ class _EmployeePageState extends State<EmployeePage> {
                             size: 20,
                             color: primaryColor,
                           ),
-                          const SizedBox(width: 5),
+                          const SizedBox(width: 10),
                           Expanded(
                             child: textH2(
-                              "EMPLOYMENT PACKAGES AND FORMS:",
+                              "EMPLOYMENT PACKAGES AND FORMS",
                               font_size: 14,
                               font_weight: FontWeight.w600,
                               color: blackColor,

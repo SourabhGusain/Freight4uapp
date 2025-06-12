@@ -131,10 +131,10 @@ class _DownloadDocumentsPageState extends State<DownloadDocumentsPage> {
                           size: 20,
                           color: primaryColor,
                         ),
-                        const SizedBox(width: 5),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: textH2(
-                            "Review & Download Documents Here:",
+                            "Review & Download Documents Here",
                             font_size: 15,
                             font_weight: FontWeight.w600,
                             color: blackColor,

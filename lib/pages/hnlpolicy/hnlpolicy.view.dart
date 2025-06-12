@@ -66,10 +66,10 @@ class _HnlpolicyPageState extends State<HnlpolicyPage> {
                                       size: 20,
                                       color: primaryColor,
                                     ),
-                                    const SizedBox(width: 5),
+                                    const SizedBox(width: 10),
                                     Expanded(
                                       child: textH2(
-                                        "HUNTER & NORTHERN GROUP POLICIES (or Northern Freight Services):",
+                                        "HUNTER & NORTHERN GROUP POLICIES (or Northern Freight Services)",
                                         font_size: 13,
                                         font_weight: FontWeight.w600,
                                         color: blackColor,
