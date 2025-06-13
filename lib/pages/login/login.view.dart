@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:Freight4u/helpers/session.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:Freight4u/pages/login/login.controller.dart';
@@ -19,6 +20,22 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _signupLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    initTracking();
+    // pageIndex = widget.page;
+  }
+
+  Future<void> initTracking() async {
+    final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+    if (status == TrackingStatus.notDetermined) {
+      final result =
+          await AppTrackingTransparency.requestTrackingAuthorization();
+      print("Tracking status: $result");
+    }
+  }
 
   void _triggerSignupFlow() {
     if (_signupLoading) return;

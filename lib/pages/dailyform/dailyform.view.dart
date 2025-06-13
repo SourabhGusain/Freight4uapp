@@ -1,3 +1,4 @@
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
 import 'package:Freight4u/widgets/ui.dart';
@@ -30,6 +31,16 @@ class _DailyformPageState extends State<DailyformPage> {
     super.initState();
     // Print the session data once the page is loaded
     print("Session Data: ${widget.session}");
+    initTracking();
+  }
+
+  Future<void> initTracking() async {
+    final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+    if (status == TrackingStatus.notDetermined) {
+      final result =
+          await AppTrackingTransparency.requestTrackingAuthorization();
+      print("Tracking status: $result");
+    }
   }
 
   Future<void> _navigateWithLoading(Widget page) async {

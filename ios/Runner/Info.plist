@@ -77,6 +77,10 @@
 		<string>Microphone access is required</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>Photo access is required</string>
+		<key>UIViewControllerBasedStatusBarAppearance</key>
+		<false />
+		<key>NSUserTrackingUsageDescription</key>
+		<string>We will collect Email, User ID, Device ID for maange account and validation purpose.</string>
 
 
 	</dict>
