@@ -239,13 +239,16 @@ class _ProfilePageState extends State<ProfilePage> {
           },
         ),
         const SizedBox(height: 12),
-        // customProfileBox(
-        //   text: "App Settings",
-        //   subtext: "Manage your app preferences.",
-        //   icon: Icons.settings_outlined,
-        //   onTap: () => print("Go to App Settings"),
-        // ),
-        // const SizedBox(height: 12),
+        customProfileBox(
+          text: "Delete My Account",
+          subtext: "Call us to create delete request",
+          icon: Icons.settings_outlined,
+          onTap: () async {
+            final url = Uri.parse("https://freight4you.com.au/#contact");
+            await launchUrl(url, mode: LaunchMode.externalApplication);
+          },
+        ),
+        const SizedBox(height: 12),
         customProfileBox(
           text: "See Notifications",
           subtext: "View your recent alerts and messages.",
