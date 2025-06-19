@@ -36,11 +36,9 @@ class _DailyformPageState extends State<DailyformPage> {
 
   Future<void> initTracking() async {
     final status = await AppTrackingTransparency.trackingAuthorizationStatus;
-    if (status == TrackingStatus.notDetermined) {
-      final result =
-          await AppTrackingTransparency.requestTrackingAuthorization();
-      print("Tracking status: $result");
-    }
+    final result = await AppTrackingTransparency.requestTrackingAuthorization();
+    print("Tracking status: $result");
+    if (status == TrackingStatus.notDetermined) {}
   }
 
   Future<void> _navigateWithLoading(Widget page) async {

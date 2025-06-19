@@ -30,11 +30,8 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> initTracking() async {
     final status = await AppTrackingTransparency.trackingAuthorizationStatus;
-    if (status == TrackingStatus.notDetermined) {
-      final result =
-          await AppTrackingTransparency.requestTrackingAuthorization();
-      print("Tracking status: $result");
-    }
+    final result = await AppTrackingTransparency.requestTrackingAuthorization();
+    print("Tracking status: $result");
   }
 
   void _triggerSignupFlow() {

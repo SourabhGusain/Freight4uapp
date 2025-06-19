@@ -24,7 +24,22 @@ class SignupController extends BaseViewModel {
     final vehicle = vehicleController.text.trim();
     final password = passwordController.text;
     final confirmPassword = confirmPasswordController.text;
-
+    if (phone.length != 10) {
+      await showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text('Error'),
+          content: const Text('Invalid Mobile No'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
     if (password != confirmPassword) {
       await showDialog(
         context: context,
@@ -45,8 +60,8 @@ class SignupController extends BaseViewModel {
     if (fullName.isEmpty ||
         phone.isEmpty ||
         email.isEmpty ||
-        license.isEmpty ||
-        vehicle.isEmpty ||
+        // license.isEmpty ||
+        // vehicle.isEmpty ||
         password.isEmpty) {
       await showDialog(
         context: context,
@@ -71,8 +86,8 @@ class SignupController extends BaseViewModel {
         name: fullName,
         phone: phone,
         email: email,
-        licenseNumber: license,
-        vehicleNumber: vehicle,
+        licenseNumber: license.isEmpty ? "NA" : license,
+        vehicleNumber: "NA",
         password: password,
       );
 
