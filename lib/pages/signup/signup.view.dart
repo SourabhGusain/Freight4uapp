@@ -138,6 +138,14 @@ class _SignupPageState extends State<SignupPage> {
                             controller: formcontroller.licenseController,
                           ),
                         ),
+                        const SizedBox(height: 15),
+                        SizedBox(
+                          height: 50,
+                          child: textField(
+                            "Business ID",
+                            hintText: "e.g. Freight4You**",
+                          ),
+                        ),
                         // const SizedBox(height: 15),
                         // SizedBox(
                         //   height: 50,
