@@ -1,4 +1,4 @@
-package com.freight.app.flutter
+package com.freight.app
 
 import io.flutter.embedding.android.FlutterActivity
 

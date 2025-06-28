@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCWXa-c7bR7PNTgx_Yrm5Q_zgi_DKSW4qw',
-    appId: '1:491668097601:android:fbe78604ce8ab40b6614c0',
+    appId: '1:491668097601:android:c17fe778fc3aba6a6614c0',
     messagingSenderId: '491668097601',
     projectId: 'freight4you-3e3d0',
     storageBucket: 'freight4you-3e3d0.firebasestorage.app',
@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCjN0z6zctzEEMZE38wSsYv9y9aO0h_tko',
-    appId: '1:491668097601:ios:a3238f0168e2c3f06614c0',
+    appId: '1:491668097601:ios:2486e3599e6bb1316614c0',
     messagingSenderId: '491668097601',
     projectId: 'freight4you-3e3d0',
     storageBucket: 'freight4you-3e3d0.firebasestorage.app',
-    iosBundleId: 'com.freight.app.flutter',
+    iosBundleId: 'com.freight.app',
   );
 
 }
