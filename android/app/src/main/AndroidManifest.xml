@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="Freight4u"
+        android:label="Freight For You"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity
