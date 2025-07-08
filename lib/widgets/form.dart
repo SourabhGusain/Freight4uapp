@@ -1,4 +1,5 @@
 import 'package:Freight4u/helpers/get.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:Freight4u/helpers/values.dart';
 import 'package:flutter/material.dart';
 
@@ -410,6 +411,58 @@ Widget calendarDateField({
   );
 }
 
+// Widget calendarTimeField({
+//   required BuildContext context,
+//   required String label,
+//   required TextEditingController controller,
+//   String hintText = "Select time",
+// }) {
+//   return GestureDetector(
+//     onTap: () async {
+//       TimeOfDay? pickedTime = await showTimePicker(
+//         context: context,
+//         initialTime: TimeOfDay.now(),
+//         initialEntryMode: TimePickerEntryMode.input, // 👈 Force input mode
+//         builder: (context, child) {
+//           return Theme(
+//             data: Theme.of(context).copyWith(
+//               timePickerTheme: TimePickerThemeData(
+//                 backgroundColor: Colors.white,
+//                 hourMinuteColor:
+//                     MaterialStateColor.resolveWith((states) => Colors.white),
+//               ),
+//               colorScheme: ColorScheme.light(
+//                 primary: primaryColor,
+//                 onPrimary: Colors.white,
+//                 onSurface: Colors.black,
+//               ),
+//             ),
+//             child: child!,
+//           );
+//         },
+//       );
+
+//       if (pickedTime != null) {
+//         final now = DateTime.now();
+//         final dt = DateTime(
+//             now.year, now.month, now.day, pickedTime.hour, pickedTime.minute);
+//         String formattedTime = TimeOfDay.fromDateTime(dt).format(context);
+//         controller.text = formattedTime;
+//       }
+//     },
+//     child: AbsorbPointer(
+//       child: SizedBox(
+//         height: 50,
+//         child: textField(
+//           label,
+//           controller: controller,
+//           hintText: hintText,
+//         ),
+//       ),
+//     ),
+//   );
+// }
+
 Widget calendarTimeField({
   required BuildContext context,
   required String label,
@@ -418,35 +471,100 @@ Widget calendarTimeField({
 }) {
   return GestureDetector(
     onTap: () async {
-      TimeOfDay? pickedTime = await showTimePicker(
+      TimeOfDay selectedTime = TimeOfDay.now();
+
+      await showModalBottomSheet(
         context: context,
-        initialTime: TimeOfDay.now(),
-        builder: (context, child) {
-          return Theme(
-            data: Theme.of(context).copyWith(
-              timePickerTheme: TimePickerThemeData(
-                backgroundColor: Colors.white,
-                hourMinuteColor:
-                    MaterialStateColor.resolveWith((states) => Colors.white),
-              ),
-              colorScheme: ColorScheme.light(
-                primary: primaryColor,
-                onPrimary: Colors.white,
-                onSurface: Colors.black,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        isScrollControlled: true,
+        builder: (BuildContext builder) {
+          return Container(
+            padding: const EdgeInsets.only(
+              top: 16,
+              left: 16,
+              right: 16,
+              bottom: 32,
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(20),
               ),
             ),
-            child: child!,
+            child: SafeArea(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Top bar with Cancel and Done buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CupertinoButton(
+                        child: textH2(
+                          'Cancel',
+                          font_weight: FontWeight.w500,
+                          font_size: 15,
+                          color: primaryColor,
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      textH2(
+                        'Select Time',
+                        font_weight: FontWeight.w500,
+                        font_size: 16,
+                        color: primaryColor,
+                      ),
+                      CupertinoButton(
+                        child: textH2(
+                          'Done',
+                          font_weight: FontWeight.w500,
+                          font_size: 15,
+                          color: primaryColor,
+                        ),
+                        onPressed: () {
+                          final formattedTime24 =
+                              '${selectedTime.hour.toString().padLeft(2, '0')}:'
+                              '${selectedTime.minute.toString().padLeft(2, '0')}';
+                          controller.text = formattedTime24;
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 250,
+                    child: CupertinoTheme(
+                      data: const CupertinoThemeData(
+                        primaryColor: primaryColor,
+                        brightness: Brightness.light,
+                      ),
+                      child: CupertinoDatePicker(
+                        mode: CupertinoDatePickerMode.time,
+                        use24hFormat: false,
+                        initialDateTime: DateTime(
+                          0,
+                          0,
+                          0,
+                          selectedTime.hour,
+                          selectedTime.minute,
+                        ),
+                        onDateTimeChanged: (DateTime newDateTime) {
+                          selectedTime = TimeOfDay.fromDateTime(newDateTime);
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           );
         },
       );
-
-      if (pickedTime != null) {
-        final now = DateTime.now();
-        final dt = DateTime(
-            now.year, now.month, now.day, pickedTime.hour, pickedTime.minute);
-        String formattedTime = TimeOfDay.fromDateTime(dt).format(context);
-        controller.text = formattedTime;
-      }
     },
     child: AbsorbPointer(
       child: SizedBox(
@@ -460,3 +578,207 @@ Widget calendarTimeField({
     ),
   );
 }
+
+// Widget calendarTimeField({
+//   required BuildContext context,
+//   required String label,
+//   required TextEditingController controller,
+//   String hintText = "Select time",
+// }) {
+//   return GestureDetector(
+//     onTap: () async {
+//       int selectedHour = TimeOfDay.now().hourOfPeriod;
+//       int selectedMinute = TimeOfDay.now().minute;
+//       String selectedPeriod =
+//           TimeOfDay.now().period == DayPeriod.am ? 'AM' : 'PM';
+
+//       // const primaryColor = Colors.purple; // ✅ your primary color
+//       const unselectedColor = Color.fromARGB(255, 60, 60, 60);
+//       const backgroundColor = Colors.white;
+
+//       await showModalBottomSheet(
+//         context: context,
+//         shape: const RoundedRectangleBorder(
+//           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+//         ),
+//         isScrollControlled: true,
+//         builder: (BuildContext builder) {
+//           return Container(
+//             padding: const EdgeInsets.only(
+//               top: 16,
+//               left: 16,
+//               right: 16,
+//               bottom: 32,
+//             ),
+//             decoration: const BoxDecoration(
+//               color: backgroundColor,
+//               borderRadius: BorderRadius.vertical(
+//                 top: Radius.circular(20),
+//               ),
+//             ),
+//             child: SafeArea(
+//               child: Column(
+//                 mainAxisSize: MainAxisSize.min,
+//                 children: [
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       CupertinoButton(
+//                         child: textH2(
+//                           'Cancel',
+//                           font_weight: FontWeight.w500,
+//                           font_size: 15,
+//                           color: primaryColor,
+//                         ),
+//                         onPressed: () {
+//                           Navigator.of(context).pop();
+//                         },
+//                       ),
+//                       textH2(
+//                         'Select Time',
+//                         font_weight: FontWeight.w500,
+//                         font_size: 16,
+//                         color: primaryColor,
+//                       ),
+//                       CupertinoButton(
+//                         child: textH2(
+//                           'Done',
+//                           font_weight: FontWeight.w500,
+//                           font_size: 15,
+//                           color: primaryColor,
+//                         ),
+//                         onPressed: () {
+//                           final hour = selectedPeriod == 'PM'
+//                               ? (selectedHour % 12) + 12
+//                               : selectedHour % 12;
+//                           final time =
+//                               TimeOfDay(hour: hour, minute: selectedMinute);
+//                           controller.text = time.format(context);
+//                           Navigator.of(context).pop();
+//                         },
+//                       ),
+//                     ],
+//                   ),
+//                   const SizedBox(height: 16),
+//                   // The custom wheel picker
+//                   SizedBox(
+//                     height: 250,
+//                     child: Row(
+//                       children: [
+//                         Expanded(
+//                           child: _buildWheel(
+//                             context,
+//                             1,
+//                             12,
+//                             selectedHour,
+//                             (index) => selectedHour = index + 1,
+//                             primaryColor,
+//                             unselectedColor,
+//                           ),
+//                         ),
+//                         Expanded(
+//                           child: _buildWheel(
+//                             context,
+//                             0,
+//                             59,
+//                             selectedMinute,
+//                             (index) => selectedMinute = index,
+//                             primaryColor,
+//                             unselectedColor,
+//                           ),
+//                         ),
+//                         Expanded(
+//                           child: CupertinoPicker(
+//                             scrollController: FixedExtentScrollController(
+//                               initialItem: selectedPeriod == 'AM' ? 0 : 1,
+//                             ),
+//                             itemExtent: 40,
+//                             onSelectedItemChanged: (index) {
+//                               selectedPeriod = index == 0 ? 'AM' : 'PM';
+//                             },
+//                             selectionOverlay: Container(
+//                               decoration: const BoxDecoration(
+//                                 border: Border.symmetric(
+//                                   horizontal:
+//                                       BorderSide(color: primaryColor, width: 1),
+//                                 ),
+//                               ),
+//                             ),
+//                             children: ['AM', 'PM'].map((period) {
+//                               return Center(
+//                                 child: Text(
+//                                   period,
+//                                   style: TextStyle(
+//                                     fontSize: 20,
+//                                     color: selectedPeriod == period
+//                                         ? primaryColor
+//                                         : unselectedColor,
+//                                     fontWeight: selectedPeriod == period
+//                                         ? FontWeight.bold
+//                                         : FontWeight.normal,
+//                                   ),
+//                                 ),
+//                               );
+//                             }).toList(),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           );
+//         },
+//       );
+//     },
+//     child: AbsorbPointer(
+//       child: SizedBox(
+//         height: 50,
+//         child: textField(
+//           label,
+//           controller: controller,
+//           hintText: hintText,
+//         ),
+//       ),
+//     ),
+//   );
+// }
+
+// Widget _buildWheel(
+//   BuildContext context,
+//   int start,
+//   int end,
+//   int selectedValue,
+//   ValueChanged<int> onSelected,
+//   Color primaryColor,
+//   Color unselectedColor,
+// ) {
+//   return CupertinoPicker(
+//     scrollController:
+//         FixedExtentScrollController(initialItem: selectedValue - start),
+//     itemExtent: 40,
+//     onSelectedItemChanged: onSelected,
+//     selectionOverlay: Container(
+//       decoration: BoxDecoration(
+//         border: Border.symmetric(
+//           horizontal: BorderSide(color: primaryColor, width: 1),
+//         ),
+//       ),
+//     ),
+//     children: List.generate(end - start + 1, (index) {
+//       final value = start + index;
+//       final isSelected = value == selectedValue;
+//       return Center(
+//         child: Text(
+//           value.toString().padLeft(2, '0'),
+//           style: TextStyle(
+//             fontSize: 20,
+//             color: isSelected ? primaryColor : unselectedColor,
+//             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+//           ),
+//         ),
+//       );
+//     }),
+//   );
+// }
