@@ -6,6 +6,8 @@ import 'package:Freight4u/pages/format/format.view.dart';
 import 'package:Freight4u/pages/utils/splash.view.dart';
 import 'package:Freight4u/pages/dailyform/dailyform.view.dart';
 
+//Freight 4 You
+//69809037
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

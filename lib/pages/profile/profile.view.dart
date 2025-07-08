@@ -98,7 +98,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         textH1("Settings", font_size: 18),
                         const SizedBox(height: 10),
-                        _buildProfileOptions(context),
+                        _buildProfileOptions(context, ctrl),
                       ],
                     ),
                   ),
@@ -207,14 +207,16 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildProfileOptions(BuildContext context) {
+  Widget _buildProfileOptions(BuildContext context, ctrl) {
     return Column(
       children: [
         customProfileBox(
-          text: "Profile Settings",
-          subtext: "Manage your personal details.",
+          text: "Profile",
+          subtext: "View your details.",
           icon: Icons.person_outline,
-          onTap: () => print("Go to Profile Settings"),
+          onTap: () {
+            _showCustomerDetailsDialog(context, ctrl);
+          },
         ),
         const SizedBox(height: 12),
         customProfileBox(
@@ -238,10 +240,13 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         const SizedBox(height: 12),
         customProfileBox(
-          text: "App Settings",
-          subtext: "Manage your app preferences.",
+          text: "Delete My Account",
+          subtext: "Call us to create delete request",
           icon: Icons.settings_outlined,
-          onTap: () => print("Go to App Settings"),
+          onTap: () async {
+            final url = Uri.parse("https://freight4you.com.au/#contact");
+            await launchUrl(url, mode: LaunchMode.externalApplication);
+          },
         ),
         const SizedBox(height: 12),
         customProfileBox(

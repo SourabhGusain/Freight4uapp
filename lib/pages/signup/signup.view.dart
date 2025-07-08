@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/material.dart';
 import 'package:Freight4u/widgets/ui.dart';
 import 'package:Freight4u/helpers/get.dart';
@@ -19,6 +20,19 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   bool _loadingBackToLogin = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initTracking();
+  }
+
+  Future<void> initTracking() async {
+    final status = await AppTrackingTransparency.trackingAuthorizationStatus;
+    final result = await AppTrackingTransparency.requestTrackingAuthorization();
+    print("Tracking status: $result");
+  }
 
   void _triggerLoginFlow() {
     if (_loadingBackToLogin) return;
@@ -122,6 +136,14 @@ class _SignupPageState extends State<SignupPage> {
                             "License number",
                             hintText: "e.g. 23345 455**",
                             controller: formcontroller.licenseController,
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        SizedBox(
+                          height: 50,
+                          child: textField(
+                            "Business ID",
+                            hintText: "e.g. Freight4You**",
                           ),
                         ),
                         // const SizedBox(height: 15),

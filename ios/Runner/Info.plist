@@ -5,7 +5,7 @@
 		<key>CFBundleDevelopmentRegion</key>
 		<string>$(DEVELOPMENT_LANGUAGE)</string>
 		<key>CFBundleDisplayName</key>
-		<string>Freight4u</string>
+		<string>Freight For You</string>
 		<key>CFBundleExecutable</key>
 		<string>$(EXECUTABLE_NAME)</string>
 		<key>CFBundleIdentifier</key>
@@ -59,12 +59,12 @@
 			<string>https</string>
 		</array>
 
-		<key>NSLocationWhenInUseUsageDescription</key>
+		<!-- <key>NSLocationWhenInUseUsageDescription</key>
 		<string>This app needs access to location.</string>
 		<key>NSLocationAlwaysUsageDescription</key>
 		<string>This app needs access to location at all times.</string>
 		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>This app uses your location.</string>
+		<string>This app uses your location.</string> -->
 
 		<key>UIFileSharingEnabled</key>
 		<true />
@@ -72,11 +72,14 @@
 		<true />
 
 		<key>NSCameraUsageDescription</key>
-		<string>Camera access is required</string>
-		<key>NSMicrophoneUsageDescription</key>
-		<string>Microphone access is required</string>
+		<string>We use your camera to allow you to upload photos/documents for your profile or service requests.</string>
+		
 		<key>NSPhotoLibraryUsageDescription</key>
-		<string>Photo access is required</string>
+		<string>We access your photo library so you can choose existing images to upload for your profile, service requests, or reports.</string>
+		<key>UIViewControllerBasedStatusBarAppearance</key>
+		<false />
+		<key>NSUserTrackingUsageDescription</key>
+		<string>We will collect Email, User ID, Device ID for maange account and validation purpose.</string>
 
 
 	</dict>

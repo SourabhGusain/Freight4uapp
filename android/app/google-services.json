@@ -7,9 +7,47 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:491668097601:android:c17fe778fc3aba6a6614c0",
+        "android_client_info": {
+          "package_name": "com.freight.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWXa-c7bR7PNTgx_Yrm5Q_zgi_DKSW4qw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:491668097601:android:fbe78604ce8ab40b6614c0",
         "android_client_info": {
           "package_name": "com.freight.app.flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWXa-c7bR7PNTgx_Yrm5Q_zgi_DKSW4qw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:491668097601:android:c5fff8d05a2a6c7f6614c0",
+        "android_client_info": {
+          "package_name": "com.freight.flutter"
         }
       },
       "oauth_client": [],
